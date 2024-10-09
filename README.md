@@ -71,3 +71,6 @@ https://www.kaggle.com/datasets/nafisbarizki/daftar-harga-rumah-jabodetabek
 
 ### Role User
 Terdapat dua role, yaitu pembeli dan penjual.
+
+### Deployment
+http://tristan-agra-househunt.pbp.cs.ui.ac.id
