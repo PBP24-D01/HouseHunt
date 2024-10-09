@@ -12,7 +12,7 @@
 - M. Alvin Rheinaldy G. Z. (2306275866)
 
 ### Deskripsi Aplikasi
-Aplikasi ini bernama HouseHunt. Aplikasi ini bertujuan membantu masyarakat, baik penduduk lokal maupun pendatang, untuk menemukan informasi seputar rumah yang dijual di Jakarta. Ketika seseorang pindah atau berencana membeli rumah di Jakarta, sering kali mereka kesulitan mendapatkan informasi lengkap tentang harga, lokasi, dan detail properti dari berbagai sumber yang terpecah-pecah. Dengan Jakarta Rumah, pengguna dapat mengakses database lengkap yang berisi daftar harga rumah di berbagai wilayah Jakarta beserta detail seperti luas bangunan, tipe rumah, jumlah kamar, dan harga.
+Aplikasi ini bernama HouseHunt. Aplikasi ini bertujuan membantu masyarakat, baik penduduk lokal maupun pendatang, untuk menemukan informasi seputar rumah yang dijual di Bekasi. Ketika seseorang pindah atau berencana membeli rumah di Bekasi, sering kali mereka kesulitan mendapatkan informasi lengkap tentang harga, lokasi, dan detail properti dari berbagai sumber yang terpecah-pecah. Dengan Bekasi Rumah, pengguna dapat mengakses database lengkap yang berisi daftar harga rumah di berbagai wilayah Bekasi beserta detail seperti luas bangunan, tipe rumah, jumlah kamar, dan harga.
 
 Aplikasi ini memberikan keuntungan dengan menyediakan semua informasi dalam satu tempat yang mudah diakses, membantu pengguna membuat keputusan yang lebih baik tentang pembelian rumah. Selain itu, aplikasi ini mendukung pencarian berdasarkan kriteria spesifik seperti harga maksimal, luas tanah, atau lokasi, sehingga pengguna dapat dengan mudah menemukan rumah sesuai dengan kebutuhan mereka.
 
@@ -62,7 +62,7 @@ Melihat iklan | Membuat, mengedit, menghapus iklan
 Modul ini berfungsi untuk user dapat register dan login. Nantinya akan ada super user yang diberi role sabagai penjual untuk dapat menambahkan rumah, meng-update status pesanan, serta membalas diskusi pembeli.
 
 
-### Sumber Dataset Rumah di Jabodetabek
+### Sumber Dataset Rumah di Bekasi
 https://www.kaggle.com/datasets/nafisbarizki/daftar-harga-rumah-jabodetabek 
 
 ### Role User
