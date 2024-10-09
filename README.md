@@ -21,6 +21,8 @@ Fitur - fitur yang akan ada di HouseHunt:
 - Menampilkan detail spesifikasi rumah
 - Wishlist menu yang berisi rumah - rumah yang ingin dibeli
 - Melakukan pemesanan rumah secara online
+- Melakukan appointment untuk bertemu dengan penjual
+- Mempromosikan rumah dengan iklan
 
 ### Daftar Modul
 
@@ -68,4 +70,4 @@ Modul ini berfungsi untuk user dapat register dan login. Nantinya akan ada super
 https://www.kaggle.com/datasets/nafisbarizki/daftar-harga-rumah-jabodetabek 
 
 ### Role User
-Terdapat dua role, yaitu pembeli dan admin.
+Terdapat dua role, yaitu pembeli dan penjual.
