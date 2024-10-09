@@ -24,6 +24,44 @@ Fitur - fitur yang akan ada di HouseHunt:
 
 ### Daftar Modul
 
+#### List rumah beserta filter 
+##### Dikerjakan oleh: 
+Modul ini berfungsi untuk menampilkan rumah - rumah yang akan dijual. User juga dapat melakukan filter dan search sesuai yang diinginkan
+Pembeli|Admin
+-|-
+Pembeli dapat melihat dan melakukan filter kepada rumah - rumah yang ada| -
+
+#### Detail rumah
+##### Dikerjakan oleh: 
+Modul ini berfungsi untuk menampilkan detail dari spesifikasi rumah seperti harga, tipe rumah, jumlah kamar, lokasi, dan lain - lainnya.
+Pembeli | Admin
+-|-
+Pembeli dapat melihat detail spesifikasi rumah dan lokasi melalui library map | -
+
+#### Wishlist
+##### Dikerjakan oleh:
+Modul ini berfungsi untuk user dapat menambahkan wishlist rumah yang ingin dibeli dan dapat menampilkan rumah - rumah yang ada di wishlist user.
+Pembeli | Admin
+-|-
+Pembeli dapat menambahkan wishlist dan melihat rumah apa saja yang sudah ada di wishlist | -
+
+#### Pesan rumah
+##### Dikerjakan oleh:
+Modul ini berfungsi untuk user dapat memesan rumah yang diinginkan secara online. Nantinya admin dapat mengupdate status pesanan yang dilakukan oleh pembeli.
+Pembeli | Admin
+-|-
+Memesan secara online rumah yang diinginkan | -
+
+#### Authentifikasi
+##### Dikerjakan oleh:
+Modul ini berfungsi untuk user dapat register dan login. Nantinya akan ada super user yang diberi role sabagai admin untuk dapat menambahkan rumah dan meng-update status pesanan.
+
+#### Admin Site Page
+Modul ini berfungsi untuk menampilkan page yang hanya dapat diakses oleh role admin. Nantinya page ini dapat menambahkan rumah yang ingin dijual dan meng-update status pesanan.
+Pembeli | Admin
+-|-
+.- | Memproses status pesanan yang dilakukan oleh pembeli dan menambahkan rumah
+
 
 ### Sumber Dataset Rumah di Jabodetabek
 https://www.kaggle.com/datasets/nafisbarizki/daftar-harga-rumah-jabodetabek 
