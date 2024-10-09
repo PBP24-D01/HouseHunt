@@ -24,43 +24,42 @@ Fitur - fitur yang akan ada di HouseHunt:
 
 ### Daftar Modul
 
-#### List rumah beserta filter 
+#### Rumah
 ##### Dikerjakan oleh: 
-Modul ini berfungsi untuk menampilkan rumah - rumah yang akan dijual. User juga dapat melakukan filter dan search sesuai yang diinginkan
-Pembeli|Admin
+Modul ini berfungsi untuk menampilkan rumah - rumah yang akan dijual. User juga dapat melakukan filter dan search sesuai yang diinginkan.
+Pembeli|Penjual
 -|-
-Pembeli dapat melihat dan melakukan filter kepada rumah - rumah yang ada| -
-
-#### Detail rumah
-##### Dikerjakan oleh: 
-Modul ini berfungsi untuk menampilkan detail dari spesifikasi rumah seperti harga, tipe rumah, jumlah kamar, lokasi, dan lain - lainnya.
-Pembeli | Admin
--|-
-Pembeli dapat melihat detail spesifikasi rumah dan lokasi melalui library map | -
+Pembeli dapat memesan dan melihat rumah yang sedang dijual | CRUD rumah untuk dijual
 
 #### Wishlist
 ##### Dikerjakan oleh:
 Modul ini berfungsi untuk user dapat menambahkan wishlist rumah yang ingin dibeli dan dapat menampilkan rumah - rumah yang ada di wishlist user.
-Pembeli | Admin
+Pembeli | Penjual
 -|-
 Pembeli dapat menambahkan wishlist dan melihat rumah apa saja yang sudah ada di wishlist | -
 
-#### Pesan rumah
+#### Diskusi
 ##### Dikerjakan oleh:
-Modul ini berfungsi untuk user dapat memesan rumah yang diinginkan secara online. Nantinya admin dapat mengupdate status pesanan yang dilakukan oleh pembeli.
-Pembeli | Admin
+Modul ini berfungsi untuk pembeli dapat menanyakan pertanyaan kepada penjual
+Pembeli | Penjual
 -|-
-Memesan secara online rumah yang diinginkan | -
+Mengepost diskusi pada halaman detail rumah | Membalas diskusi pada halaman detail rumah
+
+#### Cek Rumah
+Modul ini berfungsi untuk membuat appointment antara pembeli dan penjual untuk melakukan pengecekan secara offline. Nantinya pembeli dapat memilih tanggal sesuai yang sudah penjual sediakan. Pembeli dan penjual juga dapat membatalkan dan mengedit tanggal appointment yang diinginkan.
+Pembeli | Penjual
+-|-
+Memilih appointment dan membuat appointment | Membuat kapan saja appointment dapat dilakukan dan menyetujui appointment yang dibuat oleh pembeli
+
+#### Iklan
+Modul ini berfungsi untuk seller memasang iklan di halaman web. Nantinya seller dapat memilih rumah mana yang mau diiklankan di halaman web. Iklan akan lebih dipertontonkan dibandingkan rumah yang tidak diiklankan. Seller dapat mengedit rumah mana yang diiklankan kapan saja dan seller dapat meng-upload banner untuk kebutuhan iklan.
+Pembeli | Penjual
+-|-
+Melihat iklan | Membuat, mengedit, menghapus iklan
 
 #### Authentifikasi
 ##### Dikerjakan oleh:
-Modul ini berfungsi untuk user dapat register dan login. Nantinya akan ada super user yang diberi role sabagai admin untuk dapat menambahkan rumah dan meng-update status pesanan.
-
-#### Admin Site Page
-Modul ini berfungsi untuk menampilkan page yang hanya dapat diakses oleh role admin. Nantinya page ini dapat menambahkan rumah yang ingin dijual dan meng-update status pesanan.
-Pembeli | Admin
--|-
-.- | Memproses status pesanan yang dilakukan oleh pembeli dan menambahkan rumah
+Modul ini berfungsi untuk user dapat register dan login. Nantinya akan ada super user yang diberi role sabagai penjual untuk dapat menambahkan rumah, meng-update status pesanan, serta membalas diskusi pembeli.
 
 
 ### Sumber Dataset Rumah di Jabodetabek
