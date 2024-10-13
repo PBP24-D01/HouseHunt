@@ -61,6 +61,13 @@ Pembeli | Penjual
 -|-
 Melihat iklan | Membuat, mengedit, menghapus iklan
 
+#### Lelang
+##### Dikerjakan oleh: Tristan Agra Yudhistira (2306245112)
+Modul ini berfungsi untuk seller melelang rumahnya. Nantinya pembeli dapat menaikan harga bid dan berebut dengan pembeli yang lainnya. Rumah yang sedang dilelang dapat dihapus dari daftar lelang jika belum memasuki waktu lelang. Rumah yang dilelang tidak bisa dijual karena statusnya onAuction.
+Pembeli | Penjual
+-|-
+Memasang rumah untuk dilelang dan menghapus rumah dari daftar lelang jika belum waktu lelang | Mengikuti lelang dengan menaikan harga bid dan berebut dengan pembeli lain
+
 #### Authentifikasi
 ##### Dikerjakan oleh: Tristan Agra Yudhistira (2306245112)
 Modul ini berfungsi untuk user dapat register dan login. Nantinya akan ada super user yang diberi role sabagai penjual untuk dapat menambahkan rumah, meng-update status pesanan, serta membalas diskusi pembeli.
