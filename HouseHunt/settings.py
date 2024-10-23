@@ -31,6 +31,8 @@ ALLOWED_HOSTS = ["*", "http://tristan-agra-househunt.pbp.cs.ui.ac.id"]
 
 # Application definition
 
+AUTH_USER_MODEL = 'auth.CustomUser'
+
 INSTALLED_APPS = [
     "django.contrib.admin",
     "django.contrib.auth",
