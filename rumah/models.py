@@ -17,3 +17,15 @@ class House(models.Model):
 
     def __str__(self):
         return self.title
+
+class Profile(models.Model):
+    ROLE_CHOICES = (
+        ('penjual', 'Penjual'),
+        ('pembeli', 'Pembeli'),
+    )
+    user = models.OneToOneField(User, on_delete=models.CASCADE)
+    user_type = models.CharField(max_length=7, choices=ROLE_CHOICES, default='pembeli')
+
+    def __str__(self):
+        return self.user.username  
+    
