@@ -5,24 +5,24 @@ from .models import CustomUser, Buyer, Seller
 class CustomUserForm(UserCreationForm):
     class Meta:
         model = CustomUser
-        fields = ('username', 'email', 'phone_number')
+        fields = ['username', 'email', 'phone_number']
 
 class BuyerForm(forms.ModelForm):
     class Meta:
         model = Buyer
-        fields = ('preferred_payment_method')
+        fields = ['preferred_payment_method']
 
 class SellerForm(forms.ModelForm):
     class Meta:
         model = Seller
-        fields = ('company_name', 'company_address')
+        fields = ['company_name', 'company_address']
 
 class BuyerSignUpForm(UserCreationForm):
     preferred_payment_method = forms.ChoiceField(choices=Buyer._meta.get_field('preferred_payment_method').choices)
 
     class Meta(UserCreationForm.Meta):
         model = CustomUser
-        fields = UserCreationForm.Meta.fields + ('email', 'phone_number', 'address')
+        fields = UserCreationForm.Meta.fields + ('email', 'phone_number')
 
     def save(self, commit=True):
         user = super().save(commit=False)
@@ -41,7 +41,7 @@ class SellerSignUpForm(UserCreationForm):
 
     class Meta(UserCreationForm.Meta):
         model = CustomUser
-        fields = UserCreationForm.Meta.fields + ('email', 'phone_number', 'address')
+        fields = UserCreationForm.Meta.fields + ('email', 'phone_number')
 
     def save(self, commit=True):
         user = super().save(commit=False)
