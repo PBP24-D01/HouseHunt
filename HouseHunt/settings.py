@@ -34,13 +34,13 @@ ALLOWED_HOSTS = ["*", "http://tristan-agra-househunt.pbp.cs.ui.ac.id"]
 AUTH_USER_MODEL = 'HouseHuntAuth.CustomUser'
 
 INSTALLED_APPS = [
+    "HouseHuntAuth",
     "django.contrib.admin",
     "django.contrib.auth",
     "django.contrib.contenttypes",
     "django.contrib.sessions",
     "django.contrib.messages",
     "django.contrib.staticfiles",
-    "HouseHuntAuth",
 ]
 
 MIDDLEWARE = [
