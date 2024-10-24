@@ -38,6 +38,7 @@ INSTALLED_APPS = [
     "django.contrib.sessions",
     "django.contrib.messages",
     "django.contrib.staticfiles",
+    'iklan',
 ]
 
 MIDDLEWARE = [
@@ -122,6 +123,9 @@ STATIC_URL = '/static/'
 
 # Directory for collected static files during deployment
 STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
+
+MEDIA_URL = '/media/'
+MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 
 # Additional directories where Django will look for static files in development
 STATICFILES_DIRS = [os.path.join(BASE_DIR, 'static')]
