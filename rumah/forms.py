@@ -20,14 +20,14 @@ class HouseFilterForm(forms.Form):
         ('1', '1'),
         ('2', '2'),
         ('3', '3'),
-        ('4', '4+')
+        ('4+', '4+')
     ]
     
     BATHROOM_CHOICES = [
         ('', 'Semua'),
         ('1', '1'),
         ('2', '2'),
-        ('3', '3+')
+        ('3+', '3+')
     ]
 
     LOCATION_CHOICES = [

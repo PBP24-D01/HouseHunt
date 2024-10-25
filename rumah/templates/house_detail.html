@@ -1,0 +1,16 @@
+<!DOCTYPE html>
+{% load humanize %}
+<html>
+<head>
+    <title>{{ house.judul }}</title>
+</head>
+<body>
+    <h1>{{ house.judul }}</h1>
+    <img src="{{ house.gambar.url }}" alt="{{ house.judul }}">
+    <p>{{ house.deskripsi }}</p>
+    <p>Harga: Rp {{ house.harga|intcomma }}</p>
+    <p>Lokasi: {{ house.lokasi }}</p>
+    <p>Kamar Tidur: {{ house.kamar_tidur }}</p>
+    <p>Kamar Mandi: {{ house.kamar_mandi }}</p>
+</body>
+</html>
