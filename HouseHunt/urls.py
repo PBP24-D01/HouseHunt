@@ -19,5 +19,6 @@ from django.urls import path, include
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-    path('', include('iklan.urls')), 
+    path('iklan/', include('iklan.urls')), 
+    path("", include("HouseHuntAuth.urls")),
 ]

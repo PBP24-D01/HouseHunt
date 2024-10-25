@@ -1,8 +1,10 @@
 from django.db import models
 import uuid
 from rumah.models import House
+from django.conf import settings
 
 class IklanEntry(models.Model):
+    user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
     rumah = models.ForeignKey(House, on_delete=models.CASCADE)
     id_rumah = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
     start_date = models.DateField()

@@ -29,7 +29,7 @@ def create_iklan(request):
         IklanEntry = form.save(commit=False)
         IklanEntry.user = request.user
         IklanEntry.save()
-        return redirect('main:show_iklan')
+        return redirect('iklan:show_iklan')
     
     context = {'form': form}    
     return render(request, "create_iklan.html", context)
@@ -42,7 +42,7 @@ def edit_iklan(request, id_rumah):
 
     if form.is_valid() and request.method == "POST":
         form.save()
-        return HttpResponseRedirect(reverse('main:show_iklan'))
+        return HttpResponseRedirect(reverse('iklan:show_iklan'))
 
     context = {'form': form}
     return render(request, "edit_iklan.html", context)
@@ -51,7 +51,7 @@ def edit_iklan(request, id_rumah):
 def delete_iklan(request, id_rumah):
     iklan = IklanEntry.objects.get(pk = id_rumah)
     iklan.delete()
-    return HttpResponseRedirect(reverse('main:show_iklan'))
+    return HttpResponseRedirect(reverse('iklan:show_iklan'))
 
 def show_xml(request):
     data = IklanEntry.objects.filter(user=request.user)
