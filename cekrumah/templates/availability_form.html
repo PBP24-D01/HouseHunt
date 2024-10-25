@@ -1,0 +1,17 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Create Availability</title>
+</head>
+<body>
+    <h1>Create Availability</h1>
+    <form method="POST">
+        {% csrf_token %}
+        {{ form.as_p }}
+        <button type="submit">Create Availability</button>
+    </form>
+    <a href="{% url 'availability_list' %}">Back to Availability List</a>
+</body>
+</html>
