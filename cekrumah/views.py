@@ -2,6 +2,8 @@ from django.shortcuts import render, redirect
 from .forms import AvailabilityForm, AppointmentForm
 from .models import Availability, Appointment
 from rumah.models import House
+from django.contrib.auth.decorators import login_required
+
 
 def create_availability(request):
     seller = request.user.seller  # Assume the seller is the logged-in user
@@ -16,6 +18,7 @@ def create_availability(request):
         form = AvailabilityForm(seller=seller)
 
     return render(request, 'availability_form.html', {'form': form})
+
 
 def create_appointment(request):
     if request.method == 'POST':
