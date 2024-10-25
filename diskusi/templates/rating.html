@@ -1,0 +1,82 @@
+<div id="rating" class="flex space-x-2 mb-4">
+    <svg class="w-8 h-8 text-gray-400 hover:text-yellow-400 
+                cursor-pointer" fill="currentColor" viewBox="0 0 20 20" data-value="1">
+        <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.286
+               3.95 4.146.018c.958.004 1.355 1.226.584 
+               1.818l-3.36 2.455 1.287 3.951c.3.922-.756 
+               1.688-1.541 1.125L10 13.011l-3.353 2.333c-.785.563-1.841-.203-1
+               .541-1.125l1.287-3.951-3.36-2.455c-.77-.592-.374-1.814.584-1.818l4.146-
+               .018 1.286-3.95z" />
+    </svg>
+    <svg class="w-8 h-8 text-gray-400 hover:text-yellow-400
+                cursor-pointer" fill="currentColor" viewBox="0 0 20 20" data-value="2">
+        <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.286
+               3.95 4.146.018c.958.004 1.355 1.226.584
+               1.818l-3.36 2.455 1.287 3.951c.3.922-.756 
+               1.688-1.541 1.125L10 13.011l-3.353 2.333c-.785.563-1.841-
+               .203-1.541-1.125l1.287-3.951-3.36-2.455c-.77-.592-.374-1
+               .814.584-1.818l4.146-.018 1.286-3.95z" />
+    </svg>
+    <svg class="w-8 h-8 text-gray-400 hover:text-yellow-400 
+                cursor-pointer" fill="currentColor" viewBox="0 0 20 20" data-value="3">
+        <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.286
+               3.95 4.146.018c.958.004 1.355 1.226.584 1.818l-3
+               .36 2.455 1.287 3.951c.3.922-.756 1.688-1.541 1.125L10 
+               13.011l-3.353 2.333c-.785.563-1.841-.203-1.541-1.125l1.287-3
+               .951-3.36-2.455c-.77-.592-.374-1.814.584-1.818l4.146-.018 1.286-3.95z" />
+    </svg>
+    <svg class="w-8 h-8 text-gray-400 hover:text-yellow-400 
+                cursor-pointer" fill="currentColor" viewBox="0 0 20 20" data-value="4">
+        <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.286 
+               3.95 4.146.018c.958.004 1.355 1.226.584 
+               1.818l-3.36 2.455 1.287 3.951c.3.922-.756
+               1.688-1.541 1.125L10 13.011l-3.353 
+               2.333c-.785.563-1.841-.203-1.541-1.125l1.287-3.951-3
+               .36-2.455c-.77-.592-.374-1.814.584-1.818l4.146-.018 1.286-3.95z" />
+    </svg>
+    <svg class="w-8 h-8 text-gray-400 hover:text-yellow-400 
+                cursor-pointer" fill="currentColor" viewBox="0 0 20 20" data-value="5">
+        <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.286 
+               3.95 4.146.018c.958.004 1.355 1.226.584 1.818l-3.36
+               2.455 1.287 3.951c.3.922-.756 1.688-1.541 1.125L10 
+               13.011l-3.353 2.333c-.785.563-1.841-
+               .203-1.541-1.125l1.287-3.951-3.36-2.455c-.77-.592-.374-1.814
+               .584-1.818l4.146-.018 1.286-3.95z" />
+    </svg>
+</div>
+
+	<script>
+		const stars = document.querySelectorAll('#rating svg');
+		let selectedRating = 0;
+
+		// Hover and click functionality for stars
+		stars.forEach((star, index) => {
+			star.addEventListener('click', () => {
+				selectedRating = index + 1; 
+				updateStars(selectedRating);
+			});
+		});
+
+		function updateStars(rating) {
+			stars.forEach((star, i) => {
+				if (i < rating) {
+					star.classList.add('text-yellow-400');
+				} else {
+					star.classList.remove('text-yellow-400');
+				}
+			});
+		}
+
+		const submitBtn = document.getElementById('submit-btn');
+		const resultDiv = document.getElementById('result');
+		const submittedRatingText = document.getElementById('submitted-rating');
+
+		submitBtn.addEventListener('click', () => {
+			if (selectedRating > 0) {
+				resultDiv.classList.remove('hidden');
+				submittedRatingText.textContent = selectedRating;
+			} else {
+				alert('Please select a rating before submitting.');
+			}
+		});
+	</script>
