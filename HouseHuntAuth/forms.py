@@ -7,6 +7,14 @@ class CustomUserForm(UserCreationForm):
         model = CustomUser
         fields = ['username', 'email', 'phone_number']
 
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self._style_fields()
+
+    def _style_fields(self):
+        for field in self.fields.values():
+            field.widget.attrs['class'] = 'mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm'
+
 class BuyerForm(forms.ModelForm):
     class Meta:
         model = Buyer
