@@ -59,8 +59,6 @@ class SellerSignUpForm(UserCreationForm):
             Seller.objects.create(
                 user=user,
                 company_name=self.cleaned_data.get('company_name'),
-                business_address=self.cleaned_data.get('business_address'),
-                tax_id=self.cleaned_data.get('tax_id'),
-                business_phone=self.cleaned_data.get('business_phone')
+                company_address=self.cleaned_data.get('company_address'),
             )
         return user
