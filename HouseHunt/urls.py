@@ -24,4 +24,5 @@ urlpatterns = [
     path("", include("rumah.urls")),
     path("wishlist/", include("wishlist.urls")),
     path("", include("rumah.urls")),
+    path("wishlist/", include("wishlist.urls")),
 ]
