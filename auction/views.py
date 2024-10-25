@@ -5,8 +5,13 @@ from .models import Auction
 # Create your views here.
 
 def index(request):
+    user = request.user
+    print(request.user)
     auctions = Auction.objects.all()
-    return render(request, "auction/index.html", {"auctions": auctions})
+    context = {
+        "user": user
+    }
+    return render(request, "index.html", context)
 
 def detail(request, auction_id):
     auction = Auction.objects.get(id=auction_id)
