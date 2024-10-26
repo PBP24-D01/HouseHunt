@@ -1,6 +1,6 @@
 from django.shortcuts import render, redirect, get_object_or_404
 from django.http import JsonResponse
-from django.views.decorators.csrf import csrf_protect
+from django.views.decorators.csrf import csrf_protect, csrf_exempt
 from django.views.decorators.http import require_POST
 from .models import House
 from .forms import HouseForm, HouseFilterForm
@@ -49,7 +49,8 @@ def house_detail(request, house_id):
     return render(request, 'house_detail.html', {'house': house})
 
 
-@csrf_protect
+#@csrf_protect
+@csrf_exempt
 def house_create(request):
     if request.method == 'POST':
         form = HouseForm(request.POST, request.FILES)
