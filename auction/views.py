@@ -1,6 +1,7 @@
 from django.forms import ValidationError
 from django.shortcuts import render
 from django.http import HttpResponse, HttpResponseRedirect
+from rumah.models import House
 from .models import Auction, Bid
 from .forms import AuctionForm
 from django.views.decorators.csrf import csrf_exempt
@@ -59,7 +60,9 @@ def create_auction(request):
     if request.user.seller is None:
         return HttpResponse("You are not a seller", status=403)
 
-    form = AuctionForm(request.POST)
+    form = AuctionForm(request.POST or None)
+    houses = House.objects.filter(seller=request.user.seller)
+    form.fields["house"].queryset = houses
     if request.method == "POST":
         if form.is_valid() and form.clean():
             auction = form.save(commit=False)
@@ -70,7 +73,7 @@ def create_auction(request):
         else:
             return HttpResponse(f"Invalid data: {form.errors}", status=400)
 
-    return render(request, "create.html", {"form": form})
+    return render(request, "create.html", {"form": form, "title" : "Create Auction"})
 
 @login_required(login_url="/login")
 @csrf_exempt
@@ -93,7 +96,7 @@ def edit_auction(request, auction_id):
         else:
             return HttpResponse(f"Invalid data: {form.errors}",)
 
-    return render(request, "create.html", {"form": form})
+    return render(request, "create.html", {"form": form, "title" : "Edit Auction"})
 
 @login_required(login_url="/login")
 def delete_auction(request, auction_id):
