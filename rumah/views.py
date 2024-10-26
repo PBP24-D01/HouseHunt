@@ -2,6 +2,7 @@ from django.shortcuts import render, redirect, get_object_or_404
 from django.http import JsonResponse
 from django.views.decorators.csrf import csrf_protect, csrf_exempt
 from django.views.decorators.http import require_POST
+from django.contrib.auth.decorators import login_required
 from .models import House
 from .forms import HouseForm, HouseFilterForm
 from HouseHuntAuth.models import Seller
@@ -76,3 +77,7 @@ def house_create(request):
     else:
         form = HouseForm()
     return render(request, 'house_form.html', {'form': form})
+
+@login_required
+def settings(request):
+    return render(request, 'settings.html')

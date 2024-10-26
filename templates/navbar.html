@@ -87,6 +87,7 @@
                             {% if user.is_seller %}
                                 <a href="{% url 'houses:house_create' %}">Sell House</a>
                             {% endif %}
+                            <a href="{% url 'houses:settings' %}">Settings</a>
                             <form method="POST" action="{% url 'logout' %}">
                                 {% csrf_token %}
                                 <button type="submit" class="navbar-text">Logout</button>
