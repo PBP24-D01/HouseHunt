@@ -55,13 +55,12 @@ def bid(request, auction_id):
 
 @login_required(login_url="/login")
 @csrf_exempt
-@require_POST
 def create_auction(request):
     if request.user.seller is None:
         return HttpResponse("You are not a seller", status=403)
 
+    form = AuctionForm(request.POST)
     if request.method == "POST":
-        form = AuctionForm(request.POST)
         if form.is_valid() and form.clean():
             auction = form.save(commit=False)
             auction.seller = request.user.seller
