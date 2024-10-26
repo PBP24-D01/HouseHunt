@@ -12,7 +12,7 @@ class House(models.Model):
     kamar_tidur = models.IntegerField(validators=[MinValueValidator(1)])
     kamar_mandi = models.IntegerField(validators=[MinValueValidator(1)])
     is_available = models.BooleanField(default=True)  
-    seller = models.ForeignKey('HouseHuntAuth.CustomUser', on_delete=models.CASCADE)
+    seller = models.ForeignKey('HouseHuntAuth.Seller', on_delete=models.CASCADE)
 
     def __str__(self):
         return self.judul
