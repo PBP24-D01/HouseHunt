@@ -4,7 +4,7 @@ from wishlist.models import Wishlist
 class WishlistForm(ModelForm):
     class Meta:
         model = Wishlist
-        fields = ["rumah", "notes", "priority"]
+        fields = ["notes", "priority"]
         widgets = {
             'priority': Select(choices=Wishlist.PRIORITY_CHOICES),
         }
