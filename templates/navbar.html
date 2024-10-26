@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+{% load static %}
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Navbar</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/tailwindcss/2.2.19/tailwind.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Poppins', sans-serif;
+        }
+        .navbar-text {
+            font-weight: bold;
+            font-size: 24px;
+            color: #4A628A;
+        }
+        /* Adjust later */
+        .login-button { 
+            background-color: #4A628A;
+            color: white;
+            padding: 8px 16px;
+            border-radius: 8px; 
+            border: 2px solid #4A628A;
+            font-weight: bold;
+            font-size: 24px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 100px; 
+            height: 48px; 
+        }
+    </style>
+</head>
+<body>
+    <nav class="bg-white p-4">
+        <div class="container mx-auto flex justify-between items-center">
+            <!-- logo -->
+            <div class="flex items-center">
+                <img src="{% static 'img/logo.png' %}" alt="Company Logo" class="h-8 w-8 mr-2">
+            </div>
+            <!-- navigation -->
+            <div class="flex items-center space-x-4">
+                <a href="{% url 'houses:landing_page' %}" class="navbar-text">Home</a>
+                {% if user.is_authenticated %}
+                    {% if user.is_buyer %}
+                        <a href="{% url 'wishlist' %}" class="navbar-text">Wishlist</a>
+                        <a href="{% url 'diskusi' %}" class="navbar-text">Diskusi</a>
+                        <a href="{% url 'cek_rumah' %}" class="navbar-text">Cek Rumah</a>
+                        <a href="{% url 'lelang' %}" class="navbar-text">Lelang</a>
+                    {% elif user.is_seller %}
+                        <a href="{% url 'diskusi' %}" class="navbar-text">Diskusi</a>
+                        <a href="{% url 'cek_rumah' %}" class="navbar-text">Cek Rumah</a>
+                        <a href="{% url 'lelang' %}" class="navbar-text">Lelang</a>
+                        <div class="relative">
+                            <button class="navbar-text">Hello, {{ user.username }}</button>
+                            <div class="absolute right-0 mt-2 w-48 bg-white rounded-md shadow-lg py-1">
+                                <a href="{% url 'logout' %}" class="block px-4 py-2 text-gray-700">Logout</a>
+                            </div>
+                        </div>
+                    {% endif %}
+                {% else %}
+                    <a href="{% url 'login' %}" class="login-button">Login</a>
+                {% endif %}
+            </div>
+        </div>
+    </nav>
+    <hr class="border-t-2 border-gray-200 my-4">
+</body>
+</html>
