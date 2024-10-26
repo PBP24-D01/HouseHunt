@@ -29,6 +29,10 @@ DEBUG = not PRODUCTION
 
 ALLOWED_HOSTS = ["*", "http://tristan-agra-househunt.pbp.cs.ui.ac.id"]
 
+CSRF_TRUSTED_ORIGINS = [
+    "http://localhost",
+    "http://127.0.0.1",
+]
 
 # Application definition
 
@@ -44,6 +48,7 @@ INSTALLED_APPS = [
     "django.contrib.staticfiles",
     "django.contrib.humanize",
     'rumah',
+    "auction",
 ]
 
 MIDDLEWARE = [
