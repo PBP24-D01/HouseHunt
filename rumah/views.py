@@ -81,3 +81,19 @@ def house_create(request):
 @login_required
 def settings(request):
     return render(request, 'settings.html')
+
+@login_required
+def house_edit(request, house_id):
+    house = get_object_or_404(House, id=house_id)
+    if request.user != house.seller.user:
+        return redirect('houses:house_detail', house_id=house.id)
+    
+    if request.method == 'POST':
+        form = HouseForm(request.POST, request.FILES, instance=house)
+        if form.is_valid():
+            form.save()
+            return redirect('houses:house_detail', house_id=house.id)
+    else:
+        form = HouseForm(instance=house)
+    
+    return render(request, 'house_edit.html', {'form': form, 'house': house})
