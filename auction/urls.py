@@ -3,7 +3,9 @@ from . import views
 
 urlpatterns = [
     path("", views.index, name="index"),
-    path("<int:auction_id>/", views.detail, name="detail"),
-    path("<int:auction_id>/bid/", views.bid, name="bid"),
-    path("create/", views.create, name="create"),
+    path("<str:auction_id>/", views.detail, name="detail"),
+    path("create/", views.create_auction, name="create"),
+    path("edit/<str:auction_id>", views.create_auction, name="create"),
+    path("delete-ajax", views.delete_auction, name="delete"),   
+    path("bid-ajax", views.bid, name="bid"),
 ]
