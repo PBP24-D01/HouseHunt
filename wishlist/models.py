@@ -16,7 +16,7 @@ class Wishlist(models.Model):
     rumah = models.ForeignKey(House, on_delete=models.CASCADE)
     added_on = models.DateTimeField(auto_now_add=True)
     notes = models.TextField(blank=True, null=True)
-    priority = models.CharField(max_length=6, choices=PRIORITY_CHOICES, default='medium')
+    priority = models.CharField(max_length=6, choices=PRIORITY_CHOICES, blank=True, null=True)
 
     def __str__(self):
         return f"{self.user.username} - {self.rumah.judul} ({self.get_priority_display()})"
