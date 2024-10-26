@@ -18,7 +18,7 @@ from django.contrib import admin
 from django.urls import path, include
 
 urlpatterns = [
-    path('admin/', admin.site.urls),
-    path('iklan/', include('iklan.urls')), 
+    path('admin/', admin.site.urls), 
     path("", include("HouseHuntAuth.urls")),
+    path('iklan/', include('iklan.urls')),
 ]
