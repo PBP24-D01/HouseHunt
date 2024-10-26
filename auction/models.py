@@ -2,12 +2,13 @@ from datetime import timezone
 from django.db import models
 from HouseHuntAuth.models import Buyer, Seller
 from rumah.models import House
+import uuid
 # Create your models here.
 
 
 class Auction(models.Model):
+    id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
     title = models.CharField(max_length=100)
-    description = models.TextField(null=False)
     house = models.ForeignKey(House, on_delete=models.CASCADE)
     start_date = models.DateTimeField(null=False)
     end_date = models.DateTimeField(null=False)
@@ -28,6 +29,7 @@ class Auction(models.Model):
         return self.end_date < timezone.now()
 
 class Bid(models.Model):
+    id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
     auction = models.ForeignKey(Auction, on_delete=models.CASCADE)
     buyer = models.ForeignKey(Buyer, on_delete=models.CASCADE)
     price = models.PositiveIntegerField(null=False)
@@ -37,15 +39,11 @@ class Bid(models.Model):
     def __str__(self):
         return f"{self.auction.title} - {self.buyer.user.username} - {self.price}"
     
-    def is_highest(self):
-        return self.price == self.auction.current_price
-    
     def is_valid(self):
         return self.price > self.auction.current_price
     
     def save(self, *args, **kwargs):
-        if self.is_valid():
-            self.auction.current_price = self.price
-            self.auction.highest_buyer = self.buyer
-            self.auction.save()
+        self.auction.current_price = self.price
+        self.auction.highest_buyer = self.buyer
+        self.auction.save()
         super().save(*args, **kwargs)
