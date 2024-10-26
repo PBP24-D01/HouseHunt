@@ -5,11 +5,6 @@ class AuctionForm(forms.ModelForm):
     class Meta:
         model = Auction
         fields = ['title', 'house', 'start_date', 'end_date', 'starting_price']
-        
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
-        self.fields['start_date'].widget.attrs['readonly'] = True
-        self.fields['end_date'].widget.attrs['readonly'] = True
     
     def clean(self):
         cleaned_data = super().clean()
