@@ -4,7 +4,18 @@ from .models import House
 class HouseForm(forms.ModelForm):
     class Meta:
         model = House
-        fields =['judul','deskripsi','harga','lokasi','gambar','kamar_tidur','kamar_mandi','is_available','seller']
+        fields =['judul','deskripsi','harga','lokasi','gambar','kamar_tidur','kamar_mandi','is_available']
+        widgets = {
+            'judul': forms.TextInput(attrs={'class': 'form-input rounded-md'}),
+            'deskripsi': forms.Textarea(attrs={'class': 'form-textarea rounded-md'}),
+            'harga': forms.NumberInput(attrs={'class': 'form-input rounded-md'}),
+            'lokasi': forms.TextInput(attrs={'class': 'form-input rounded-md'}),
+            'gambar': forms.FileInput(attrs={'class': 'form-input rounded-md'}),
+            'kamar_tidur': forms.NumberInput(attrs={'class': 'form-input rounded-md'}),
+            'kamar_mandi': forms.NumberInput(attrs={'class': 'form-input rounded-md'}),
+            'is_available': forms.CheckboxInput(attrs={'class': 'form-checkbox'}),
+            'seller': forms.Select(attrs={'class': 'form-select rounded-md'}),
+        }
         
 class HouseFilterForm(forms.Form):
     PRICE_CHOICES = [ # double check later plz

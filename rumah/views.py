@@ -1,9 +1,10 @@
 from django.shortcuts import render, redirect, get_object_or_404
 from django.http import JsonResponse
-from django.views.decorators.csrf import csrf_exempt
+from django.views.decorators.csrf import csrf_protect
 from django.views.decorators.http import require_POST
 from .models import House
 from .forms import HouseForm, HouseFilterForm
+from HouseHuntAuth.models import Seller
 
 def landing_page(request):
     form = HouseFilterForm(request.GET)
@@ -47,21 +48,30 @@ def house_detail(request, house_id):
     house = get_object_or_404(House, id=house_id)
     return render(request, 'house_detail.html', {'house': house})
 
-@csrf_exempt
+
+@csrf_protect
 def house_create(request):
     if request.method == 'POST':
         form = HouseForm(request.POST, request.FILES)
+
+        try:
+            seller = Seller.objects.get(user=request.user)
+        except Seller.DoesNotExist:
+            return JsonResponse({'error': 'You must be a seller to create a house.'}, status=400)
+        
         if form.is_valid():
             house = form.save(commit=False)
-            house.seller = request.user
+            house.seller = seller
             house.save()
-            if request.is_ajax():
+            if request.headers.get('x-requested-with') == 'XMLHttpRequest':
                 return JsonResponse({'message': 'House created successfully!'}, status=200)
             else:
                 return redirect('houses:landing_page')
         else:
-            if request.is_ajax():
+            if request.headers.get('x-requested-with') == 'XMLHttpRequest':
                 return JsonResponse({'errors': form.errors}, status=400)
+            else:
+                return render(request, 'house_form.html', {'form': form, 'errors': form.errors})
     else:
         form = HouseForm()
     return render(request, 'house_form.html', {'form': form})
