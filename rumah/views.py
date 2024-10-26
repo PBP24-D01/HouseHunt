@@ -1,8 +1,9 @@
 from django.shortcuts import render, redirect, get_object_or_404
+from django.http import JsonResponse
+from django.views.decorators.csrf import csrf_exempt
+from django.views.decorators.http import require_POST
 from .models import House
-from .forms import HouseFilterForm
-
-# Create your views here.
+from .forms import HouseForm, HouseFilterForm
 
 def landing_page(request):
     form = HouseFilterForm(request.GET)
@@ -45,3 +46,22 @@ def landing_page(request):
 def house_detail(request, house_id):
     house = get_object_or_404(House, id=house_id)
     return render(request, 'house_detail.html', {'house': house})
+
+@csrf_exempt
+def house_create(request):
+    if request.method == 'POST':
+        form = HouseForm(request.POST, request.FILES)
+        if form.is_valid():
+            house = form.save(commit=False)
+            house.seller = request.user
+            house.save()
+            if request.is_ajax():
+                return JsonResponse({'message': 'House created successfully!'}, status=200)
+            else:
+                return redirect('houses:landing_page')
+        else:
+            if request.is_ajax():
+                return JsonResponse({'errors': form.errors}, status=400)
+    else:
+        form = HouseForm()
+    return render(request, 'house_form.html', {'form': form})
