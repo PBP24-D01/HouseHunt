@@ -8,4 +8,5 @@ urlpatterns = [
     path('availability/create/', create_availability, name='create_availability'),
     path('availability/list/', availability_list, name='availability_list'),
     path('appointment/list/', appointment_list, name='appointment_list'),
+
 ]

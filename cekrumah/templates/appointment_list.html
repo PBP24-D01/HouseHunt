@@ -1,0 +1,37 @@
+{% extends 'base.html' %} {% load static %}
+{% block content %}
+    {% if appointments %}
+    <h1>Your Appointments</h1>
+    <table>
+        <thead>
+            <tr>
+                <th>House</th>
+                <th>Seller</th>
+                <th>Date</th>
+                <th>Status</th>
+                <th>Notes</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for appointment in appointments %}
+            <tr>
+                <td>{{ appointment.availability.house }}</td>
+                <td>{{ appointment.seller.user.username }}</td>
+                <td>{{ appointment.availability.available_date }}</td>
+                <td>{{ appointment.status }}</td>
+                <td>{{ appointment.notes_to_seller }}</td>
+            </tr>
+            {% empty %}
+            <tr>
+                <td colspan="5">No appointments found.</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+    
+    {% else %}
+    <p> You dont have any appointments </p>
+    {% endif %}
+    <a href="{% url 'cekrumah:create_appointment' %}">Request New Appointment</a>
+{% endblock content %}
+

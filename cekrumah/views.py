@@ -1,3 +1,4 @@
+from django.http import HttpResponse, HttpResponseForbidden
 from django.shortcuts import render, redirect
 from .forms import AvailabilityForm, AppointmentForm
 from .models import Availability, Appointment
@@ -6,12 +7,12 @@ from django.contrib.auth.decorators import login_required
 
 
 def create_availability(request):
-    seller = request.user.seller  # Assume the seller is the logged-in user
+    seller = request.user  # Assume the seller is the logged-in user
     if request.method == 'POST':
         form = AvailabilityForm(request.POST, seller=seller)
         if form.is_valid():
             availability = form.save(commit=False)
-            availability.seller = seller  # Set the seller before saving
+            availability.seller = request.user.seller  # Set the seller before saving
             availability.save()
             return redirect('availability_list')  # Redirect to availability list after saving
     else:
@@ -28,7 +29,7 @@ def create_appointment(request):
             appointment.buyer = request.user.buyer  # Assume the buyer is the logged-in user
             appointment.seller = appointment.availability.seller  # Seller is tied to the availability
             appointment.save()
-            return redirect('appointment_list')  # Redirect after saving
+            return redirect('cekrumah:appointment_list')  # Redirect after saving
     else:
         form = AppointmentForm()
 

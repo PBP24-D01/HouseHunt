@@ -1,0 +1,10 @@
+{% extends 'base.html' %} {% load static %}
+{% block content %}
+    <h1>Request an Appointment</h1>
+    <form method="POST">
+        {% csrf_token %}
+        {{ form.as_p }}
+        <button type="submit">Request Appointment</button>
+    </form>
+    <a href="{% url 'cekrumah:appointment_list' %}">Back to Appointment List</a>
+{% endblock content %}
