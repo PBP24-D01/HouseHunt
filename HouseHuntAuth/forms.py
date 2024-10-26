@@ -60,7 +60,5 @@ class SellerSignUpForm(UserCreationForm):
                 user=user,
                 company_name=self.cleaned_data.get('company_name'),
                 company_address=self.cleaned_data.get('company_address'),
-                # tax_id=self.cleaned_data.get('tax_id'),
-                # business_phone=self.cleaned_data.get('business_phone')
             )
         return user
