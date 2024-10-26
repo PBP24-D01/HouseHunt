@@ -22,7 +22,5 @@ urlpatterns = [
     path("", include("HouseHuntAuth.urls")),
     path("auction/", include("auction.urls")),
     path("", include("rumah.urls")),
-    path("wishlist/", include("wishlist.urls")),
-    path("", include("rumah.urls")),
     path("", include("wishlist.urls")),
 ]
