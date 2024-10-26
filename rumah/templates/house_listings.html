@@ -2,7 +2,7 @@
 <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 p-4">
     {% for house in houses %}
     <article class="bg-[#F5FFFF] rounded-lg shadow-2xl overflow-hidden">
-        <img src="{% static 'img/rumah_' %}{{ house.id }}.jpg" alt="Gambar {{ house.judul }}" class="w-full h-48 object-cover" loading="lazy">
+        <img src="{{ house.gambar.url }}" alt="Gambar {{ house.judul }}" class="w-full h-48 object-cover" loading="lazy">
         <div class="p-6">
             <h2 class="text-2xl font-bold mb-2 text-gray-800">{{ house.judul }}</h2>
             <p class="text-gray-600 mb-4">{{ house.lokasi }}</p>

@@ -1,16 +1,49 @@
 <!DOCTYPE html>
 {% load humanize %}
-<html>
+{% load static %}
+{% include 'navbar.html' %}
+<html lang="en">
 <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>{{ house.judul }}</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/tailwindcss/2.2.19/tailwind.min.css">
 </head>
-<body>
-    <h1>{{ house.judul }}</h1>
-    <img src="{{ house.gambar.url }}" alt="{{ house.judul }}">
-    <p>{{ house.deskripsi }}</p>
-    <p>Harga: Rp {{ house.harga|intcomma }}</p>
-    <p>Lokasi: {{ house.lokasi }}</p>
-    <p>Kamar Tidur: {{ house.kamar_tidur }}</p>
-    <p>Kamar Mandi: {{ house.kamar_mandi }}</p>
+<body class="bg-gray-100">
+    <div class="container mx-auto p-4">
+        <div class="bg-white rounded-lg shadow-2xl overflow-hidden">
+            <img src="{{ house.gambar.url }}" alt="{{ house.judul }}" class="w-full object-cover" loading="lazy">
+            <div class="p-6 flex flex-wrap lg:flex-nowrap">
+                <div class="w-full lg:w-2/3">
+                    <h1 class="text-3xl font-bold mb-4 text-gray-800">{{ house.judul }}</h1>
+                    <p class="text-green-600 font-bold text-lg mb-4">Harga: Rp {{ house.harga|intcomma }}</p>
+                    
+                    <h2 class="text-2xl font-bold mb-2 text-gray-800">Informasi Tambahan</h2>
+                    <p class="text-gray-600 mb-4">{{ house.deskripsi }}</p>
+                    <p class="text-gray-600 mb-4">Lokasi: {{ house.lokasi }}</p>
+                    <div class="text-gray-500 mb-4">
+                        <div class="flex items-center mb-2">
+                            <svg class="w-5 h-5 mr-1" fill="#F5FFFF" stroke="#365486" viewBox="0 0 20 20"><path d="M10 2a6 6 0 00-6 6v4a6 6 0 006 6 6 6 0 006-6V8a6 6 0 00-6-6zm0 2a4 4 0 014 4v4a4 4 0 01-8 0V8a4 4 0 014-4zm-1 5a1 1 0 112 0v2a1 1 0 11-2 0V9z"/></svg>
+                            {{ house.kamar_tidur }} Kamar Tidur
+                        </div>
+                        <div class="flex items-center">
+                            <svg class="w-5 h-5 mr-1" fill="#F5FFFF" stroke="#365486" viewBox="0 0 20 20"><path d="M10 2a6 6 0 00-6 6v4a6 6 0 006 6 6 6 0 006-6V8a6 6 0 00-6-6zm0 2a4 4 0 014 4v4a4 4 0 01-8 0V8a4 4 0 014-4zm-1 5a1 1 0 112 0v2a1 1 0 11-2 0V9z"/></svg>
+                            {{ house.kamar_mandi }} Kamar Mandi
+                        </div>
+                    </div>
+                </div>
+                <div class="w-full lg:w-1/3 lg:pl-6 mt-6 lg:mt-0">
+                    <div class="bg-blue-100 border border-blue-500 rounded-lg p-4 shadow-lg">
+                        <h2 class="text-2xl font-bold mb-4 text-blue-800">Informasi Penjual</h2>
+                        <p class="text-gray-700 mb-2"><strong>Nama:</strong> {{ house.seller.user.username }}</p>
+                        <p class="text-gray-700 mb-2"><strong>Email:</strong> {{ house.seller.user.email }}</p>
+                        <p class="text-gray-700 mb-2"><strong>Perusahaan:</strong> {{ house.seller.company_name }}</p>
+                        <p class="text-gray-700 mb-2"><strong>Alamat:</strong> {{ house.seller.company_address }}</p>
+                        <p class="text-gray-700 mb-2"><strong>Kontak:</strong> {{ house.seller.user.phone_number }}</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
 </body>
 </html>
