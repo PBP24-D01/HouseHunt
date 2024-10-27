@@ -30,8 +30,6 @@ class Command(BaseCommand):
         )
 
         for house in houses:
-            kamar_tidur = int(house.get("kamar_tidur", 0))
-            kamar_mandi = int(house.get("kamar_mandi", 0))
             housey = House.objects.create(
                 seller=seller,
                 harga=house["price_in_rp"],
@@ -39,8 +37,8 @@ class Command(BaseCommand):
                 judul=house["title"],
                 lokasi=house["lokasi"],
                 gambar="static/logo.png",
-                kamar_tidur=kamar_tidur,
-                kamar_mandi=kamar_mandi,
+                kamar_tidur=house["kamar_tidur"],
+                kamar_mandi=house["kamar_mandi"],
                 is_available=True,
             )
             
