@@ -1,6 +1,6 @@
 {% extends 'base.html' %}
 
-{% block meta %}<title>{{ auction.title }}</title>{% endblock meta %}
+{% block meta %}<title>Auction | {{auction.title}}</title>{% endblock meta %}
 
 {% block content %}
 {% include 'navbar.html' %}
@@ -13,27 +13,26 @@
                 <div>
                     <h2 class="text-xl font-semibold mb-4">House Details</h2>
                     <div class="space-y-2">
-                        <p><span class="font-medium">Location:</span> {{ auction.house.location }}</p>
-                        <p><span class="font-medium">Size:</span> {{ auction.house.size }} sq ft</p>
-                        <p><span class="font-medium">Description:</span> {{ auction.house.description }}</p>
+                        <p><span class="font-medium">Location:</span> {{ auction.house_address }}</p>
+                        <p><span class="font-medium">Description:</span> {{ auction.house_description }}</p>
                     </div>
                 </div>
                 
                 <div>
                     <h2 class="text-xl font-semibold mb-4">Auction Information</h2>
                     <div class="space-y-2">
-                        <p><span class="font-medium">Start Date:</span> {{ auction.start_date|date:"M d, Y H:i" }}</p>
-                        <p><span class="font-medium">End Date:</span> {{ auction.end_date|date:"M d, Y H:i" }}</p>
+                        <p><span class="font-medium">Start Date:</span> {{ auction.start_date }}</p>
+                        <p><span class="font-medium">End Date:</span> {{ auction.end_date }}</p>
                         <p><span class="font-medium">Starting Price:</span> ${{ auction.starting_price }}</p>
                         <p><span class="font-medium">Current Price:</span> ${{ auction.current_price }}</p>
                         {% if auction.highest_buyer %}
-                            <p><span class="font-medium">Highest Bidder:</span> {{ auction.highest_buyer.user.username }}</p>
+                            <p><span class="font-medium">Highest Bidder:</span> {{ auction.highest_buyer }}</p>
                         {% endif %}
                     </div>
                 </div>
             </div>
 
-            {% if user.buyer and auction.is_active %}
+            {% if user.buyer.user.username and auction.is_active %}
                 <div class="border-t pt-6">
                     <h2 class="text-xl font-semibold mb-4">Place Your Bid</h2>
                     <form id="bidForm" class="space-y-4">
@@ -54,7 +53,7 @@
                     document.getElementById('bidForm').addEventListener('submit', async (e) => {
                         e.preventDefault();
                         try {
-                            const response = await fetch('/auctions/{{ auction.id }}/bid', {
+                            const response = await fetch('/auction/{{ auction.id }}/bid', {
                                 method: 'POST',
                                 body: new FormData(e.target)
                             });
@@ -71,20 +70,48 @@
                 </script>
             {% endif %}
 
-            {% if user.seller == auction.seller and not auction.is_active %}
+            {% if user.seller.user.username == auction.seller and not auction.is_active %}
                 <div class="flex space-x-4 mt-6">
-                    <a href="/auctions/{{ auction.id }}/edit" 
+                    <a href="/auction/edit/{{ auction.id }}" 
                        class="bg-blue-500 text-white py-2 px-4 rounded hover:bg-blue-600 transition duration-300">
                         Edit Auction
                     </a>
-                    <a href="/auctions/{{ auction.id }}/delete" 
+                    <button
                        class="bg-red-500 text-white py-2 px-4 rounded hover:bg-red-600 transition duration-300"
-                       onclick="return confirm('Are you sure you want to delete this auction?')">
+                          id='deleteAuction' data-auction-id="{{ auction.id }}">
                         Delete Auction
-                    </a>
+                    </button>
                 </div>
             {% endif %}
         </div>
     </div>
 </div>
+<script>
+    const deleteAuction = async (auctionId) => {
+        if (!confirm('Are you sure you want to delete this auction?')) {
+            return;
+        }
+        try {
+            const response = await fetch(`/auction/delete/${auctionId}`, {
+                method: 'DELETE',
+                headers: {
+                    'X-CSRFToken': '{{ csrf_token }}'
+                }
+            });
+            if (response.ok) {
+                location.href = '/auction';
+            } else {
+                const error = await response.text();
+                alert(error);
+            }
+        } catch (error) {
+            alert('Error deleting auction. Please try again.');
+        }
+    }
+
+    document.getElementById('deleteAuction').addEventListener('click', () => {
+        const auctionId = document.getElementById('deleteAuction').getAttribute('data-auction-id');
+        deleteAuction(auctionId);
+    });
+</script>
 {% endblock %}

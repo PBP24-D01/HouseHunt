@@ -13,39 +13,61 @@
     {% endif %}
 </div>
 
-<div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-    {% for auction in auctions %}
-        <div class="bg-white rounded-lg shadow-md overflow-hidden">
-            <div class="p-6">
-                <h2 class="text-xl font-semibold mb-2">{{ auction.title }}</h2>
-                <p class="text-gray-600 mb-4">{{ auction.house.description|truncatewords:20 }}</p>
-                
-                <div class="mb-4">
-                    <div class="text-sm text-gray-500">Current Price</div>
-                    <div class="text-2xl font-bold text-green-600">${{ auction.current_price }}</div>
-                </div>
-                
-                <div class="flex justify-between text-sm text-gray-500 mb-4">
-                    <div>
-                        <div>Start Date</div>
-                        <div>{{ auction.start_date|date:"M d, Y" }}</div>
-                    </div>
-                    <div>
-                        <div>End Date</div>
-                        <div>{{ auction.end_date|date:"M d, Y" }}</div>
-                    </div>
-                </div>
-
-                <a href="/auctions/{{ auction.id }}" 
-                   class="block w-full text-center bg-blue-500 text-white py-2 rounded hover:bg-blue-600 transition duration-300">
-                    View Details
-                </a>
-            </div>
-        </div>
-    {% empty %}
-        <div class="col-span-3 text-center py-8 text-gray-500">
-            No auctions available at the moment.
-        </div>
-    {% endfor %}
+<div id="auctions" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
 </div>
+<script>
+    const getAllAuctions = async () => {
+        const response = await fetch("{% url 'auction:get_all_auctions' %}");
+        const data = await response.json();
+        console.log(data);
+        return data;
+    }
+
+    const refreshAuctions = async () => {
+        document.getElementById('auctions').innerHTML = '';
+        const auctions = await getAllAuctions();
+        let auctionsHTML = '';
+        if (auctions.length === 0) {
+            auctionsHTML = `
+                <div class="col-span-3 text-center py-8 text-gray-500">
+                    No auctions available at the moment.
+                </div>
+            `;
+        } else {
+            auctions.forEach(auction => {
+                auctionsHTML += `
+                    <div class="bg-white rounded-lg shadow-md overflow-hidden">
+                        <div class="p-6">
+                            <h2 class="text-xl font-semibold mb-2">${auction.title}</h2>
+                            <p class="text-gray-600 mb-4">lorem</p>
+                            
+                            <div class="mb-4">
+                                <div class="text-sm text-gray-500">Current Price</div>
+                                <div class="text-2xl font-bold text-green-600">$${auction.current_price}</div>
+                            </div>
+                            
+                            <div class="flex justify-between text-sm text-gray-500 mb-4">
+                                <div>
+                                    <div>Start Date</div>
+                                    <div>${auction.start_date}</div>
+                                </div>
+                                <div>
+                                    <div>End Date</div>
+                                    <div>${auction.end_date}</div>
+                                </div>
+                            </div>
+
+                            <a href="/auction/detail/${auction.id}" 
+                            class="block w-full text-center bg-blue-500 text-white py-2 rounded hover:bg-blue-600 transition duration-300">
+                                View Details
+                            </a>
+                        </div>
+                    </div>
+                `;
+            });
+        }
+        document.getElementById('auctions').innerHTML = auctionsHTML;
+    }
+    refreshAuctions();
+</script>
 {% endblock %}
