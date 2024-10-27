@@ -1,5 +1,5 @@
 """
-URL configuration for HouseHunt project.
+URL configuration for HouseHunt project.py
 
 The `urlpatterns` list routes URLs to views. For more information please see:
     https://docs.djangoproject.com/en/5.1/topics/http/urls/
@@ -21,8 +21,9 @@ from django.urls import path, include,re_path
 from HouseHunt import settings
 
 urlpatterns = [
-    path('admin/', admin.site.urls),
+    path('admin/', admin.site.urls), 
     path("", include("HouseHuntAuth.urls")),
+    path('iklan/', include('iklan.urls')),
     path('cekrumah/', include('cekrumah.urls')),
     path("auction/", include("auction.urls")),
     path("", include("rumah.urls")),

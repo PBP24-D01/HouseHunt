@@ -90,7 +90,7 @@
         <!-- change # to url "x" -->
         {% if user.is_buyer %}
         <a
-          href="#"
+          href="{% url 'wishlistpage' %}"
           class="navbar-text hover:text-[#33425e] transition-all max-md:hidden"
           >Wishlist</a
         >
@@ -110,7 +110,7 @@
           >Lelang</a
         >
         {% elif user.is_seller %}
-        <a href="#" class="navbar-text hover:text-[#33425e] max-md:hidden"
+        <a href="{% url 'iklan:show_iklan' %}" class="navbar-text hover:text-[#33425e] max-md:hidden"
           >Iklan</a
         >
         <a
@@ -170,7 +170,7 @@
             {% elif user.is_buyer %}
             <div class="md:hidden">
               <a
-                href="#"
+                href="{% url 'wishlistpage' %}"
                 class="navbar-text hover:text-[#33425e] transition-all md:hidden"
                 >Wishlist</a
               >
