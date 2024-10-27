@@ -51,6 +51,7 @@ INSTALLED_APPS = [
     'iklan',
     "django.contrib.humanize",
     'rumah',
+    "diskusi",
     'cekrumah',
     "auction",
     'wishlist',

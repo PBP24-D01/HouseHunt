@@ -1,0 +1,92 @@
+{% extends 'base.html' %}
+
+{% block meta %}
+<title>Diskusi</title>
+<script src="https://cdn.jsdelivr.net/npm/dompurify@3.1.7/dist/purify.min.js"></script>
+{% endblock meta %}
+
+{% block content %}
+{% include 'navbar.html' %}
+<div class="flex justify-center my-10 z-0">
+    <div id="card_sellers" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-10"></div>
+</div>
+<script>
+    async function getSellers() {
+        return fetch("{% url 'diskusi:show_sellers' %}").then((res) => res.json())
+    }
+    async function refreshSellers() {
+        document.getElementById("card_sellers").innerHTML = "";
+        const sellers = await getSellers();
+        let htmlString = "";
+        console.log(sellers);
+    
+        if (sellers.length === 0) {
+            htmlString = `
+                <div class="flex flex-col items-center justify-center min-h-[24rem] p-6">
+                    <img src="" alt="Sad face" class="w-32 h-32 mb-4"/>
+                    <p class="text-center text-gray-600 mt-4">Belum ada data mood pada mental health tracker.</p>
+                </div>
+            `;
+        }
+        else {
+            sellers.forEach((item) => {
+
+              const company_name = DOMPurify.sanitize(item.fields.company_name);
+                htmlString += `
+                    <div class="group">
+                        <div class="w-[396px] h-[219px] bg-[#DCF2F1]  rounded-[20px] p-8 relative transform transition duration-100 group-hover:scale-95">
+                            <h2 class="font-bold text-[24px] text-[#365486] select-none">${company_name}</h2>
+                            <p class="text-lg text-[#365486] select-none">rating </p><br>
+                            <div id="${item.pk}" class="flex space-x-2 mb-4">
+                                <svg class="w-4 h-4 text-gray-300 ms-1" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 22 20">
+                                <path d="M20.924 7.625a1.523 1.523 0 0 0-1.238-1.044l-5.051-.734-2.259-4.577a1.534 1.534 0 0 0-2.752 0L7.365 5.847l-5.051.734A1.535 1.535 0 0 0 1.463 9.2l3.656 3.563-.863 5.031a1.532 1.532 0 0 0 2.226 1.616L11 17.033l4.518 2.375a1.534 1.534 0 0 0 2.226-1.617l-.863-5.03L20.537 9.2a1.523 1.523 0 0 0 .387-1.575Z"/>
+                                </svg>
+                                <svg class="w-4 h-4 text-gray-300 ms-1" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 22 20">
+                                    <path d="M20.924 7.625a1.523 1.523 0 0 0-1.238-1.044l-5.051-.734-2.259-4.577a1.534 1.534 0 0 0-2.752 0L7.365 5.847l-5.051.734A1.535 1.535 0 0 0 1.463 9.2l3.656 3.563-.863 5.031a1.532 1.532 0 0 0 2.226 1.616L11 17.033l4.518 2.375a1.534 1.534 0 0 0 2.226-1.617l-.863-5.03L20.537 9.2a1.523 1.523 0 0 0 .387-1.575Z"/>
+                                </svg>
+                                <svg class="w-4 h-4 text-gray-300 ms-1" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 22 20">
+                                    <path d="M20.924 7.625a1.523 1.523 0 0 0-1.238-1.044l-5.051-.734-2.259-4.577a1.534 1.534 0 0 0-2.752 0L7.365 5.847l-5.051.734A1.535 1.535 0 0 0 1.463 9.2l3.656 3.563-.863 5.031a1.532 1.532 0 0 0 2.226 1.616L11 17.033l4.518 2.375a1.534 1.534 0 0 0 2.226-1.617l-.863-5.03L20.537 9.2a1.523 1.523 0 0 0 .387-1.575Z"/>
+                                </svg>
+                                <svg class="w-4 h-4 text-gray-300 ms-1" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 22 20">
+                                    <path d="M20.924 7.625a1.523 1.523 0 0 0-1.238-1.044l-5.051-.734-2.259-4.577a1.534 1.534 0 0 0-2.752 0L7.365 5.847l-5.051.734A1.535 1.535 0 0 0 1.463 9.2l3.656 3.563-.863 5.031a1.532 1.532 0 0 0 2.226 1.616L11 17.033l4.518 2.375a1.534 1.534 0 0 0 2.226-1.617l-.863-5.03L20.537 9.2a1.523 1.523 0 0 0 .387-1.575Z"/>
+                                </svg>
+                                <svg class="w-4 h-4 text-gray-300 ms-1" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 22 20">
+                                    <path d="M20.924 7.625a1.523 1.523 0 0 0-1.238-1.044l-5.051-.734-2.259-4.577a1.534 1.534 0 0 0-2.752 0L7.365 5.847l-5.051.734A1.535 1.535 0 0 0 1.463 9.2l3.656 3.563-.863 5.031a1.532 1.532 0 0 0 2.226 1.616L11 17.033l4.518 2.375a1.534 1.534 0 0 0 2.226-1.617l-.863-5.03L20.537 9.2a1.523 1.523 0 0 0 .387-1.575Z"/>
+                                </svg>
+                            </div>
+    
+                            <button 
+                                onclick="window.location.href='/diskusi/review/${item.pk}'"
+                                class=" bg-[#4A628A] px-4 py-2 text-white rounded-[20px] absolute bottom-6 right-6 text-[14px] 
+                                    hover:bg-[#2F3F58] transition duration-400 ease-in-out"
+                            >
+                            Review
+                            </button>
+                        </div>
+                    </div>
+                `;
+
+        });
+        document.getElementById("card_sellers").innerHTML = htmlString;
+        sellers.forEach((item) => {
+            let id = item.pk;
+            const stars = document.getElementById(id).querySelectorAll('svg');
+            let selectedRating = item.fields.stars;
+            updateStars(selectedRating);
+
+            function updateStars(rating) {
+                stars.forEach((star, i) => {
+                    if (i < rating) {
+                        star.classList.add('text-yellow-400');
+                    } else {
+                        star.classList.remove('text-yellow-400');
+                    }
+                });
+            }
+        });
+    }
+    
+    }
+    refreshSellers();
+</script>
+{% endblock content %}

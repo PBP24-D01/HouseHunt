@@ -30,6 +30,7 @@ class Seller(models.Model):
     user = models.OneToOneField(CustomUser, on_delete=models.CASCADE)
     company_name = models.CharField(max_length=100)
     company_address = models.TextField()
-    
+    stars = models.FloatField(default=0)
+
     def __str__(self):
         return f"Seller: {self.company_name}"

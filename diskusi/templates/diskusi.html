@@ -1,0 +1,271 @@
+{% extends 'base.html' %}
+
+{% block meta %}
+<title>Diskusi</title>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+
+{% endblock meta %}
+
+{% block content %}
+{% include 'navbar.html' %}
+<div>
+    <div class="bg-gradient-to-b from-[#DCF2F1] to-white w-full h-[390px] p-8">
+        <h1 class="text-5xl font-bold text-[#365486]">{{seller.company_name}}</h1>
+        <div class="mt-4">
+            <div class="text-lg font-small">Rating</div>
+            <div id="title-rate" class="text-3xl font-bold text-[#365486]"></div>
+            <div id="{{seller.pk}}" class="flex space-x-2 mb-4">
+            {% include "show_star.html" %}
+            <div class="mt-4">
+                <div class="text-lg font-small">Contact</div>
+                <div class="text-lg text-[#365486]">{{seller.user.phone_number}}</div>
+            </div>
+        </div>
+        <div class="flex justify-center">
+            <form id="review-form" method="POST" action="{% url 'diskusi:review_section' seller.pk %}">
+                {% csrf_token %}
+                {% include "star.html" %}
+                <div class="flex items-center space-x-2">
+                    {{ form }}
+                    <button type="submit" id="send-button" class="bg-blue-800 text-white py-2 px-4 rounded-lg">Send</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+
+    <div id="comment-section" class="mt-8">
+    </div>
+<script>
+    const select_star = document.querySelectorAll('#rating svg');
+    let selectedRating = 0;
+
+    select_star.forEach((star, index) => {
+        star.addEventListener('click', () => {
+            selectedRating = index + 1; 
+            updateStars(selectedRating);
+        });
+    });
+
+    function updateStars(rating) {
+        select_star.forEach((star, i) => {
+            if (i < rating) {
+                star.classList.add('text-yellow-400');
+            } else {
+                star.classList.remove('text-yellow-400');
+            }
+        });
+    }
+    const inp = document.querySelector('#review-form');
+    if ("{{ user.is_buyer }}" === "True") {
+        inp.style.display = 'block';
+    } else {
+        inp.style.display = 'none';
+    }
+
+    document.querySelector('#review-form').addEventListener('submit', function(event) {
+        event.preventDefault(); // Prevent the default form submission
+        
+        const form = document.getElementById('review-form');
+        const body = document.getElementById('id_body').value;
+        const formData = new FormData();
+        formData.append('body', body);
+        formData.append('star', selectedRating);
+        const csrfToken = document.querySelector('[name=csrfmiddlewaretoken]').value;
+
+        $.ajax({
+            url: form.action,
+            type: 'POST',
+            headers: {
+                'X-CSRFToken': csrfToken
+            },
+            data: formData,
+            processData: false,
+            contentType: false,
+            success: function(data) {
+                refreshComments();
+                refreshRating();
+                console.log(selectedRating);
+                select_star.forEach((star) => {
+                    star.classList.remove('text-yellow-400');
+                    star.classList.add('text-gray-300');
+                    document.getElementById('id_body').value = '';
+                });
+                selectedRating = 0;
+            },
+            error: function(error) {
+                console.error('Error:', error);
+            }
+        });
+    });
+
+    async function getComments() {
+        return fetch('{% url "diskusi:show_comments" seller.pk %}').then(response => response.json());
+    }
+    async function getSeller(){
+        return fetch('{% url "diskusi:show_seller" seller.pk %}').then(response => response.json());
+    }
+    async function refreshRating(){
+        const data_seller = await getSeller();
+        let id = data_seller.id;
+        const stars = document.getElementById(id).querySelectorAll('svg');
+        const title_rate = document.getElementById('title-rate');
+        let title_rate_value = `${data_seller.stars}/5`;
+        title_rate.innerHTML = data_seller.stars;
+        let star_seller = Math.floor(data_seller.stars);
+        stars.forEach((star, i) => {
+            if (i < star_seller) {
+                star.classList.add('text-yellow-400');
+            } else {
+                star.classList.remove('text-yellow-400');
+            }
+        });
+        
+    }
+    async function getReplies(pk) {
+        return fetch(`/diskusi/show_reply/${pk}`).then(response => response.json());
+    }
+
+    async function refreshReplies(pk) {
+        getReplies(pk).then(replies => {
+            let repliesHtml = '';
+            for (const reply of replies) {
+                repliesHtml += `
+                    <div class="ml-12 bg-[#4A628A] mt-2 p-3 mr-9 rounded-[20px] shadow-sm">
+                        <p class="text-base px-8">
+                            <span class="font-semibold text-sm text-white">${reply.fields.name} (seller)</span>
+                            <br>
+                            <span class='text-sm text-white'>${reply.fields.body}</span>
+                        </p>
+                        <button id="reply-edit-${reply.pk}" onclick="window.location.href='/diskusi/edit_replay/${reply.pk}'">Edit</button>
+                        <button id="reply-delete-${reply.pk}" onclick="deleteReplay('${reply.pk}')">Delete</button>
+                    </div>
+                `;
+            }
+            document.getElementById(`reply-section-${pk}`).innerHTML = repliesHtml;
+        }).catch(error => console.error('Error fetching replies:', error));
+    }
+
+    async function refreshComments() {
+        const comments = await getComments();
+        let htmlString = '';
+        if(comments.length === 0){
+            htmlString += `
+            <div class="flex flex-col items-center justify-center min-h-[24rem] p-6">
+                <p class="text-center text-gray-600 mt-4">Belum ada data review.</p>
+            </div>
+        `;
+        }
+        else{
+        comments.forEach((item) =>{
+            htmlString += `
+            <div id="comment-${item.pk}" class="m-10 bg-[#DCF2F1] p-4 rounded-[20px] shadow-md">
+                
+                <!-- Comment Body -->
+                <p class="text-xl px-10">
+                    <span class="font-bold text-base text-blue-800">${item.fields.name}</span><br>
+                    <span class="font-sm text-base text-black">rating: <b class="font-bold text-blue-800">${item.fields.star}</b></span>
+                    <br>
+                    <span class='text-base text-black'>${item.fields.body}</span>
+                </p>
+                <div id="edit-delete-${item.pk}" class="flex items-center gap-4 [&>a:hover]:underline">
+                    <button id="edit-${item.pk}" onclick="window.location.href='/diskusi/edit/${item.pk}'">Edit</button>
+                    <button id="delete-${item.pk}" onclick="deleteComment('${item.pk}')">Delete</button>
+                    <button id="reply-${item.pk}" onclick="window.location.href='/diskusi/reply/${item.pk}'">Reply</button>
+                </div>
+            </div>
+            <!-- Replies Section -->
+            <div id="reply-section-${item.pk}" class="pl-8 mt-4"></div>
+            `;
+            refreshReplies(item.pk);
+        });
+        
+
+        }
+    document.getElementById("comment-section").innerHTML = htmlString;
+    comments.forEach((item) => {
+        let name = item.fields.name;
+        let replyButton = document.getElementById(`reply-${item.pk}`);
+        let editButton = document.getElementById(`edit-${item.pk}`);
+        let deleteButton = document.getElementById(`delete-${item.pk}`);
+        let nameUser = '';
+        if ("{{user.is_seller}}" === "True") {
+            nameUser = "{{ user.seller.company_name }}";
+            replyButton.style.display = 'flex';
+        } else {
+            nameUser = "{{user.username}}";
+            replyButton.style.display = 'none';
+        }
+        let auth_user = name === nameUser;
+        let editDeleteDiv = document.getElementById(`edit-delete-${item.pk}`);
+        console.log(auth_user);
+        if (auth_user) {
+            editDeleteDiv.style.display = 'flex';
+            editButton.style.display = 'flex';
+            deleteButton.style.display = 'flex';
+        } else {
+            editDeleteDiv.style.display = 'none';
+            if("{{user.is_seller}}" === "True"){
+                editDeleteDiv.style.display = 'flex';
+                editButton.style.display = 'none';
+                deleteButton.style.display = 'none';
+                replyButton.style.display = 'flex';
+            }
+        }
+    });
+    }
+
+    function deleteComment(commentId) {
+        const csrfToken = document.querySelector('[name=csrfmiddlewaretoken]').value;
+        console.log(csrfToken);
+        $.ajax({
+            url: `/diskusi/delete/${commentId}`,
+            type: 'DELETE',
+            headers: {
+                'X-CSRFToken': csrfToken
+            },
+            success: function(response) {
+                if (response.status === 'success') {
+                    // Remove the comment from the DOM
+                    document.getElementById(`comment-${commentId}`).remove();
+                    refreshComments();  // Refresh comments if needed
+                    console.log(response.message);
+                } else {
+                    console.error('Failed to delete comment:', response.message);
+                }
+            },
+            error: function(error) {
+                console.error('Error:', error);
+            }
+        });
+    }
+    function deleteReplay(replyId) {
+        const csrfToken = document.querySelector('[name=csrfmiddlewaretoken]').value;
+        console.log(csrfToken);
+        $.ajax({
+            url: `/diskusi/delete_replay/${replyId}`,
+            type: 'DELETE',
+            headers: {
+                'X-CSRFToken': csrfToken
+            },
+            success: function(response) {
+                if (response.status === 'success') {
+                    // Remove the comment from the DOM
+                    document.getElementById(`reply-comment-${replyId}`).remove();
+                    refreshComments();  // Refresh comments if needed
+                    console.log(response.message);
+                } else {
+                    console.error('Failed to delete comment:', response.message);
+                }
+            },
+            error: function(error) {
+                console.error('Error:', error);
+            }
+        });
+    }
+    refreshComments();
+    refreshRating();
+</script>
+{% endblock content %}
+
