@@ -14,7 +14,7 @@ urlpatterns = [
     path('json/', show_json, name='show_json'),
     path('xml/<str:id_rumah>/', show_xml_by_id, name='show_xml_by_id'),
     path('json/<str:id_rumah>/', show_json_by_id, name='show_json_by_id'),
-    path('create-iklan-ajax', add_iklan_ajax, name='add_iklan_ajax'),
+    path('create_iklan_ajax', add_iklan_ajax, name='add_iklan_ajax'),
 ]
 
 
