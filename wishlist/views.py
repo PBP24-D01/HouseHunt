@@ -69,9 +69,17 @@ def show_wishlist(request):
     
     # Fetch wishlist items for the authenticated user
     wishlists = Wishlist.objects.filter(user=request.user)
+
+    # Get the priority filter from query parameters
+    prioritas_filter = request.GET.get('prioritas')
     
+    # Filter based on priority if provided
+    if prioritas_filter in ['high', 'medium', 'low']:
+        wishlists = wishlists.filter(priority=prioritas_filter)
+
     context = {
-        'wishlists': wishlists
+        'wishlists': wishlists,
+        'prioritas_filter': prioritas_filter,  # To retain the filter in the template
     }
     
     return render(request, 'wishlistpage.html', context)

@@ -12,6 +12,22 @@
     <div class="container mx-auto p-6 pt-20">
         <h2 class="text-3xl font-bold mb-4" style="color: #365486;">Wishlist Rumah Saya</h2>
         <p class="text-gray-500 mb-8 text-sm">Rumah yang nyaman adalah rumah yang dapat memberi ketenangan. Rencanakan rumah terbaikmu bersama HouseHunt.</p>
+
+        <!-- Filter Dropdown -->
+        <div class="container mx-auto">
+            <div class="bg-[#F5FFFF] shadow-md rounded-md p-6 mb-4">
+                <form method="get" action="{% url 'wishlistpage' %}">  <!-- Updated to use the correct URL name -->
+                    <label for="prioritas-filter" class="block text-lg font-semibold mb-2">Filter berdasarkan Prioritas:</label>
+                    <select name="prioritas" id="prioritas-filter" class="border border-gray-300 rounded-md p-2 w-full focus:outline-none focus:ring-2 focus:ring-blue-400 transition duration-150 ease-in-out">
+                        <option value="all" {% if prioritas_filter == 'all' %}selected{% endif %}>Semua</option>
+                        <option value="high" {% if prioritas_filter == 'high' %}selected{% endif %}>Tinggi</option>
+                        <option value="medium" {% if prioritas_filter == 'medium' %}selected{% endif %}>Sedang</option>
+                        <option value="low" {% if prioritas_filter == 'low' %}selected{% endif %}>Rendah</option>
+                    </select>
+                    <button type="submit" class="mt-4 bg-blue-500 text-white rounded-md p-2 w-full hover:bg-blue-600 transition duration-150 ease-in-out">Cari Wishlist</button>
+                </form>
+            </div>
+        </div>
     
         <!-- Check if the user has any wishlist items -->
         {% if wishlists %}
@@ -93,5 +109,21 @@
         </div>
         {% endif %}
     </div>
+    <script>
+        document.getElementById('filter-button').addEventListener('click', function() {
+            const selectedPriority = document.getElementById('prioritas-filter').value;
+            const items = document.querySelectorAll('[class*="priority-"]');
+
+            items.forEach(item => {
+                const itemPriority = item.className.match(/priority-(\w+)/)[1];
+
+                if (selectedPriority === 'all' || itemPriority === selectedPriority) {
+                    item.style.display = 'block'; // Show item
+                } else {
+                    item.style.display = 'none'; // Hide item
+                }
+            });
+        });
+    </script>
 {% include 'footer.html' %}
 {% endblock content %}
