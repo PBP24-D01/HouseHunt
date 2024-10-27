@@ -8,16 +8,7 @@
 
 <div id="availability-list-container">
 
-    {% if messages %}
-    <div id="appointment-form-success">
-        {% for message in messages %}
-            {% if message.tags == 'success' %}
-                <p class="success-message">{{ message }}</p>
-            {% endif %}
-        {% endfor %}
-    </div>
-    {% endif %}
-    
+
     {% if availabilities %}
     <h1 id="availability-list-title">Your Available Slots</h1>
     
@@ -120,4 +111,5 @@
     {% endif %}
 </div>
 
+    {% include 'footer.html' %}
 {% endblock content %}

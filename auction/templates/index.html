@@ -1,49 +1,53 @@
-{% extends 'base.html' %}
-
-{% block meta %}<title>All Auctions</title>{% endblock meta %}
-
-{% block content %}
-{% include 'navbar.html' %}
-<div class="mb-8 flex justify-between items-center">
-    <h1 class="text-3xl font-bold text-gray-800">Active Auctions</h1>
-    {% if user.seller %}
-        <a href="/auction/create" class="bg-blue-500 text-white px-6 py-2 rounded hover:bg-blue-600 transition duration-300">
-            Create Auction
-        </a>
-    {% endif %}
+{% extends 'base.html' %} {% block meta %}<title>All Auctions</title>
+{% endblock meta %} {% block content %} {% include 'navbar.html' %}
+<div class="mb-8 flex flex-col gap-8 justify-center items-center">
+  <h1 class="text-3xl font-bold text-gray-800">Active Auctions</h1>
+  {% if user.seller %}
+  <a
+    href="/auction/create"
+    class="bg-[#4a628a] hover:shadow-lg text-white px-6 py-2 rounded hover:bg-[#33425e] transition duration-300"
+  >
+    Create Auction
+  </a>
+  {% endif %}
 </div>
 
-<div id="auctions" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-</div>
+<div
+  id="auctions"
+  class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-x-6 gap-y-8 px-[5vw]"
+></div>
 <script>
-    const getAllAuctions = async () => {
-        const response = await fetch("{% url 'auction:get_all_auctions' %}");
-        const data = await response.json();
-        console.log(data);
-        return data;
-    }
+  const getAllAuctions = async () => {
+    const response = await fetch("{% url 'auction:get_all_auctions' %}");
+    const data = await response.json();
+    return data;
+  };
 
-    const refreshAuctions = async () => {
-        document.getElementById('auctions').innerHTML = '';
-        const auctions = await getAllAuctions();
-        let auctionsHTML = '';
-        if (auctions.length === 0) {
-            auctionsHTML = `
+  const refreshAuctions = async () => {
+    document.getElementById("auctions").innerHTML = "";
+    const auctions = await getAllAuctions();
+    let auctionsHTML = "";
+    if (auctions.length === 0) {
+      auctionsHTML = `
                 <div class="col-span-3 text-center py-8 text-gray-500">
                     No auctions available at the moment.
                 </div>
             `;
-        } else {
-            auctions.forEach(auction => {
-                auctionsHTML += `
-                    <div class="bg-white rounded-lg shadow-md overflow-hidden">
+    } else {
+      auctions.forEach((auction) => {
+        auctionsHTML += `
+                    <div class="bg-white rounded-lg shadow-md overflow-hidden hover:scale-105 transition transition-all duration-300 hover:-rotate-3">
                         <div class="p-6">
                             <h2 class="text-xl font-semibold mb-2">${auction.title}</h2>
-                            <p class="text-gray-600 mb-4">lorem</p>
-                            
-                            <div class="mb-4">
+                            <a href=${auction.house_url} class="text-gray-700 mb-4 cursor-pointer">${auction.house_title}</a>
+                            <img src=${auction.house_image} alt=${auction.house_title} class="w-full h-48 object-contain mb-4">
+                            <div class="my-4">
+                                <div class="text-sm text-gray-500">Real Price</div>
+                                <div class="text-2xl font-bold text-green-600 mb-1">IDR ${auction.house_price}</div>
+                                <div class="text-sm text-gray-500">Highest Bidder</div>
+                                <div class="text-2xl font-bold text-red-600 mb-1">${auction.highest_buyer === null ? 'Belum ada bidder' : auction.highest_buyer}</div>
                                 <div class="text-sm text-gray-500">Current Price</div>
-                                <div class="text-2xl font-bold text-green-600">$${auction.current_price}</div>
+                                <div class="text-2xl font-bold text-green-600 mb-1">IDR ${auction.current_price}</div>
                             </div>
                             
                             <div class="flex justify-between text-sm text-gray-500 mb-4">
@@ -58,16 +62,17 @@
                             </div>
 
                             <a href="/auction/detail/${auction.id}" 
-                            class="block w-full text-center bg-blue-500 text-white py-2 rounded hover:bg-blue-600 transition duration-300">
+                            class="block w-full text-center bg-[#4a628a] hover:shadow-lg text-white px-6 py-2 rounded hover:bg-[#33425e] transition duration-300">
                                 View Details
                             </a>
                         </div>
                     </div>
                 `;
-            });
-        }
-        document.getElementById('auctions').innerHTML = auctionsHTML;
+      });
     }
-    refreshAuctions();
+    document.getElementById("auctions").innerHTML = auctionsHTML;
+  };
+  refreshAuctions();
 </script>
+<div class="block bottom-0 mt-[100px]">{% include 'footer.html' %}</div>
 {% endblock %}
