@@ -11,7 +11,7 @@ class IklanEntry(models.Model):
     end_date = models.DateField()
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
-    banner = models.ImageField(upload_to='images/')
+    banner = models.ImageField(upload_to='static/img/')
 
     def __str__(self):
         return self.title

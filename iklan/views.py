@@ -13,6 +13,7 @@ from django.views.decorators.csrf import csrf_exempt
 from django.views.decorators.http import require_POST
 from django.utils.html import strip_tags 
 from django.http import HttpResponseForbidden
+from rumah.models import House
 
 @login_required
 def show_iklan(request):
@@ -29,6 +30,7 @@ def show_iklan(request):
 @login_required
 def create_iklan(request):
     form = IklanEntryForm(request.POST or None)
+    houses = House.objects.filter(seller=request.user.seller)
 
     if form.is_valid() and request.method == "POST":
         IklanEntry = form.save(commit=False)
@@ -36,7 +38,7 @@ def create_iklan(request):
         IklanEntry.save()
         return redirect('iklan:show_iklan')
     
-    context = {'form': form}    
+    context = {'form': form, 'houses': houses}    
     return render(request, "create_iklan.html", context)
 
 @login_required

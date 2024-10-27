@@ -7,8 +7,8 @@ app_name = 'iklan'
 
 urlpatterns = [
     path('', show_iklan, name='show_iklan'),
-    path('create-item-entry', create_iklan, name='create_iklan'),
-    path('edit-item/<uuid:id_rumah>', edit_iklan, name='edit_iklan'),
+    path('create_iklan', create_iklan, name='create_iklan'),
+    path('edit_iklan/<uuid:id_rumah>', edit_iklan, name='edit_iklan'),
     path('delete/<uuid:id_rumah>', delete_iklan, name='delete_iklan'),
     path('xml/', show_xml, name='show_xml'),
     path('json/', show_json, name='show_json'),
