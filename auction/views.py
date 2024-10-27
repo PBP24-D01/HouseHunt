@@ -22,7 +22,7 @@ def index(request):
 
 @login_required(login_url="/login")
 def detail(request, auction_id):
-    context = {"auction": get_auction_by_id(request, auction_id), "user": request.user}
+    context = {"auction": get_auction_by_id(request, auction_id, False), "user": request.user}
     return render(request, "detail.html", context)
 
 
@@ -166,7 +166,7 @@ def get_all_auctions(request):
     return JsonResponse(auctions_json, safe=False)
 
 
-def get_auction_by_id(request, auction_id, json=False):
+def get_auction_by_id(request, auction_id, json=True):
     auction = Auction.objects.get(id=auction_id)
     house = House.objects.get(pk=auction.house.id)
     auction_json = {
