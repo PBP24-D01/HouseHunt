@@ -1,0 +1,74 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block meta %}
+<title>Edit Wishlist</title>
+{% endblock meta %}
+
+{% block content %}
+{% include 'navbar.html' %}
+
+<div class="flex flex-col min-h-screen">
+  <div class="container mx-auto px-4 py-8 mt-4 max-w-5xl">
+    <h1 class="text-3xl font-bold text-center mb-8 text-[#2D3A36]">Edit Wishlist</h1>
+
+    <div class="flex justify-start mb-4">
+        <a href="{% url 'wishlistpage' %}" class="text-[#789395] hover:text-[#94B49F] text-lg font-semibold">
+          &lt; Kembali ke halaman wishlist
+        </a>
+    </div>
+
+    <div class="flex flex-col lg:flex-row gap-8 bg-white shadow-md rounded-lg p-6 form-style">
+      
+      <!-- House Info Section (Left) -->
+      <div class="lg:w-1/2">
+        <img src="{{ house.image.url }}" alt="{{ house.judul }}" class="rounded-t-lg w-full mb-4">
+        <h3 class="text-lg font-bold text-gray-900">Rp {{ house.harga }}</h3>
+        <p class="text-gray-700">{{ house.judul }}</p>
+        <p class="text-gray-600">
+            {{ house.lokasi }}<br>
+            🛏️ {{ house.kamar_tidur }} &nbsp; 🛁 {{ house.kamar_mandi }}<br>
+            {{ house.deskripsi }}<br>
+            Dijual oleh: {{ house.seller.username }}
+        </p>
+      </div>
+
+      <!-- edit_wishlist.html -->
+      <div class="lg:w-1/2">
+        <form method="POST" class="bg-white shadow-md rounded-lg p-6 space-y-6">
+          {% csrf_token %}
+          
+          <!-- Catatan Field (Textarea) -->
+          <div class="mb-4">
+            <label for="notes" class="block text-sm font-bold text-[#2D3A36] mb-2">Catatan</label>
+            <textarea id="notes" name="notes" rows="4" class="w-full px-3 py-2 border rounded-md focus:outline-none focus:border-blue-500">{{ form.notes.value }}</textarea>
+            {% if form.notes.errors %}
+              <p class="mt-1 text-sm text-red-600">{{ form.notes.errors }}</p>
+            {% endif %}
+          </div>
+
+          <!-- Priority Dropdown -->
+          <div class="mb-4">
+            <label for="priority" class="block text-sm font-bold text-[#2D3A36] mb-2">Priority</label>
+            <select id="priority" name="priority" class="w-full px-3 py-2 border rounded-md focus:outline-none focus:border-blue-500">
+              {% for key, value in form.fields.priority.choices %}
+                <option value="{{ key }}" {% if form.priority.value == key %}selected{% endif %}>{{ value }}</option>
+              {% endfor %}
+            </select>
+            {% if form.priority.errors %}
+              <p class="mt-1 text-sm text-red-600">{{ form.priority.errors }}</p>
+            {% endif %}
+          </div>
+
+          <!-- Submit Button -->
+          <div class="mt-6">
+            <button type="submit" class="w-full bg-[#789395] hover:bg-[#94B49F] text-white font-semibold py-2 px-4 rounded-lg transition duration-300 ease-in-out">Edit Wishlist</button>
+          </div>
+        </form>
+      </div>
+      
+    </div>
+  </div>
+</div>
+
+{% endblock %}
