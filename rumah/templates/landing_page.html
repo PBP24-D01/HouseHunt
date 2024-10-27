@@ -1,0 +1,76 @@
+{% extends 'base.html' %}
+{% load humanize static %}
+{% block content %}
+{% include 'navbar.html' %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Landing Page</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/tailwindcss/2.2.19/tailwind.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Poppins', sans-serif;
+        }
+    </style>
+</head>
+<body>
+<div class="container mx-auto px-4 py-8">
+    <!-- <h1 class="text-4xl font-bold mb-8">Halo ini judul</h1> -->
+    
+    <!-- filter form -->
+    <div class="bg-white p-6 rounded-lg shadow-md mb-8">
+        <form method="get" class="space-y-4">
+            <div class="grid grid-cols-1 md:grid-cols-4 gap-4">
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-1">
+                        {{ form.price_range.label }}
+                    </label>
+                    {{ form.price_range }}
+                </div>
+                
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-1">
+                        {{ form.lokasi.label }}
+                    </label>
+                    {{ form.lokasi }}
+                </div>
+                
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-1">
+                        {{ form.kamar_tidur.label }}
+                    </label>
+                    {{ form.kamar_tidur }}
+                </div>
+                
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-1">
+                        {{ form.kamar_mandi.label }}
+                    </label>
+                    {{ form.kamar_mandi }}
+                </div>
+
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-1">
+                        {{ form.is_available.label }}
+                    </label>
+                    {{ form.is_available }}
+                </div>
+            </div>
+            
+            <div class="flex justify-end">
+                <button type="submit" class="bg-blue-500 text-white px-6 py-2 rounded hover:bg-blue-600">
+                    Cari Rumah
+                </button>
+            </div>
+        </form>
+    </div>
+
+    <!-- House Listings -->
+    {% include 'house_listings.html' %}
+</div>
+</body>
+</html>
+{% endblock %}

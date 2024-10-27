@@ -1,0 +1,84 @@
+{% extends 'base.html' %}
+{% load humanize static %}
+
+{% block meta %}
+<title>Wishlist</title>
+<script src="https://cdn.jsdelivr.net/npm/dompurify@3.1.7/dist/purify.min.js"></script>
+{% endblock meta %}
+
+{% block content %}
+{% include 'navbar.html' %}
+    <!-- Content -->
+    <div class="container mx-auto p-6 pt-20">
+        <h2 class="text-3xl font-bold mb-4" style="color: #365486;">Wishlist Rumah Saya</h2>
+        <p class="text-gray-500 mb-8 text-sm">Rumah yang nyaman adalah rumah yang dapat memberi ketenangan. Rencanakan rumah terbaikmu bersama HouseHunt.</p>
+    
+        <!-- Check if the user has any wishlist items -->
+        {% if wishlists %}
+        <div class="flex justify-between flex-wrap">
+            {% for item in wishlists %}
+            <div class="bg-[#F5FFFF] rounded-lg shadow-md w-full sm:w-1/2 md:w-1/3 mb-5 p-4">
+                <img src="{% static 'img/rumah_' %}{{ house.id }}.jpg" alt="{{ item.rumah.judul }}" class="rounded-t-lg w-full h-48" loading="lazy">
+                <h3 class="font-bold text-gray-900 mt-2">Rp {{ item.rumah.harga|intcomma }}</h3>
+                <p class="text-gray-700" style="font-size: 18px;">{{ item.rumah.judul }}</p>
+                <p class="text-gray-600" style="font-size: 16px;">
+                    {{ item.rumah.lokasi }}<br>
+                    
+                    <!-- Kamar Tidur Icon -->
+                    <svg xmlns="http://www.w3.org/2000/svg" class="inline w-5 h-5" viewBox="0 0 640 512"><path d="M32 32c17.7 0 32 14.3 32 32l0 256 224 0 0-160c0-17.7 14.3-32 32-32l224 0c53 0 96 43 96 96l0 224c0 17.7-14.3 32-32 32s-32-14.3-32-32l0-32-224 0-32 0L64 416l0 32c0 17.7-14.3 32-32 32s-32-14.3-32-32L0 64C0 46.3 14.3 32 32 32zm144 96a80 80 0 1 1 0 160 80 80 0 1 1 0-160z"/></svg>
+                    {{ item.rumah.kamar_tidur }} &nbsp; 
+                    
+                    <!-- Kamar Mandi Icon -->
+                    <svg xmlns="http://www.w3.org/2000/svg" class="inline w-5 h-5" viewBox="0 0 512 512"><path d="M96 77.3c0-7.3 5.9-13.3 13.3-13.3c3.5 0 6.9 1.4 9.4 3.9l14.9 14.9C130 91.8 128 101.7 128 112c0 19.9 7.2 38 19.2 52c-5.3 9.2-4 21.1 3.8 29c9.4 9.4 24.6 9.4 33.9 0L289 89c9.4-9.4 9.4-24.6 0-33.9c-7.9-7.9-19.8-9.1-29-3.8C246 39.2 227.9 32 208 32c-10.3 0-20.2 2-29.2 5.5L163.9 22.6C149.4 8.1 129.7 0 109.3 0C66.6 0 32 34.6 32 77.3L32 256c-17.7 0-32 14.3-32 32s14.3 32 32 32l448 0c17.7 0 32-14.3 32-32s-14.3-32-32-32L96 256 96 77.3zM32 352l0 16c0 28.4 12.4 54 32 71.6L64 480c0 17.7 14.3 32 32 32s32-14.3 32-32l0-16 256 0 0 16c0 17.7 14.3 32 32 32s32-14.3 32-32l0-40.4c19.6-17.6 32-43.1 32-71.6l0-16L32 352z"/></svg>
+                    {{ item.rumah.kamar_mandi }}<br>
+                    
+                    {{ item.rumah.deskripsi }}<br>
+                    Dijual oleh: {{ item.rumah.seller.username }}
+                </p>
+                <div class="flex justify-between items-center mt-4">
+                    <p class="text-xs text-gray-900">Notes: {{ item.notes }}</p>
+                    <div class="flex gap-2 items-center">
+                        <!-- Priority Display -->
+                        {% if item.priority %}
+                            {% if item.priority == 'high' %}
+                                <span class="text-red-600">Priority: ❗❗❗</span>
+                            {% elif item.priority == 'medium' %}
+                                <span class="text-yellow-600">Priority: ❗❗⚪</span>
+                            {% elif item.priority == 'low' %}
+                                <span class="text-green-600">Priority: ❗⚪⚪</span>
+                            {% endif %}
+                        {% else %}
+                            <span class="text-gray-400">Priority: ⚪⚪⚪</span> <!-- Three Empty Icons for Not Set -->
+                        {% endif %}
+                        
+                        <!-- Button to remove from wishlist -->
+                        <form action="{% url 'delete_wishlist' item.rumah.id %}" method="post" onsubmit="return confirm('Apakah Anda yakin ingin menghapus item ini dari wishlist?');">
+                            {% csrf_token %}
+                            <button type="submit">
+                                <svg class="inline w-6 h-6" fill="black" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z" />
+                                </svg>
+                            </button>
+                        </form>
+
+                        <!-- Button to edit the wishlist item -->
+                        <a href="{% url 'edit_wishlist' item.rumah.id %}" class="text-xl cursor-pointer hover:text-blue-600">
+                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" class="inline w-6 h-6">
+                                <path d="M441 58.9L453.1 71c9.4 9.4 9.4 24.6 0 33.9L424 134.1 377.9 88 407 58.9c9.4-9.4 24.6-9.4 33.9 0zM209.8 256.2L344 121.9 390.1 168 255.8 302.2c-2.9 2.9-6.5 5-10.4 6.1l-58.5 16.7 16.7-58.5c1.1-3.9 3.2-7.5 6.1-10.4zM373.1 25L175.8 222.2c-8.7 8.7-15 19.4-18.3 31.1l-28.6 100c-2.4 8.4-.1 17.4 6.1 23.6s15.2 8.5 23.6 6.1l100-28.6c11.8-3.4 22.5-9.7 31.1-18.3L487 138.9c28.1-28.1 28.1-73.7 0-101.8L474.9 25C446.8-3.1 401.2-3.1 373.1 25zM88 64C39.4 64 0 103.4 0 152L0 424c0 48.6 39.4 88 88 88l272 0c48.6 0 88-39.4 88-88l0-112c0-13.3-10.7-24-24-24s-24 10.7-24 24l0 112c0 22.1-17.9 40-40 40L88 464c-22.1 0-40-17.9-40-40l0-272c0-22.1 17.9-40 40-40l112 0c13.3 0 24-10.7 24-24s-10.7-24-24-24L88 64z"/>
+                            </svg>
+                        </a>
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+        {% else %}
+        <!-- No wishlist items -->
+        <div class="bg-white rounded-lg p-6 text-center">
+            <img src="{% static 'img/house.png' %}" alt="No Wishlist" class="w-1/3 mx-auto mb-4">
+            <h3 class="text-xl font-bold text-gray-900">Kamu belum punya wishlist rumah</h3>
+            <p class="text-gray-600 text-sm">Tambahkan rumah impianmu ke wishlist untuk menyimpannya dengan mudah!</p>
+        </div>
+        {% endif %}
+    </div>
+{% endblock content %}
