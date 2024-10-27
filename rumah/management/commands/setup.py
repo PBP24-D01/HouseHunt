@@ -37,8 +37,8 @@ class Command(BaseCommand):
                 judul=house["title"],
                 lokasi=house["lokasi"],
                 gambar="static/logo.png",
-                kamar_tidur=house["kamar_tidur"],
-                kamar_mandi=house["kamar_mandi"],
+                kamar_tidur=(int(house["kamar_tidur"])),
+                kamar_mandi=(int(house["kamar_mandi"])),
                 is_available=True,
             )
             
