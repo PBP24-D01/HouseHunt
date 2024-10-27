@@ -1,5 +1,6 @@
 from django.db import models
 from django.core.validators import MinValueValidator
+import os 
 
 # Create your models here.
 
@@ -17,3 +18,8 @@ class House(models.Model):
     def __str__(self):
         return self.judul
     
+    def delete(self, *args, **kwargs):
+        if self.gambar:
+            if os.path.isfile(self.gambar.path):
+                os.remove(self.gambar.path)
+        super().delete(*args, **kwargs)
