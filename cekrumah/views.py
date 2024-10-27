@@ -12,7 +12,7 @@ from django.contrib import messages
 
 @login_required(login_url="/login")
 def create_availability(request):
-    if request.user.seller is None:
+    if not hasattr(request.user, 'seller'):
         return HttpResponse("You are not a seller", status=403)
     
     seller = request.user.seller  # Assume the seller is the logged-in user
@@ -35,7 +35,7 @@ def create_availability(request):
 
 @login_required(login_url="/login")
 def create_appointment(request):
-    if request.user.buyer is None:
+    if not hasattr(request.user, 'buyer'):
         return HttpResponse("You are not a buyer", status=403)
     
     # Initialize the form outside of the POST check
@@ -77,7 +77,7 @@ def get_availability(request):
 
 @login_required(login_url="/login")
 def availability_list(request):
-    if request.user.seller is None:
+    if not hasattr(request.user, 'seller'):
         return HttpResponse("You are not a seller", status=403)
     seller = request.user.seller
     availabilities = Availability.objects.filter(seller=seller)
@@ -105,7 +105,7 @@ def availability_list(request):
 
 @login_required(login_url="/login")
 def appointment_list(request):
-    if request.user.buyer is None:
+    if not hasattr(request.user, 'buyer'):
         return HttpResponse("You are not a buyer", status=403)
     buyer = request.user.buyer 
     appointments = Appointment.objects.filter(buyer=buyer)
@@ -135,16 +135,16 @@ def delete_availability(request, availability_id):
 # Update Appointment
 @login_required(login_url="/login")
 def update_appointment(request, appointment_id):
-    if request.user.buyer is None:
+    if not hasattr(request.user, 'buyer'):
         return HttpResponse("You are not a buyer", status=403)
     
     appointment = get_object_or_404(Appointment, id=appointment_id)
-    houses = House.objects.filter(is_available=True)  # Fetch all available houses
+    houses = House.objects.filter(is_available=True, id=appointment.availability.house.id)  # Fetch all available houses
     
     if request.method == 'POST':
         house_id = request.POST.get('house')
         availability_id = request.POST.get('availability')  # Assuming you need to fetch this as well
-        form = AppointmentForm(request.POST, instance=appointment, house_id=house_id)
+        form = AppointmentForm(request.POST, instance=appointment, house_id=appointment.availability.house.id)
 
         # Check if the required fields are present
         if not house_id or not availability_id:
@@ -166,8 +166,9 @@ def update_appointment(request, appointment_id):
 # Update Availability
 @login_required(login_url="/login")
 def update_availability(request, availability_id):
-    if request.user.seller is None:
+    if not hasattr(request.user, 'seller'):
         return HttpResponse("You are not a seller", status=403)
+    
     availability = get_object_or_404(Availability, id=availability_id)
     
     if request.method == 'POST':

@@ -33,7 +33,11 @@
 
         <div class="form-group">
             <label for="notes_to_seller">Notes to Seller (Optional):</label>
+            {% if not form.notes_to_seller.value %}
             <textarea id="notes_to_seller" name="notes_to_seller" placeholder="Leave a note for the seller..."></textarea>
+            {% else %}
+            <textarea id="notes_to_seller" name="notes_to_seller" placeholder="Leave a note for the seller...">{{form.notes_to_seller.value}}</textarea>
+            {% endif %}
         </div>
 
         <button type="submit">Request Appointment</button>

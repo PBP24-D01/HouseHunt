@@ -7,8 +7,7 @@
 {% include 'navbar.html' %}
 
 <div id="availability-list-container">
-    {% if availabilities %}
-    <h1 id="availability-list-title">Your Available Slots</h1>
+
     {% if messages %}
     <div id="appointment-form-success">
         {% for message in messages %}
@@ -18,6 +17,10 @@
         {% endfor %}
     </div>
     {% endif %}
+    
+    {% if availabilities %}
+    <h1 id="availability-list-title">Your Available Slots</h1>
+    
     <div id="availability-list-table">
         <table>
             <thead>
