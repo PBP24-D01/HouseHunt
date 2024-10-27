@@ -1,131 +1,253 @@
 <!DOCTYPE html>
 {% load static %}
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Navbar</title>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/tailwindcss/2.2.19/tailwind.min.css">
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/tailwindcss/2.2.19/tailwind.min.css"
+    />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap"
+      rel="stylesheet"
+    />
     <style>
-        body {
-            font-family: 'Poppins', sans-serif;
-        }
-        .navbar-text {
-            font-weight: bold;
-            font-size: 24px;
-            color: #4A628A;
-        }
-        .login-button, .user-button {
-            background-color: #4A628A;
-            color: white;
-            padding: 8px 16px;
-            border-radius: 8px; 
-            border: 2px solid #4A628A;
-            font-weight: bold;
-            font-size: 24px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            cursor: pointer;
-        }
-        .vertical-line { /* adjust */
-            height: 48px; 
-            width: 2px;
-            background-color: #4A628A;
-            margin: 0 16px; 
-        }
-        .dropdown-menu {
-            display: none;
-            position: absolute;
-            right: 0;
-            margin-top: 8px;
-            background-color: white;
-            border: 1px solid #ddd;
-            border-radius: 4px;
-            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
-            z-index: 1000;
-        }
-        .dropdown-menu a {
-            display: block;
-            padding: 8px 16px;
-            color: #333;
-            text-decoration: none;
-        }
-        .dropdown-menu a:hover {
-            background-color: #f5f5f5;
-        }
+      body {
+        font-family: "Poppins", sans-serif;
+      }
+      .navbar-text {
+        font-weight: bold;
+        font-size: 18px;
+        color: #4a628a;
+      }
+      .login-button,
+      .user-button {
+        background-color: #4a628a;
+        color: white;
+        padding: 8px 16px;
+        border-radius: 8px;
+        border: 2px solid #4a628a;
+        font-weight: bold;
+        font-size: 24px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        cursor: pointer;
+      }
+      .vertical-line {
+        /* adjust */
+        height: 48px;
+        width: 2px;
+        background-color: #4a628a;
+        margin: 0 16px;
+      }
+      .dropdown-menu {
+        display: none;
+        position: absolute;
+        right: 0;
+        margin-top: 8px;
+        background-color: white;
+        border: 1px solid #ddd;
+        border-radius: 4px;
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+        z-index: 1000;
+      }
+      .dropdown-menu a {
+        font-weight: bold;
+        text-align: start;
+        font-size: 18px;
+        display: block;
+        padding: 8px 16px;
+        color: #4a628a;
+        text-decoration: none;
+      }
+      .dropdown-menu a:hover {
+        background-color: #f5f5f5;
+      }
     </style>
-</head>
-<body>
-    <nav class="bg-white p-4">
-        <div class="container mx-auto flex justify-between items-center">
-            <!-- logo -->
-            <div class="flex items-center">
-                <img src="{% static 'img/logo.png' %}" alt="Company Logo" class="h-8 w-8 mr-2">
+  </head>
+  <body>
+    <nav
+      class="bg-transparent backdrop-blur-lg px-2 md:px-8 py-4 flex justify-between items-center fixed min-w-[100vw] top-0 shadow-lg"
+    >
+      <!-- logo -->
+      <a href="{% url 'houses:landing_page' %}">
+        <img
+          src="{% static 'img/logo.png' %}"
+          alt="Company Logo"
+          class="object-contain w-[100px] md:w-[200px] h-[40px] md:h-[70px] mr-2"
+        />
+      </a>
+      <!-- navigation -->
+      <div class="flex items-center space-x-4">
+        <a
+          href="{% url 'houses:landing_page' %}"
+          class="navbar-text hover:text-[#33425e] transition-all max-md:hidden"
+          >Home</a
+        >
+        {% if user.is_authenticated %}
+        <!-- change # to url "x" -->
+        {% if user.is_buyer %}
+        <a
+          href="#"
+          class="navbar-text hover:text-[#33425e] transition-all max-md:hidden"
+          >Wishlist</a
+        >
+        <a
+          href="#"
+          class="navbar-text hover:text-[#33425e] transition-all max-md:hidden"
+          >Diskusi</a
+        >
+        <a
+          href="#"
+          class="navbar-text hover:text-[#33425e] transition-all max-md:hidden"
+          >Cek Rumah</a
+        >
+        <a
+          href="/auction/"
+          class="navbar-text hover:text-[#33425e] transition-all"
+          >Lelang</a
+        >
+        {% elif user.is_seller %}
+        <a href="#" class="navbar-text hover:text-[#33425e] max-md:hidden"
+          >Iklan</a
+        >
+        <a
+          href="#"
+          class="navbar-text hover:text-[#33425e] transition-all max-md:hidden"
+          >Diskusi</a
+        >
+        <a
+          href="#"
+          class="navbar-text hover:text-[#33425e] transition-all max-md:hidden"
+          >Cek Rumah</a
+        >
+        <a
+          href="/auction/"
+          class="navbar-text hover:text-[#33425e] transition-all max-md:hidden"
+          >Lelang</a
+        >
+        {% endif %}
+        <div class="vertical-line max-md:hidden"></div>
+        <div class="relative">
+          <button
+            class="user-button hover:bg-[#33425e] transition-all"
+            onclick="toggleDropdown()"
+          >
+            Hello, {{ user.username }}
+          </button>
+          <div class="dropdown-menu transition-all" id="dropdown-menu">
+            {% if user.is_seller %}
+            <a
+              href="{% url 'houses:house_create' %}"
+              class="hover:text-[#33425e] transition-all"
+              >Sell House</a
+            >
+            <div class="md:hidden">
+              <a href="#" class="navbar-text hover:text-[#33425e] md:hidden"
+                >Iklan</a
+              >
+              <a
+                href="#"
+                class="navbar-text hover:text-[#33425e] transition-all md:hidden"
+                >Diskusi</a
+              >
+              <a
+                href="{% url 'cekrumah:availability_list' %}"
+                class="navbar-text hover:text-[#33425e] transition-all md:hidden"
+                >Cek Rumah</a
+              >
+              <a
+                href="/auction/"
+                class="navbar-text hover:text-[#33425e] transition-all md:hidden"
+                >Lelang</a
+              >
             </div>
-            <!-- navigation -->
-            <div class="flex items-center space-x-4">
-                <a href="{% url 'houses:landing_page' %}" class="navbar-text">Home</a>
-                {% if user.is_authenticated %}
-                <!-- change # to url "x" -->
-                    {% if user.is_buyer %} 
-                        <a href="#" class="navbar-text">Wishlist</a>
-                        <a href="#" class="navbar-text">Diskusi</a>
-                        <a href="{% url 'cekrumah:appointment_list' %}" class="navbar-text">Cek Rumah</a>
-                        <a href="#" class="navbar-text">Lelang</a>
-                    {% elif user.is_seller %}
-                        <a href="#" class="navbar-text">Iklan</a>
-                        <a href="#" class="navbar-text">Diskusi</a>
-                        <a href="{% url 'cekrumah:availability_list' %}" class="navbar-text">Cek Rumah</a>
-                        <a href="#" class="navbar-text">Lelang</a>
-                    {% endif %}
-                    <div class="vertical-line"></div>
-                    <div class="relative">
-                        <button class="user-button" onclick="toggleDropdown()">Hello, {{ user.username }}</button>
-                        <div class="dropdown-menu" id="dropdown-menu">
-                            {% if user.is_seller %}
-                                <a href="{% url 'houses:house_create' %}">Sell House</a>
-                            {% endif %}
-                            <form method="POST" action="{% url 'logout' %}">
-                                {% csrf_token %}
-                                <button type="submit" class="navbar-text">Logout</button>
-                            </form>
-                        </div>
-                    </div>
-                {% else %}
-                    <a href="{% url 'login' %}" class="login-button">Login</a>
-                {% endif %}
-                <div style="display:none;">
-                    User is seller: {{ user.is_seller }}
-                </div>
+            {% elif user.is_buyer %}
+            <div class="md:hidden">
+              <a
+                href="#"
+                class="navbar-text hover:text-[#33425e] transition-all md:hidden"
+                >Wishlist</a
+              >
+              <a
+                href="#"
+                class="navbar-text hover:text-[#33425e] transition-all md:hidden"
+                >Diskusi</a
+              >
+              <a
+                href="{% url 'cekrumah:appointment_list' %}"
+                class="navbar-text hover:text-[#33425e] transition-all md:hidden"
+                >Cek Rumah</a
+              >
+              <a
+                href="/auction/"
+                class="navbar-text hover:text-[#33425e] transition-all"
+                >Lelang</a
+              >
             </div>
+            {% endif %}
+            <form
+              method="POST"
+              action="{% url 'logout' %}"
+              class="flex justify-start items-center px-4 py-2 hover:bg-[#f5f5f5]"
+            >
+              {% csrf_token %}
+              <button
+                type="submit"
+                class="flex justify-start items-center gap-2 text-[18px] font-bold text-red-400 hover:text-red-500"
+              >
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  width="24"
+                  height="24"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-width="2"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  class="lucide lucide-log-out"
+                >
+                  <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4" />
+                  <polyline points="16 17 21 12 16 7" />
+                  <line x1="21" x2="9" y1="12" y2="12" />
+                </svg>
+                Logout
+              </button>
+            </form>
+          </div>
         </div>
+        {% else %}
+        <a href="{% url 'login' %}" class="login-button">Login</a>
+        {% endif %}
+        <div style="display: none">User is seller: {{ user.is_seller }}</div>
+      </div>
     </nav>
-    <hr class="border-t-2 border-gray-200 my-4">
 
     <script>
-        function toggleDropdown() {
-            var dropdownMenu = document.getElementById('dropdown-menu');
-            if (dropdownMenu.style.display === 'block') {
-                dropdownMenu.style.display = 'none';
-            } else {
-                dropdownMenu.style.display = 'block';
-            }
+      function toggleDropdown() {
+        var dropdownMenu = document.getElementById("dropdown-menu");
+        if (dropdownMenu.style.display === "block") {
+          dropdownMenu.style.display = "none";
+        } else {
+          dropdownMenu.style.display = "block";
         }
+      }
 
-        // Close the dropdown if the user clicks outside of it
-        window.onclick = function(event) {
-            if (!event.target.matches('.user-button')) {
-                var dropdowns = document.getElementsByClassName('dropdown-menu');
-                for (var i = 0; i < dropdowns.length; i++) {
-                    var openDropdown = dropdowns[i];
-                    if (openDropdown.style.display === 'block') {
-                        openDropdown.style.display = 'none';
-                    }
-                }
+      // Close the dropdown if the user clicks outside of it
+      window.onclick = function (event) {
+        if (!event.target.matches(".user-button")) {
+          var dropdowns = document.getElementsByClassName("dropdown-menu");
+          for (var i = 0; i < dropdowns.length; i++) {
+            var openDropdown = dropdowns[i];
+            if (openDropdown.style.display === "block") {
+              openDropdown.style.display = "none";
             }
+          }
         }
+      };
     </script>
-</body>
+  </body>
 </html>
