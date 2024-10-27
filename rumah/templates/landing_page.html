@@ -1,0 +1,52 @@
+{% extends 'base.html' %}
+{% load humanize static %}
+{% block content %}
+{% include 'navbar.html' %}
+<div class="container mx-auto px-4 py-8">
+    <!-- <h1 class="text-4xl font-bold mb-8">Halo ini judul</h1> -->
+    
+    <!-- filter form -->
+    <div class="bg-white p-6 rounded-lg shadow-md mb-8">
+        <form method="get" class="space-y-4">
+            <div class="grid grid-cols-1 md:grid-cols-4 gap-4">
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-1">
+                        {{ form.price_range.label }}
+                    </label>
+                    {{ form.price_range }}
+                </div>
+                
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-1">
+                        {{ form.lokasi.label }}
+                    </label>
+                    {{ form.lokasi }}
+                </div>
+                
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-1">
+                        {{ form.kamar_tidur.label }}
+                    </label>
+                    {{ form.kamar_tidur }}
+                </div>
+                
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-1">
+                        {{ form.kamar_mandi.label }}
+                    </label>
+                    {{ form.kamar_mandi }}
+                </div>
+            </div>
+            
+            <div class="flex justify-end">
+                <button type="submit" class="bg-blue-500 text-white px-6 py-2 rounded hover:bg-blue-600">
+                    Cari Rumah
+                </button>
+            </div>
+        </form>
+    </div>
+
+    <!-- House Listings -->
+    {% include 'house_listings.html' %}
+</div>
+{% endblock %}

@@ -21,4 +21,5 @@ urlpatterns = [
     path('admin/', admin.site.urls), 
     path("", include("HouseHuntAuth.urls")),
     path('iklan/', include('iklan.urls')),
+    path("", include("rumah.urls")),
 ]
