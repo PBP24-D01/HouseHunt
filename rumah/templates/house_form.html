@@ -40,7 +40,7 @@
         .form-messages {
             margin-top: 1rem;
         }
-        .form-input {
+        .form-input, .form-select {
             width: 100%;
             padding: 0.75rem;
             margin-bottom: 1rem;
@@ -50,7 +50,7 @@
             transition: border-color 0.3s ease, box-shadow 0.3s ease;
             box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
         }
-        .form-input:focus {
+        .form-input:focus, .form-select:focus {
             border-color: #365486;
             outline: none;
             box-shadow: 0 6px 12px rgba(0, 0, 0, 0.2);
@@ -94,7 +94,7 @@
                 </div>
                 <div class="mb-4">
                     <label for="id_lokasi" class="form-label">Lokasi</label>
-                    {{ form.lokasi|add_class:"form-input" }}
+                    {{ form.lokasi|add_class:"form-select" }}
                 </div>
                 <div class="mb-4">
                     <label for="id_gambar" class="form-label">Gambar</label>

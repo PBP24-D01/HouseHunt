@@ -8,8 +8,8 @@ from .forms import HouseForm, HouseFilterForm
 from HouseHuntAuth.models import Seller
 
 def landing_page(request):
-    form = HouseFilterForm(request.GET)
-    houses = House.objects.filter(is_available=True)
+    form = HouseFilterForm(request.GET or {'is_available': True})
+    houses = House.objects.all()
     
     if form.is_valid():
         # harga
@@ -38,6 +38,11 @@ def landing_page(request):
                 houses = houses.filter(kamar_mandi__gte=3)
             else:
                 houses = houses.filter(kamar_mandi=int(kamar_mandi))
+
+        # is available
+        is_available = form.cleaned_data.get('is_available')
+        if is_available is not None:
+            houses = houses.filter(is_available=is_available)
     
     context = {
         'houses': houses,
@@ -49,8 +54,6 @@ def house_detail(request, house_id):
     house = get_object_or_404(House, id=house_id)
     return render(request, 'house_detail.html', {'house': house})
 
-
-#@csrf_protect
 @csrf_exempt
 def house_create(request):
     if request.method == 'POST':
