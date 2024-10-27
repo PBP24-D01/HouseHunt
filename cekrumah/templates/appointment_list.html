@@ -9,16 +9,6 @@
     {% if appointments %}
     <h1>Your Appointments</h1>
 
-    {% if messages %}
-    <div id="appointment-form-success">
-        {% for message in messages %}
-            {% if message.tags == 'success' %}
-                <p class="success-message">{{ message }}</p>
-            {% endif %}
-        {% endfor %}
-    </div>
-    {% endif %}
-
     <table>
         <thead>
             <tr>
@@ -68,4 +58,8 @@
     {% endif %}
     <a id="request-appointment" href="{% url 'cekrumah:create_appointment' %}">Request New Appointment</a>
 </div>
+
+<div class='absolute bottom-0'>
+    {% include 'footer.html' %}
+    </div>
 {% endblock content %}
