@@ -1,37 +1,71 @@
-{% extends 'base.html' %} {% load static %}
+{% extends 'base.html' %}
+{% load static %}
+{% block meta %}
+<link rel="stylesheet" href="{% static 'css/cekrumah_global.css' %}" />
+{% endblock meta %}
 {% block content %}
+{% include 'navbar.html' %}
+<div id="appointmentdiv">
     {% if appointments %}
     <h1>Your Appointments</h1>
+
+    {% if messages %}
+    <div id="appointment-form-success">
+        {% for message in messages %}
+            {% if message.tags == 'success' %}
+                <p class="success-message">{{ message }}</p>
+            {% endif %}
+        {% endfor %}
+    </div>
+    {% endif %}
+
     <table>
         <thead>
             <tr>
                 <th>House</th>
                 <th>Seller</th>
                 <th>Date</th>
+                <th>Start time</th>
+                <th>End time</th>
                 <th>Status</th>
                 <th>Notes</th>
+                <th>Actions</th>
             </tr>
         </thead>
         <tbody>
             {% for appointment in appointments %}
             <tr>
-                <td>{{ appointment.availability.house }}</td>
-                <td>{{ appointment.seller.user.username }}</td>
-                <td>{{ appointment.availability.available_date }}</td>
-                <td>{{ appointment.status }}</td>
-                <td>{{ appointment.notes_to_seller }}</td>
+                <td id="houselink" data-label="House"><a href="{% url 'houses:house_detail' appointment.availability.house.id %}">{{ appointment.availability.house }}</a></td>
+                <td data-label="Seller">{{ appointment.seller.user.username }}</td>
+                <td data-label="Date">{{ appointment.availability.available_date }}</td>
+                <td data-label="Start time">{{ appointment.availability.start_time }}</td>
+                <td data-label="End time">{{ appointment.availability.end_time }}</td>
+                {% if appointment.get_status_display == 'Approved' %}
+                    <td style="color: green;" id="availability-list-appointments-status-data">{{ appointment.get_status_display }}</td>
+                    {% elif appointment.get_status_display == 'Canceled' %}
+                    <td style="color: red;" id="availability-list-appointments-status-data">{{ appointment.get_status_display }}</td>
+                    {% else %}
+                    <td style="color: orange;" id="availability-list-appointments-status-data">{{ appointment.get_status_display }}</td>
+                    {% endif %}
+            
+                <td data-label="Notes">{{ appointment.notes_to_seller }}</td>
+                <td data-label="Actions">
+                    <div style="display: flex;">
+                        <a id="edit" href="{% url 'cekrumah:update_appointment' appointment.id %}">Edit</a>
+                        <a id="delete" href="{% url 'cekrumah:delete_appointment' appointment.id %}">Delete</a>
+                    </div>
+                </td>
             </tr>
             {% empty %}
             <tr>
-                <td colspan="5">No appointments found.</td>
+                <td colspan="8">No appointments found.</td>
             </tr>
             {% endfor %}
         </tbody>
     </table>
-    
     {% else %}
-    <p> You dont have any appointments </p>
+    <p id="no-appointment">You don't have any appointments</p>
     {% endif %}
-    <a href="{% url 'cekrumah:create_appointment' %}">Request New Appointment</a>
+    <a id="request-appointment" href="{% url 'cekrumah:create_appointment' %}">Request New Appointment</a>
+</div>
 {% endblock content %}
-

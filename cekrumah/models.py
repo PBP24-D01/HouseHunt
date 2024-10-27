@@ -17,6 +17,13 @@ class Availability(models.Model):
         return f"{self.seller.user.username} - {self.available_date} ({self.start_time} to {self.end_time})"
     
     def clean(self):
+        # Check if start_time or end_time is None
+        if self.start_time is None:
+            raise ValidationError("Start time cannot be empty.")
+        if self.end_time is None:
+            raise ValidationError("End time cannot be empty.")
+        
+        # Check if end_time is less than or equal to start_time
         if self.end_time <= self.start_time:
             raise ValidationError("End time must be after start time.")
 

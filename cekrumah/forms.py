@@ -25,9 +25,20 @@ class AvailabilityForm(forms.ModelForm):
         seller = kwargs.pop('seller', None)  # Expect seller to be passed in when the form is initialized
         super(AvailabilityForm, self).__init__(*args, **kwargs)
         if seller:
-            self.fields['house'].queryset = House.objects.filter(seller=seller)  # Limit house choices to seller's houses
+            # Limit house choices to seller's houses
+            houses = House.objects.filter(seller=seller)
+            self.fields['house'].queryset = houses
 
-# Form for Buyer to request an appointment
+            # Customize the labels for the house choices
+            self.fields['house'].label_from_instance = lambda obj: f"{obj} (ID: {obj.id})"
+
+
+class AppointmentStatusForm(forms.ModelForm):
+    class Meta:
+        model = Appointment
+        fields = ['status']
+
+
 class AppointmentForm(forms.ModelForm):
     class Meta:
         model = Appointment
@@ -40,8 +51,21 @@ class AppointmentForm(forms.ModelForm):
             'notes_to_seller': 'Notes to Seller (Optional)',
         }
 
+    def __init__(self, *args, **kwargs):
+        house_id = kwargs.pop('house_id', None)
+        super(AppointmentForm, self).__init__(*args, **kwargs)
+
+        if house_id:
+            # Fetch availabilities for the selected house
+            availabilities = Availability.objects.filter(house_id=house_id, is_available=True)
+            self.fields['availability'].queryset = availabilities
+        else:
+            self.fields['availability'].queryset = Availability.objects.none()  # No availabilities available if no house is selected
+
     def clean_availability(self):
         availability = self.cleaned_data.get('availability')
         if not availability.is_available:
             raise forms.ValidationError("This slot is no longer available.")
         return availability
+
+

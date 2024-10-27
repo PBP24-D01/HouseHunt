@@ -1,0 +1,426 @@
+/* Container for the appointment list */
+#appointmentdiv {
+    width: 90%;
+    max-width: 1200px;
+    margin: 40px auto;
+    padding: 20px;
+    background-color: #F5F5F5;
+    border-radius: 8px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+/* Heading */
+#appointmentdiv h1 {
+    color: #4A628A;
+    text-align: center;
+    font-size: 1.8em;
+    margin-bottom: 20px;
+}
+
+/* Table Styling */
+#appointmentdiv table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-bottom: 20px;
+}
+
+#appointmentdiv table thead {
+    background-color: #4A628A;
+    color: white;
+}
+
+#appointmentdiv table th, #appointmentdiv table td {
+    padding: 12px;
+    text-align: left;
+    border: 1px solid #ddd;
+}
+
+#houselink{
+    color: #4A628A;
+    font-weight: bold;
+    text-decoration: none;
+    
+    transition: background-color 0.3s, color 0.3s;
+}
+
+/* Hyperlink Styling */
+#edit, #delete {
+    color: #4A628A;
+    font-weight: bold;
+    text-decoration: none;
+    padding: 4px 8px;
+    border: 1px solid #4A628A;
+    border-radius: 4px;
+    transition: background-color 0.3s, color 0.3s;
+}
+
+#edit:hover {
+    background-color: green;
+    color: white;
+}
+
+#delete:hover {
+    background-color: red;
+    color: white;
+}
+
+
+
+#houselink:hover{
+    text-decoration: underline;
+}
+
+/* Action Links (Edit, Delete) */
+#appointmentdiv table td a + a {
+    margin-left: 10px;
+}
+
+/* Responsive Adjustments */
+@media (max-width: 768px) {
+    #appointmentdiv {
+        padding: 15px;
+    }
+
+    #appointmentdiv table, #appointmentdiv table thead, #appointmentdiv table tbody, #appointmentdiv table th, #appointmentdiv table td, #appointmentdiv table tr {
+        display: block;
+    }
+
+    #appointmentdiv table tr {
+        margin-bottom: 15px;
+    }
+
+    #appointmentdiv table td {
+        text-align: right;
+        padding-left: 50%;
+        position: relative;
+    }
+
+    #appointmentdiv table td::before {
+        position: absolute;
+        left: 10px;
+        top: 12px;
+        font-weight: bold;
+        content: attr(data-label);
+    }
+
+    #appointmentdiv table thead {
+        display: none;
+    }
+}
+
+#no-appointment{
+    margin: 10px 0px;
+}
+
+/* "Request New Appointment" Button */
+#request-appointment {
+    display: inline-block;
+    text-align: center;
+    margin: 0 auto;
+    padding: 10px 20px;
+    color: white;
+    background-color: #4A628A;
+    font-weight: bold;
+    border-radius: 4px;
+    text-decoration: none;
+    transition: background-color 0.3s;
+}
+
+#request-appointment:hover {
+    background-color: #3A5072;
+}
+
+
+#appointment-form-container {
+    max-width: 600px; /* Set a maximum width */
+    margin: 0 auto; /* Center the form */
+    padding: 20px; /* Add padding around the form */
+    border: 1px solid #ccc; /* Add a border */
+    border-radius: 8px; /* Rounded corners */
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1); /* Subtle shadow */
+    background-color: #f9f9f9; /* Light background color */
+}
+
+#appointment-form-container h1 {
+    text-align: center; /* Center the heading */
+    margin-bottom: 20px; /* Space below the heading */
+    color: #4A628A;
+    font-weight: bold;
+}
+
+#appointment-form-container .form-group {
+    margin-bottom: 15px; /* Space between form elements */
+}
+
+#appointment-form-container label {
+    display: block; /* Make labels block elements */
+    margin-bottom: 5px; /* Space below labels */
+    font-weight: bold; /* Bold labels */
+}
+
+#appointment-form-container select, 
+#appointment-form-container textarea {
+    width: 100%; /* Full width */
+    padding: 10px; /* Padding inside input fields */
+    border: 1px solid #ccc; /* Border */
+    border-radius: 4px; /* Rounded corners */
+    box-sizing: border-box; /* Include padding in width */
+}
+
+#appointment-form-container button {
+    background-color: #4A628A; /* Bootstrap success color */
+    color: white; /* White text */
+    padding: 10px 15px; /* Padding */
+    border: none; /* No border */
+    border-radius: 4px; /* Rounded corners */
+    cursor: pointer; /* Pointer cursor on hover */
+    width: 100%; /* Full width button */
+}
+
+#appointment-form-container button:hover {
+    background-color: #3A5072; /* Darker green on hover */
+    font-weight: bold;
+}
+
+#appointment-form-container a {
+    display: inline-block; /* Make the back link a block element */
+    margin-top: 15px; /* Space above the link */
+    text-align: center; /* Center the text */
+    color: #4A628A;
+}
+
+#appointment-form-container a:hover {
+    display: inline-block; /* Make the back link a block element */
+    margin-top: 15px; /* Space above the link */
+    text-align: center; /* Center the text */
+    color: #4A628A;
+    text-decoration: underline;
+}
+
+#appointment-form-errors {
+    background-color: #FFCCCC;
+    color: #A94442;
+    padding: 10px;
+    margin-bottom: 20px;
+    border: 1px solid #A94442;
+    border-radius: 5px;
+    font-weight: bold;
+}
+.errorlist, .errorlist nonfield {
+    background-color: #FFCCCC;
+    color: #A94442;
+    padding: 10px;
+    margin-bottom: 20px;
+    border: 1px solid #A94442;
+    border-radius: 5px;
+    font-weight: bold;
+}
+
+#appointment-form-success{
+    color: green; /* Set the text color to green */
+    background-color: #d4edda; /* Light green background */
+    border: 1px solid #c3e6cb; /* Green border */
+    padding: 10px; /* Add some padding */
+    margin: 10px 0; /* Space around the success message */
+    border-radius: 5px; /* Rounded corners */
+}
+
+/* Availability Section */
+/* Availability List Page Styles */
+#availability-list-container {
+    justify-content: center;
+    align-items: center;
+    margin: 20px;
+    padding: 20px;
+    border: 1px solid #ccc;
+    border-radius: 8px;
+    background-color: #f9f9f9;
+}
+
+#availability-list-title, 
+#availability-list-appointments-title {
+    text-align: center;
+    margin-bottom: 20px;
+}
+
+#availability-list-table, 
+#availability-list-appointments-table {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+    width: 100%;
+    border-collapse: collapse;
+}
+
+#availability-list-table th, 
+#availability-list-appointments-table th,
+#availability-list-table td, 
+#availability-list-appointments-table td {
+    padding: 10px;
+    text-align: left;
+    border: 1px solid #ddd;
+    
+}
+
+#availability-list-table th, 
+#availability-list-appointments-table th {
+    background-color: #4A628A;
+    color: white;
+}
+
+#availability-list-house-data:hover{
+    color: darkblue;
+    text-decoration: underline;
+}
+
+#availability-list-edit-data{
+    background-color: green;
+    color: white;
+}
+
+#availability-list-edit-data:hover{
+    background-color: darkgreen;
+    color: white;
+}
+
+#availability-list-delete-data{
+    background-color: red;
+    color: white;
+}
+
+#availability-list-delete-data:hover{
+    background-color: rgb(184, 0, 0);
+    color: white;
+}
+
+#availability-list-add-new {
+    display: inline-block;
+    margin: 20px auto;
+    text-align: center;
+    justify-content: center;
+    align-items: center;
+    font-weight: bold;
+    color: white;
+    border: #ddd 2px solid;
+    padding: 5px 10px;
+    background-color: #4A628A;
+}
+
+#availability-list-add-new:hover {
+    text-decoration: none;
+    background-color: #2e3e58;
+}
+
+#availability-list-no-appointments{
+    text-align: center;
+}
+
+@media (max-width: 768px) {
+    #availability-list-table, 
+    #availability-list-appointments-table {
+        display: block;
+        overflow-x: auto;
+    }
+}
+
+/* Form Container Styling */
+#availability-form-container {
+    max-width: 600px;
+    margin: 50px auto;
+    padding: 20px;
+    background-color: #ffffff;
+    color: #333333;
+    border-radius: 10px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
+    text-align: center;
+}
+
+/* Form Title */
+#availability-form-container h1 {
+    font-size: 1.8em;
+    color: #4A628A;
+    margin-bottom: 20px;
+}
+
+/* Form Styling */
+#availability-form-container form {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+}
+
+/* Form Input Fields */
+#availability-form-container input[type="text"],
+#availability-form-container select,
+#availability-form-container input[type="time"],
+#availability-form-container .select-date {
+    width: 100%;
+    padding: 10px;
+    font-size: 1em;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    box-sizing: border-box;
+}
+
+/* Form Labels */
+#availability-form-container label {
+    font-weight: bold;
+    color: #4A628A;
+    text-align: left;
+}
+
+/* Form Button */
+#availability-form-container button[type="submit"] {
+    background-color: #4A628A;
+    color: #ffffff;
+    padding: 10px 20px;
+    font-size: 1em;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+#availability-form-container button[type="submit"]:hover {
+    background-color: #3A4E6A;
+}
+
+/* Back Link Styling */
+#availability-form-container a {
+    display: inline-block;
+    margin-top: 15px;
+    color: #4A628A;
+    text-decoration: none;
+    border: 2px solid #ddd;
+    padding: 5px 10px;
+    border-radius: 5px;
+    background-color: #ffffff;
+    font-weight: bold;
+    transition: background-color 0.3s ease, color 0.3s ease;
+}
+
+#availability-form-container a:hover {
+    color: #ffffff;
+    background-color: #4A628A;
+}
+
+#availability-list-appointments-update-btn{
+    color: blue;
+}
+
+#availability-list-appointments-update-btn:hover{
+    text-decoration: underline;
+    color: darkblue;
+}
+
+/* Flatpickr overrides to match your theme */
+.flatpickr-calendar {
+    border: 1px solid #4A628A;
+    background-color: #ffffff;
+    color: #4A628A;
+}
+
+.flatpickr-time input {
+    color: #333333;
+}
