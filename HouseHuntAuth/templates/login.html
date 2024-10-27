@@ -2,16 +2,16 @@
   HouseHunt | Login
 </title>
 {%endblock meta %} {% block content %}
-<div class="flex flex-col justify-center items-center px-[10vw] h-[60vh] overflow-y-hidden">
-  <div class="bg-white rounded-lg shadow-md grid grid-cols-2 p-6 w-full">
+<div class="flex flex-col justify-center items-center lg:px-[10vw] max-lg:p-4 lg:h-[60vh]">
+  <div class="bg-white rounded-lg shadow-md grid lg:grid-cols-2 max-lg:gap-8 p-2 sm:p-6 w-full">
     <form
       method="post"
       novalidate
-      class="gap-4 border-r flex flex-col justify-between"
+      class="gap-4 lg:border-r max-lg:border-b flex flex-col justify-between sm:px-4 py-6"
     >
       <h2 class="text-2xl font-bold text-gray-900 text-center">Login</h2>
       {% csrf_token %} {% for field in form %}
-      <div>
+      <div class='flex flex-col'>
         <label class="block text-sm font-medium text-gray-700 mb-1"
           >{{ field.label }}</label
         >
@@ -24,7 +24,7 @@
       {% endfor %}
       <button
         type="submit"
-        class="w-[50%] text-[16px] bg-[#4a628a] text-white px-4 py-2 rounded-md hover:bg-[#33425e] transition-colors"
+        class="w-[50%] text-[16px] bg-[#4a628a] text-white px-4 py-2 rounded-md hover:bg-[#33425e] transition-colors max-lg:mx-auto"
       >
         Login
       </button>
@@ -33,12 +33,12 @@
       <img
         src="{% static 'img/logo.png' %}"
         alt="Login"
-        class="w-[300px] h-[100px] object-contain"
+        class="sm:w-[300px] w-[200px] h-[100px] object-contain"
       />
       <p class="font-semibold text-gray-900 text-[16px] mb-6 text-center">
         Belum punya akun?<br />Ayo bergabung sekarang!
       </p>
-      <div class="flex gap-4">
+      <div class="flex max-md:flex-col gap-4">
         <a
           href="/register/seller"
           class="w-[200px] text-center bg-[#4a628a] hover:shadow-lg text-white text-[14px] px-4 py-2 rounded-md hover:bg-[#33425e] transition-colors"
