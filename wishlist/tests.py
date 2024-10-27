@@ -15,12 +15,12 @@ class WishlistViewsTest(TestCase):
         
         # Create seller user and buyer user
         self.seller_user, created = User.objects.get_or_create(username='seller')
-        self.seller_user.set_password('password')  # Hash the password
+        self.seller_user.set_password('password')
         self.seller_user.is_seller = True
         self.seller_user.save()
 
         self.buyer_user, created = User.objects.get_or_create(username='buyer')
-        self.buyer_user.set_password('password')  # Hash the password
+        self.buyer_user.set_password('password')
         self.buyer_user.is_buyer = True
         self.buyer_user.save()
 
@@ -39,21 +39,16 @@ class WishlistViewsTest(TestCase):
             deskripsi='A test house',
             harga=100000,
             lokasi='Test Location',
-            gambar='path/to/image.jpg',  # This should be a valid path for your tests
+            gambar='static/img/image.jpg',
             kamar_tidur=2,
             kamar_mandi=1,
             seller=self.seller
         )
 
     def test_add_wishlist(self):
-        # No need to log in again since it's already done in setUp
-        response = self.client.post(reverse('add_wishlist', args=[self.house.id]))  # Make sure the request is sent correctly
-        
-        # Check for 200 OK status for successful addition
-        self.assertEqual(response.status_code, 200, f"Unexpected status code: {response.status_code}. Response content: {response.content}")
-
-        # Ensure the item was created
-        self.assertTrue(Wishlist.objects.filter(user=self.user, rumah=self.house).exists(), "Wishlist item not found in database.")
+        response = self.client.post(reverse('add_wishlist', args=[self.house.id]))
+        self.assertEqual(response.status_code, 200, f"Unexpected status code: {response.status_code}. Response content: {response.content}") # Check for 200 OK status for successful addition
+        self.assertTrue(Wishlist.objects.filter(user=self.user, rumah=self.house).exists(), "Wishlist item not found in database.") # Ensure the item was created
 
     def test_delete_wishlist(self):
         Wishlist.objects.create(user=self.user, rumah=self.house)
@@ -62,7 +57,6 @@ class WishlistViewsTest(TestCase):
         self.assertFalse(Wishlist.objects.filter(user=self.user, rumah=self.house).exists())
 
     def test_edit_wishlist(self):
-        # Create a wishlist item
         wishlist_item = Wishlist.objects.create(user=self.user, rumah=self.house)
         response = self.client.post(reverse('edit_wishlist', args=[self.house.id]), {'priority': 'high'})
         self.assertEqual(response.status_code, 302)  # Assuming redirect after a successful edit
