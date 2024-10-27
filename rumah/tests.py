@@ -28,7 +28,7 @@ class HouseModelTest(TestCase):
             judul='Test House',
             deskripsi='Test Description',
             harga=1000000,
-            lokasi='Test Location',
+            lokasi='Bekasi',  
             gambar=self.image,
             kamar_tidur=3,
             kamar_mandi=2,
@@ -40,7 +40,7 @@ class HouseModelTest(TestCase):
         self.assertEqual(self.house.judul, 'Test House')
         self.assertEqual(self.house.deskripsi, 'Test Description')
         self.assertEqual(self.house.harga, 1000000)
-        self.assertEqual(self.house.lokasi, 'Test Location')
+        self.assertEqual(self.house.lokasi, 'Bekasi')  
         self.assertEqual(self.house.kamar_tidur, 3)
         self.assertEqual(self.house.kamar_mandi, 2)
         self.assertTrue(self.house.is_available)
@@ -54,7 +54,7 @@ class HouseFormTest(TestCase):
             'judul': 'Test House',
             'deskripsi': 'Test Description',
             'harga': 1000000,
-            'lokasi': 'Test Location',
+            'lokasi': 'Bekasi',  
             'gambar': image,
             'kamar_tidur': 3,
             'kamar_mandi': 2,
@@ -68,7 +68,7 @@ class HouseFormTest(TestCase):
             'judul': '',
             'deskripsi': 'Test Description',
             'harga': 1000000,
-            'lokasi': 'Test Location',
+            'lokasi': '',  
             'gambar': 'test.jpg',
             'kamar_tidur': 3,
             'kamar_mandi': 2,
@@ -92,7 +92,7 @@ class HouseViewTest(TestCase):
             judul='Test House',
             deskripsi='Test Description',
             harga=1000000,
-            lokasi='Test Location',
+            lokasi='Bekasi',  
             gambar=self.image,
             kamar_tidur=3,
             kamar_mandi=2,
@@ -118,7 +118,7 @@ class HouseViewTest(TestCase):
             'judul': 'New House',
             'deskripsi': 'New Description',
             'harga': 2000000,
-            'lokasi': 'New Location',
+            'lokasi': 'Bekasi',  
             'gambar': image,
             'kamar_tidur': 4,
             'kamar_mandi': 3,
@@ -126,8 +126,8 @@ class HouseViewTest(TestCase):
         }
         response = self.client.post(reverse('houses:house_create'), data=form_data, files={'gambar': image})
         if response.status_code != 302:
-            print(response.context['form'].errors)  # Print form errors if not redirecting
-        self.assertEqual(response.status_code, 302)  # Redirect after successful creation
+            print(response.context['form'].errors)  
+        self.assertEqual(response.status_code, 302) 
 
     def test_6_house_edit_view(self):
         self.client.login(username='seller', password='password')
@@ -137,7 +137,7 @@ class HouseViewTest(TestCase):
             'judul': 'Updated House',
             'deskripsi': 'Updated Description',
             'harga': 3000000,
-            'lokasi': 'Updated Location',
+            'lokasi': 'Bekasi', 
             'gambar': image,
             'kamar_tidur': 5,
             'kamar_mandi': 4,
@@ -145,13 +145,13 @@ class HouseViewTest(TestCase):
         }
         response = self.client.post(reverse('houses:house_edit', args=[self.house.id]), data=form_data, files={'gambar': image})
         if response.status_code != 302:
-            print(response.context['form'].errors)  # Print form errors if not redirecting
-        self.assertEqual(response.status_code, 302)  # Redirect after successful update
+            print(response.context['form'].errors)  
+        self.assertEqual(response.status_code, 302)  
 
     def test_7_house_delete_view(self):
         self.client.login(username='seller', password='password')
         response = self.client.post(reverse('houses:house_delete', args=[self.house.id]))
-        self.assertEqual(response.status_code, 302)  # Redirect after successful deletion
+        self.assertEqual(response.status_code, 302)  
         self.assertFalse(House.objects.filter(id=self.house.id).exists())
 
     def test_8_settings_view(self):
