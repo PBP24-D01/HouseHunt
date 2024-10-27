@@ -3,7 +3,6 @@ from django.core.management.base import BaseCommand
 from rumah.models import House
 from HouseHuntAuth.models import Seller, CustomUser
 import random
-import shutil
 
 
 class Commandd(BaseCommand):
@@ -35,13 +34,15 @@ class Commandd(BaseCommand):
                 seller=seller,
                 harga=house["harga"],
                 lokasi=house["lokasi"],
-                gambar=house["url"], 
+                gambar="static/logo.png",
                 kamar_tidur=house["kamar_tidur"],
                 kamar_mandi=house["kamar_mandi"],
                 luas_tanah=house["luas_tanah"],
                 luas_bangunan=house["luas_bangunan"],
                 is_available=house["is_available"],
             )
+            
+            housey.save()
         
             
 
