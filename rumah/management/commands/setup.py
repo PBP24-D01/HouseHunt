@@ -32,14 +32,14 @@ class Command(BaseCommand):
         for house in houses:
             housey = House.objects.create(
                 seller=seller,
-                harga=house["harga"],
+                harga=house["price_in_rp"],
+                deskripsi=house["description"],
+                judul=house["title"],
                 lokasi=house["lokasi"],
                 gambar="static/logo.png",
                 kamar_tidur=house["kamar_tidur"],
                 kamar_mandi=house["kamar_mandi"],
-                luas_tanah=house["luas_tanah"],
-                luas_bangunan=house["luas_bangunan"],
-                is_available=house["is_available"],
+                is_available=True,
             )
             
             housey.save()
