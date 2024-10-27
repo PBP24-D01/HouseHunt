@@ -1,4 +1,5 @@
-from datetime import timezone
+import datetime
+import pytz
 from django.db import models
 from HouseHuntAuth.models import Buyer, Seller
 from rumah.models import House
@@ -14,7 +15,7 @@ class Auction(models.Model):
     end_date = models.DateTimeField(null=False)
     starting_price = models.PositiveIntegerField(null=False)
     current_price = models.PositiveIntegerField(null=False)
-    highest_buyer = models.ForeignKey(Buyer, on_delete=models.CASCADE)
+    highest_buyer = models.ForeignKey(Buyer, on_delete=models.CASCADE, null=True)
     seller = models.ForeignKey(Seller, on_delete=models.CASCADE)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
@@ -23,10 +24,12 @@ class Auction(models.Model):
         return self.title
     
     def is_active(self):
-        return self.start_date < timezone.now() < self.end_date
+        utc = pytz.UTC
+        return self.start_date < utc.localize(datetime.datetime.now()) < self.end_date
     
     def is_expired(self):
-        return self.end_date < timezone.now()
+        utc = pytz.UTC
+        return self.end_date < utc.localize(datetime.datetime.now())
 
 class Bid(models.Model):
     id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
@@ -38,9 +41,6 @@ class Bid(models.Model):
 
     def __str__(self):
         return f"{self.auction.title} - {self.buyer.user.username} - {self.price}"
-    
-    def is_valid(self):
-        return self.price > self.auction.current_price
     
     def save(self, *args, **kwargs):
         self.auction.current_price = self.price

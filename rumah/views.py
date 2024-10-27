@@ -2,13 +2,14 @@ from django.shortcuts import render, redirect, get_object_or_404
 from django.http import JsonResponse
 from django.views.decorators.csrf import csrf_protect, csrf_exempt
 from django.views.decorators.http import require_POST
+from django.contrib.auth.decorators import login_required
 from .models import House
 from .forms import HouseForm, HouseFilterForm
-from HouseHuntAuth.models import Seller
+from HouseHuntAuth.models import Seller, Buyer
 
 def landing_page(request):
-    form = HouseFilterForm(request.GET)
-    houses = House.objects.filter(is_available=True)
+    form = HouseFilterForm(request.GET or {'is_available': True})
+    houses = House.objects.all()
     
     if form.is_valid():
         # harga
@@ -37,6 +38,11 @@ def landing_page(request):
                 houses = houses.filter(kamar_mandi__gte=3)
             else:
                 houses = houses.filter(kamar_mandi=int(kamar_mandi))
+
+        # is available
+        is_available = form.cleaned_data.get('is_available')
+        if is_available is not None:
+            houses = houses.filter(is_available=is_available)
     
     context = {
         'houses': houses,
@@ -48,8 +54,6 @@ def house_detail(request, house_id):
     house = get_object_or_404(House, id=house_id)
     return render(request, 'house_detail.html', {'house': house})
 
-
-#@csrf_protect
 @csrf_exempt
 def house_create(request):
     if request.method == 'POST':
@@ -76,3 +80,52 @@ def house_create(request):
     else:
         form = HouseForm()
     return render(request, 'house_form.html', {'form': form})
+
+@login_required
+def house_edit(request, house_id):
+    house = get_object_or_404(House, id=house_id)
+    if request.user != house.seller.user:
+        return redirect('houses:house_detail', house_id=house.id)
+    
+    if request.method == 'POST':
+        form = HouseForm(request.POST, request.FILES, instance=house)
+        if form.is_valid():
+            form.save()
+            return redirect('houses:house_detail', house_id=house.id)
+    else:
+        form = HouseForm(instance=house)
+    
+    return render(request, 'house_edit.html', {'form': form, 'house': house})
+
+def house_delete(request, house_id):
+    house = get_object_or_404(House, id=house_id)
+    if request.user != house.seller.user:
+        return redirect('houses:house_detail', house_id=house.id)
+    
+    house.delete()
+    return redirect('houses:landing_page')
+
+
+@login_required
+def order_page(request, house_id):
+    house = get_object_or_404(House, id=house_id)
+    if not house.is_available:
+        return redirect('houses:house_detail', house_id=house.id)
+    if hasattr(request.user, 'buyer'):
+        buyer = request.user.buyer
+        return render(request, 'order_page.html', {'house': house, 'buyer': buyer})
+    else:
+        return redirect('houses:house_detail', house_id=house.id)
+
+@login_required
+def generate_invoice(request, house_id):
+    house = get_object_or_404(House, id=house_id)
+    if not house.is_available:
+        return redirect('houses:house_detail', house_id=house.id)
+    if hasattr(request.user, 'buyer'):
+        buyer = request.user.buyer
+        house.is_available = False
+        house.save()
+        return render(request, 'invoice.html', {'house': house, 'buyer': buyer})
+    else:
+        return redirect('houses:house_detail', house_id=house.id)
