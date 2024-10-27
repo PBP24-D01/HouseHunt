@@ -1,0 +1,123 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block meta %}
+<link rel="stylesheet" href="{% static 'css/cekrumah_global.css' %}" />
+{% endblock meta %}
+{% block content %}
+{% include 'navbar.html' %}
+
+<div id="availability-list-container">
+
+    {% if messages %}
+    <div id="appointment-form-success">
+        {% for message in messages %}
+            {% if message.tags == 'success' %}
+                <p class="success-message">{{ message }}</p>
+            {% endif %}
+        {% endfor %}
+    </div>
+    {% endif %}
+    
+    {% if availabilities %}
+    <h1 id="availability-list-title">Your Available Slots</h1>
+    
+    <div id="availability-list-table">
+        <table>
+            <thead>
+                <tr>
+                    <th id="availability-list-house">House</th>
+                    <th id="availability-list-date">Date</th>
+                    <th id="availability-list-start-time">Start Time</th>
+                    <th id="availability-list-end-time">End Time</th>
+                    <th id="availability-list-is-available">Is Available?</th>
+                    <th id="availability-list-edit">Edit</th>
+                    <th id="availability-list-delete">Delete</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for availability in availabilities %}
+                <tr>
+                    <td id="availability-list-house-data">
+                        <a href="{% url 'houses:house_detail' availability.house.id %}">{{ availability.house }}</a>
+                    </td>
+                    <td id="availability-list-date-data">{{ availability.available_date }}</td>
+                    <td id="availability-list-start-time-data">{{ availability.start_time }}</td>
+                    <td id="availability-list-end-time-data">{{ availability.end_time }}</td>
+                    <td id="availability-list-is-available-data">{{ availability.is_available }}</td>
+                    <td id="availability-list-edit-data">
+                        <a href="{% url 'cekrumah:update_availability' availability.id %}">Edit</a>
+                    </td>
+                    <td id="availability-list-delete-data">
+                        <a href="{% url 'cekrumah:delete_availability' availability.id %}">Delete</a>
+                    </td>
+                </tr>
+                {% empty %}
+                <tr style="display: flex; justify-content: center; align-items: center;">
+                    <td colspan="7">No availabilities found.</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+    {% else %}
+    <p style="text-align: center;" id="availability-list-no-dates">You haven't created any dates.</p>
+    {% endif %}
+
+    <div style="text-align: center;">
+        <a id="availability-list-add-new" href="{% url 'cekrumah:create_availability' %}">Add New Available Dates</a>
+    </div>
+    
+    
+
+    {% if appointments %}
+    <h2 id="availability-list-appointments-title">Your Appointments</h2>
+    <div id="availability-list-appointments-table">
+        <table>
+            <thead>
+                <tr>
+                    <th id="availability-list-appointments-buyer">Buyer</th>
+                    <th id="availability-list-appointments-house">House</th>
+                    <th id="availability-list-appointments-date">Date</th>
+                    <th id="availability-list-appointments-notes">Notes</th>
+                    <th id="availability-list-appointments-status">Status</th>
+                    <th id="availability-list-appointments-actions">Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for appointment in appointments %}
+                <tr>
+                    <td id="availability-list-appointments-buyer-data">{{ appointment.buyer.user.username }}</td>
+                    <td id="availability-list-appointments-house-data">{{ appointment.availability.house }}</td>
+                    <td id="availability-list-appointments-date-data">{{ appointment.availability.available_date }}</td>
+                    <td id="availability-list-appointments-notes-data">{{ appointment.notes_to_seller}}</td>
+                    {% if appointment.get_status_display == 'Approved' %}
+                    <td style="color: green;" id="availability-list-appointments-status-data">{{ appointment.get_status_display }}</td>
+                    {% elif appointment.get_status_display == 'Canceled' %}
+                    <td style="color: red;" id="availability-list-appointments-status-data">{{ appointment.get_status_display }}</td>
+                    {% else %}
+                    <td style="color: orange;" id="availability-list-appointments-status-data">{{ appointment.get_status_display }}</td>
+                    {% endif %}
+                    
+                    <td id="availability-list-appointments-actions-data">
+                        <form method="post">
+                            {% csrf_token %}
+                            <input type="hidden" name="appointment_id" value="{{ appointment.id }}">
+                            {{ form.as_p }}
+                            <button id="availability-list-appointments-update-btn" type="submit">Update Status</button>
+                        </form>
+                    </td>
+                </tr>
+                {% empty %}
+                <tr>
+                    <td colspan="5">No appointments found.</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+    {% else %}
+    <p id="availability-list-no-appointments">No appointments found.</p>
+    {% endif %}
+</div>
+
+{% endblock content %}
