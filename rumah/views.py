@@ -97,3 +97,11 @@ def house_edit(request, house_id):
         form = HouseForm(instance=house)
     
     return render(request, 'house_edit.html', {'form': form, 'house': house})
+
+def house_delete(request, house_id):
+    house = get_object_or_404(House, id=house_id)
+    if request.user != house.seller.user:
+        return redirect('houses:house_detail', house_id=house.id)
+    
+    house.delete()
+    return redirect('houses:landing_page')
