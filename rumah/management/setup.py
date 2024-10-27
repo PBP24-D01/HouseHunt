@@ -1,0 +1,48 @@
+import json
+from django.core.management.base import BaseCommand
+from rumah.models import House
+from HouseHuntAuth.models import Seller, CustomUser
+import random
+import shutil
+
+
+class Commandd(BaseCommand):
+    help = "Populate the database with dummy data"
+
+    def handle(self, *args, **kwargs):
+
+        # Read the JSON file
+        with open("dataset/rumah.json") as f:
+            houses = json.load(f)
+
+        user = CustomUser.objects.create_user(
+            username="seller1",
+            password="test123",
+            is_seller=True,
+            phone_number="081234567890",
+            email="test@gmail.com"
+        )
+
+        seller = Seller.objects.create(
+            user=user,
+            company_name="Rumah Baru",
+            company_address="Jl. Raya No. 1, Jakarta",
+            stars=random.uniform(0, 5),
+        )
+
+        for house in houses:
+            housey = House.objects.create(
+                seller=seller,
+                harga=house["harga"],
+                lokasi=house["lokasi"],
+                gambar=house["url"], 
+                kamar_tidur=house["kamar_tidur"],
+                kamar_mandi=house["kamar_mandi"],
+                luas_tanah=house["luas_tanah"],
+                luas_bangunan=house["luas_bangunan"],
+                is_available=house["is_available"],
+            )
+        
+            
+
+        self.stdout.write(self.style.SUCCESS("Successfully populated the database"))
