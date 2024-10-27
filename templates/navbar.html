@@ -188,6 +188,15 @@
               >
             </div>
             {% endif %}
+            <a
+              href="{% url 'houses:settings' %}" 
+              class="flex justify-start items-center px-4 py-2 hover:bg-[#f5f5f5]"
+            >
+            <span
+              class="ml-2 text-[18px] font-bold text-[#4A628A] hover:text-[#33425e] transition-all">
+              Settings
+            </span>
+            </a>
             <form
               method="POST"
               action="{% url 'logout' %}"
