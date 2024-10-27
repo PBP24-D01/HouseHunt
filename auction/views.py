@@ -33,7 +33,7 @@ def bid(request, auction_id):
     if request.user.buyer is None:
         return HttpResponse("You are not a buyer", status=403)
 
-    price = request.POST.get("price")
+    price = int(request.POST.get("price"))
     auction = Auction.objects.get(id=auction_id)
 
     if auction.is_expired():
