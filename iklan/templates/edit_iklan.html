@@ -1,0 +1,68 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block meta %}
+<title>Iklan</title>
+<script src="https://cdn.jsdelivr.net/npm/dompurify@3.1.7/dist/purify.min.js"></script>
+{% endblock meta %}
+{% block content %}
+{% include 'navbar.html' %}
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/flatpickr/4.6.13/flatpickr.min.css">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/flatpickr/4.6.13/flatpickr.min.js"></script>
+
+<div class="max-w-2xl mx-auto bg-white rounded-lg shadow-md overflow-hidden p-6">
+    <h2 class="text-3xl font-bold mb-4" style="color: #365486;">Iklan</h2>
+
+    <div class="mb-20">
+        <label for="rumah" class="block text-sm font-medium text-gray-700">
+            Silahkan pilih rumah yang ingin pasang iklan
+        </label>
+        <div class="mt-1">
+            {{ form.rumah.errors }}
+            {{ form.rumah }}
+        </div>
+    </div>
+    
+    <div class="mb-20">
+        <label class="block text-sm font-medium text-gray-700" for="image-upload">Pasang banner yang ingin anda tampilkan sebagai iklan anda</label>
+        <input id="image-upload" type="file" accept="image/*" class="mt-1 block w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:border file:border-blue-500 file:rounded-lg file:text-sm file:bg-blue-500 file:text-white hover:file:bg-blue-700">
+    </div>
+
+    <div class="mb-20">
+        <label for="datetime-picker" class="block text-sm font-medium text-gray-700">Masukkan tanggal terakhir anda ingin memasang iklan ini</label>
+        <input id="datetime-picker" type="datetime-local" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring focus:ring-blue-500 focus:ring-opacity-50">
+    </div>
+
+    <div class="bg-white rounded-lg p-6 text-center">
+        <a href="{% url 'iklan:show_iklan' %}">
+            <button type="submit" class="bg-blue-500 text-white py-2 px-6 rounded hover:bg-blue-600">Buat Iklan</button>
+        </a>
+    </div>
+</div>
+<script>
+    // Initialize datetime pickers
+    document.addEventListener('DOMContentLoaded', function() {
+        // Configure Flatpickr for both date fields
+        const dateConfig = {
+            enableTime: true,
+            dateFormat: "Y-m-d H:i",
+            minDate: "today",
+            time_24hr: true
+        };
+
+        // Initialize start date picker
+        const startDatePicker = flatpickr("#start_date", {
+            ...dateConfig,
+            onChange: function(selectedDates) {
+                // Update end date minimum when start date changes
+                endDatePicker.set('minDate', selectedDates[0]);
+            }
+        });
+
+        // Initialize end date picker
+        const endDatePicker = flatpickr("#end_date", {
+            ...dateConfig,
+            minDate: document.getElementById('start_date').value || "today"
+        });
+    });
+</script>
+{% endblock content %}
