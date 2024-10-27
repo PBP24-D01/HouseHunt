@@ -28,7 +28,9 @@
                 {{ item.rumah.deskripsi }}<br>
 
                 Dibuat: {{item.start_date}}<br>
-                Tanggal terakhir: {{item.end_date}}
+                Tanggal terakhir: {{item.end_date}}<br>
+                Pertama di buat: {{item.created_at}}<br>
+                Terakhir di update: {{item.updated_at}}
             </p>
             <div class="bg-white rounded-lg p-6 text-center">
                 <a href="{% url 'iklan:edit_iklan' item.id %}">
