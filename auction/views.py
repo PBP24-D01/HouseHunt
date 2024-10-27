@@ -53,6 +53,7 @@ def bid(request, auction_id):
 
     bid = Bid(auction=auction, buyer=request.user.buyer, price=price)
     bid.save()
+    messages.success(request, "Your bid has been placed!")
     return HttpResponse("Bid success", status=201)
 
 
@@ -78,10 +79,10 @@ def create_auction(request):
             auction.seller = request.user.seller
             auction.current_price = auction.starting_price
             auction.save()
-            messages.success(request, "Your auction successfully created!")
+            messages.success(request, "Auction successfully created!")
             return HttpResponseRedirect("/auction/")
         else:
-            return HttpResponse(f"Invalid data: {form.errors}", status=400)
+           messages.error(request, f"Invalid data")
 
     return render(request, "create.html", {"form": form, "title": "Create Auction"})
 
@@ -103,11 +104,10 @@ def edit_auction(request, auction_id):
             auction = form.save(commit=False)
             auction.seller = request.user.seller
             auction.save()
+            messages.success(request, "Auction successfully edited!")
             return HttpResponseRedirect("/auction/")
         else:
-            return HttpResponse(
-                f"Invalid data: {form.errors}",
-            )
+            messages.error(request, f"Invalid data")
 
     return render(request, "create.html", {"form": form, "title": "Edit Auction"})
     
