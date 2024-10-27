@@ -45,15 +45,6 @@
 
     <br>
 
-    {% if messages %}
-    <div id="appointment-form-errors">
-        {% for message in messages %}
-            {% if message.tags == 'error' %}
-                <p class="error-message">{{ message }}</p>
-            {% endif %}
-        {% endfor %}
-    </div>
-    {% endif %}
 
     <a href="{% url 'cekrumah:appointment_list' %}">Back to Appointment List</a>
 </div>

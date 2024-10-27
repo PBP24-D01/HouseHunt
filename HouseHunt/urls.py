@@ -1,5 +1,5 @@
 """
-URL configuration for HouseHunt project.
+URL configuration for HouseHunt project.py
 
 The `urlpatterns` list routes URLs to views. For more information please see:
     https://docs.djangoproject.com/en/5.1/topics/http/urls/
@@ -15,14 +15,19 @@ Including another URLconf
     2. Add a URL to urlpatterns:  path('blog/', include('blog.urls'))
 """
 from django.contrib import admin
-from django.urls import path, include
+from django.views.static import serve
+from django.urls import path, include,re_path
+
+from HouseHunt import settings
 
 urlpatterns = [
-    path('admin/', admin.site.urls),
+    path('admin/', admin.site.urls), 
     path("", include("HouseHuntAuth.urls")),
+    path('iklan/', include('iklan.urls')),
     path('cekrumah/', include('cekrumah.urls')),
     path("auction/", include("auction.urls")),
     path("", include("rumah.urls")),
     path("", include("wishlist.urls")),
+    re_path(r'^media/(?P<path>.*)$',serve,{'document_root':settings.MEDIA_ROOT}),
     path('diskusi/', include('diskusi.urls')),
 ]

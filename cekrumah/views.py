@@ -61,6 +61,7 @@ def create_appointment(request):
     houses = House.objects.filter(is_available=True)  # Adjust based on your model attributes
     return render(request, 'appointment_form.html', {'form': form, 'houses': houses})
 
+# ini buat mengambil data availabilities secara AJAX
 @login_required(login_url="/login")
 def get_availability(request):
     if request.method == 'GET':

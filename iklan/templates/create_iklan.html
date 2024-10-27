@@ -1,0 +1,77 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block meta %}
+<title>Iklan</title>
+<script src="https://cdn.jsdelivr.net/npm/dompurify@3.1.7/dist/purify.min.js"></script>
+{% endblock meta %}
+{% block content %}
+{% include 'navbar.html' %}
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/flatpickr/4.6.13/flatpickr.min.css">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/flatpickr/4.6.13/flatpickr.min.js"></script>
+
+<div class="max-w-2xl mx-auto bg-white rounded-lg shadow-md overflow-hidden p-6 mb-10 mt-5">
+    <h2 class="text-3xl font-bold mb-4" style="color: #365486;">Iklan</h2>
+    <form id="adForm" method="POST" enctype="multipart/form-data" action="{% url 'iklan:create_iklan' %}">
+        {% csrf_token %}
+        {{ form.as_p }}
+
+        <!-- Original Form Submission Button -->
+        <div class="bg-white rounded-lg p-6 text-center">
+            <button type="submit" class="bg-blue-500 text-white py-2 px-6 rounded hover:bg-blue-600">Buat Iklan</button>
+            <button type="button" onclick="submitFormAjax()" class="bg-green-500 text-white py-2 px-6 rounded hover:bg-green-600">Buat Iklan (AJAX)</button>
+        </div>      
+    </form>
+    <div class="bg-white rounded-lg p-6 text-center">
+        <a href="{% url 'iklan:show_iklan' %}">
+            <button class="bg-gray-500 text-white py-2 px-6 rounded hover:bg-gray-600">Back</button>
+        </a>
+    </div>
+</div>
+<script>
+    // Initialize datetime picker
+    document.addEventListener('DOMContentLoaded', function() {
+        flatpickr("#datetime-picker", {
+            enableTime: true,
+            dateFormat: "Y-m-d H:i",
+            minDate: "today",
+            time_24hr: true
+        });
+    });
+
+    // Function to handle AJAX form submission
+    let banner
+    function submitFormAjax() {
+        const form = document.getElementById('adForm');
+        const formData = new FormData(form);
+        formData.append("banner", banner)
+        fetch("{% url 'iklan:add_iklan_ajax' %}", {
+            method: 'POST',
+            body: formData
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.success) {
+                // Redirect or display success message
+                window.location.href = "{% url 'iklan:show_iklan' %}";
+            } else {
+                // Display error message
+                alert("Error: " + data.error);
+            }
+        })
+        .catch(error => {
+            console.error('Error:', error);
+            alert("An error occurred. Please try again.");
+        });
+
+    }
+    document.querySelector('#id_banner').addEventListener('change', (event) => {
+    const file = event.target.files[0];
+    if (file) {
+        banner = file;
+    }
+    });
+
+</script>
+
+{% include 'footer.html' %}
+{% endblock content %}
