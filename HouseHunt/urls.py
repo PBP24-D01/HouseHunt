@@ -23,4 +23,5 @@ urlpatterns = [
     path('cekrumah/', include('cekrumah.urls')),
     path("auction/", include("auction.urls")),
     path("", include("rumah.urls")),
+    path("", include("wishlist.urls")),
 ]
