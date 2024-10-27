@@ -32,6 +32,8 @@ ALLOWED_HOSTS = ["*", "http://tristan-agra-househunt.pbp.cs.ui.ac.id"]
 CSRF_TRUSTED_ORIGINS = [
     "http://localhost",
     "http://127.0.0.1",
+    "http://tristan-agra-househunt.pbp.cs.ui.ac.id",
+    "https://tristan-agra-househunt.pbp.cs.ui.ac.id"
 ]
 
 # Application definition

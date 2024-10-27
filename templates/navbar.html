@@ -69,7 +69,7 @@
   </head>
   <body>
     <nav
-      class="bg-transparent backdrop-blur-lg px-2 md:px-8 py-4 flex justify-between items-center fixed min-w-[100vw] top-0 shadow-lg"
+      class="bg-transparent backdrop-blur-lg px-2 md:px-8 py-4 flex justify-between items-center fixed min-w-[100vw] top-0 shadow-lg z-[1000]"
     >
       <!-- logo -->
       <a href="{% url 'houses:landing_page' %}">
@@ -138,6 +138,9 @@
             Hello, {{ user.username }}
           </button>
           <div class="dropdown-menu transition-all" id="dropdown-menu">
+            <a href="/profile/" class="hover:text-[#33425e] transition-all"
+              >Profile</a
+            >
             {% if user.is_seller %}
             <a
               href="{% url 'houses:house_create' %}"
