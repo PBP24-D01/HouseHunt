@@ -20,7 +20,7 @@ def show_iklan(request):
     if request.user.seller is None:
         return HttpResponseForbidden("Hanya penjual yang bisa mengakses")
     
-    iklan = IklanEntry.objects.filter(user=request.user.seller)
+    iklan = IklanEntry.objects.filter(seller=request.user.seller)
 
     context = {
         'iklan' : iklan,
@@ -29,12 +29,12 @@ def show_iklan(request):
 
 @login_required
 def create_iklan(request):
-    form = IklanEntryForm(request.POST or None)
+    form = IklanEntryForm(request.POST or None, request.FILES)
     houses = House.objects.filter(seller=request.user.seller)
 
     if form.is_valid() and request.method == "POST":
         IklanEntry = form.save(commit=False)
-        IklanEntry.user = request.user
+        IklanEntry.seller = request.user.seller
         IklanEntry.save()
         return redirect('iklan:show_iklan')
     
@@ -45,7 +45,7 @@ def create_iklan(request):
 def edit_iklan(request, id_rumah):
     iklan = IklanEntry.objects.get(pk = id_rumah)
 
-    form = IklanEntryForm(request.POST or None, instance=iklan)
+    form = IklanEntryForm(request.POST or None, request.FILES or None, instance=iklan)
 
     if form.is_valid() and request.method == "POST":
         form.save()
