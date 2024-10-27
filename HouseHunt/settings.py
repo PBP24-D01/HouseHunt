@@ -134,12 +134,12 @@ USE_TZ = True
 
 # URL to serve static files
 STATIC_URL = '/static/'
-if DEBUG:
-    STATICFILES_DIRS = [
-        BASE_DIR / 'static' # merujuk ke /static root project pada mode development
-    ]
-else:
-    STATIC_ROOT = BASE_DIR / 'static' # merujuk ke /static root project pada mode production
+
+# Directory for collected static files during deployment
+STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
+
+# Additional directories where Django will look for static files in development
+STATICFILES_DIRS = [os.path.join(BASE_DIR, 'static')]
 # Default primary key field type
 # https://docs.djangoproject.com/en/5.1/ref/settings/#default-auto-field
 
