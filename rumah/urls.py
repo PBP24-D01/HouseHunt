@@ -9,7 +9,6 @@ urlpatterns = [
     path('', views.landing_page, name='landing_page'),
     path('house/<int:house_id>/', views.house_detail, name='house_detail'),
     path('house/create/', views.house_create, name='house_create'),
-    path('settings/', views.settings, name='settings'),
     path('house/edit/<int:house_id>/', views.house_edit, name='house_edit'),
     path('house/delete/<int:house_id>/', views.house_delete, name='house_delete'),
 ]
