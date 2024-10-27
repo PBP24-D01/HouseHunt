@@ -13,12 +13,12 @@
     <div class="bg--white w-full p-8">
         <div class="h-[200px]"></div>
         <div class="flex justify-center">
-            <form id="review-form" method="POST" action="{% url 'diskusi:reply' comment.pk %}">
+            <form id="review-form" method="POST" action="{% url 'diskusi:edit_comment' comment.pk %}">
                 {% csrf_token %}
+                {% include "star.html" %}
                 <div class="flex items-center space-x-2">
                     {{ form }}
                     <button 
-                    type="submit"
                     class=" bg-[#4A628A] p-3 text-white rounded-[20px] bottom-6 right-6 text-[14px] 
                         hover:bg-[#2F3F58] transition duration-400 ease-in-out"
                     >submit</button>
@@ -28,6 +28,26 @@
     </div>
 </div>
 <script>
+    const select_star = document.querySelectorAll('#rating svg');
+    let selectedRating = 0;
+
+    select_star.forEach((star, index) => {
+        star.addEventListener('click', () => {
+            selectedRating = index + 1; 
+            updateStars(selectedRating);
+        });
+    });
+
+    function updateStars(rating) {
+        select_star.forEach((star, i) => {
+            if (i < rating) {
+                star.classList.add('text-yellow-400');
+            } else {
+                star.classList.remove('text-yellow-400');
+            }
+        });
+    }
+
     document.querySelector('#review-form').addEventListener('submit', function(event) {
         event.preventDefault(); // Prevent the default form submission
         
@@ -35,6 +55,7 @@
         const body = document.getElementById('id_body').value;
         const formData = new FormData();
         formData.append('body', body);
+        formData.append('star', selectedRating);
         const csrfToken = document.querySelector('[name=csrfmiddlewaretoken]').value;
 
         $.ajax({
@@ -47,7 +68,7 @@
             processData: false,
             contentType: false,
             success: function(data) {
-                window.location.href = data.redirect_url;               
+                window.location.href = data.redirect_url;
             },
             error: function(error) {
                 console.error('Error:', error);

@@ -13,7 +13,7 @@
     <div class="bg--white w-full p-8">
         <div class="h-[200px]"></div>
         <div class="flex justify-center">
-            <form id="review-form" method="POST" action="{% url 'diskusi:reply' comment.pk %}">
+            <form id="review-form" method="POST" action="{% url 'diskusi:edit_replay' reply.pk %}">
                 {% csrf_token %}
                 <div class="flex items-center space-x-2">
                     {{ form }}

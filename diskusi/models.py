@@ -13,7 +13,7 @@ class Comment(models.Model):
         
         
 class Reply(models.Model):
-    parent_comment = models.ForeignKey(Comment, on_delete=models.CASCADE, related_name='replies', null=True),
+    parent_comment = models.ForeignKey(Comment, on_delete=models.CASCADE, related_name='replies', null=True)
     name = models.CharField(max_length=150,default='Anonymous')
     body = models.CharField(max_length=400) 
     created = models.DateTimeField(auto_now_add=True)

@@ -24,5 +24,5 @@ urlpatterns = [
     path("auction/", include("auction.urls")),
     path("", include("rumah.urls")),
     path("", include("wishlist.urls")),
-    path('', include('diskusi.urls')),
+    path('diskusi/', include('diskusi.urls')),
 ]

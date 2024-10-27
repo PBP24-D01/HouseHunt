@@ -7,7 +7,7 @@
 {% endblock meta %}
 
 {% block content %}
-{% include 'navbar.html'%}
+{% include 'navbar.html' %}
 <div>
     <div class="bg-gradient-to-b from-[#DCF2F1] to-white w-full h-[390px] p-8">
         <h1 class="text-5xl font-bold text-[#365486]">{{seller.company_name}}</h1>
@@ -57,7 +57,12 @@
             }
         });
     }
-
+    const inp = document.querySelector('#review-form');
+    if ("{{ user.is_buyer }}" === "True") {
+        inp.style.display = 'block';
+    } else {
+        inp.style.display = 'none';
+    }
 
     document.querySelector('#review-form').addEventListener('submit', function(event) {
         event.preventDefault(); // Prevent the default form submission
@@ -118,6 +123,30 @@
         });
         
     }
+    async function getReplies(pk) {
+        return fetch(`/diskusi/show_reply/${pk}`).then(response => response.json());
+    }
+
+    async function refreshReplies(pk) {
+        getReplies(pk).then(replies => {
+            let repliesHtml = '';
+            for (const reply of replies) {
+                repliesHtml += `
+                    <div class="ml-12 bg-[#4A628A] mt-2 p-3 mr-9 rounded-[20px] shadow-sm">
+                        <p class="text-base px-8">
+                            <span class="font-semibold text-sm text-white">${reply.fields.name} (seller)</span>
+                            <br>
+                            <span class='text-sm text-white'>${reply.fields.body}</span>
+                        </p>
+                        <button id="reply-edit-${reply.pk}" onclick="window.location.href='/diskusi/edit_replay/${reply.pk}'">Edit</button>
+                        <button id="reply-delete-${reply.pk}" onclick="deleteReplay('${reply.pk}')">Delete</button>
+                    </div>
+                `;
+            }
+            document.getElementById(`reply-section-${pk}`).innerHTML = repliesHtml;
+        }).catch(error => console.error('Error fetching replies:', error));
+    }
+
     async function refreshComments() {
         const comments = await getComments();
         let htmlString = '';
@@ -131,42 +160,109 @@
         else{
         comments.forEach((item) =>{
             htmlString += `
-            <div class="m-10 bg-[#DCF2F1] p-4 rounded-[20px] shadow-md">
+            <div id="comment-${item.pk}" class="m-10 bg-[#DCF2F1] p-4 rounded-[20px] shadow-md">
                 
                 <!-- Comment Body -->
                 <p class="text-xl px-10">
-                    <span class="font-bold text-base text-blue-800">${item.fields.name}</span>
+                    <span class="font-bold text-base text-blue-800">${item.fields.name}</span><br>
+                    <span class="font-sm text-base text-black">rating: <b class="font-bold text-blue-800">${item.fields.star}</b></span>
                     <br>
-                    <span class='font-bold text-base text-blue-800'>${item.fields.body}</span>
+                    <span class='text-base text-black'>${item.fields.body}</span>
                 </p>
                 <div id="edit-delete-${item.pk}" class="flex items-center gap-4 [&>a:hover]:underline">
-                    <button href="#">Edit</button>
-                    <button href="#">Delete</button>
-                    <button onclick="window.location.href='{% url 'diskusi:reply' ${item.pk} %}'">Reply</button>
+                    <button id="edit-${item.pk}" onclick="window.location.href='/diskusi/edit/${item.pk}'">Edit</button>
+                    <button id="delete-${item.pk}" onclick="deleteComment('${item.pk}')">Delete</button>
+                    <button id="reply-${item.pk}" onclick="window.location.href='/diskusi/reply/${item.pk}'">Reply</button>
                 </div>
             </div>
+            <!-- Replies Section -->
+            <div id="reply-section-${item.pk}" class="pl-8 mt-4"></div>
             `;
+            refreshReplies(item.pk);
         });
+        
 
         }
     document.getElementById("comment-section").innerHTML = htmlString;
     comments.forEach((item) => {
         let name = item.fields.name;
+        let replyButton = document.getElementById(`reply-${item.pk}`);
+        let editButton = document.getElementById(`edit-${item.pk}`);
+        let deleteButton = document.getElementById(`delete-${item.pk}`);
         let nameUser = '';
         if ("{{user.is_seller}}" === "True") {
             nameUser = "{{ user.seller.company_name }}";
+            replyButton.style.display = 'flex';
         } else {
             nameUser = "{{user.username}}";
+            replyButton.style.display = 'none';
         }
         let auth_user = name === nameUser;
         let editDeleteDiv = document.getElementById(`edit-delete-${item.pk}`);
+        console.log(auth_user);
         if (auth_user) {
             editDeleteDiv.style.display = 'flex';
+            editButton.style.display = 'flex';
+            deleteButton.style.display = 'flex';
         } else {
             editDeleteDiv.style.display = 'none';
+            if("{{user.is_seller}}" === "True"){
+                editDeleteDiv.style.display = 'flex';
+                editButton.style.display = 'none';
+                deleteButton.style.display = 'none';
+                replyButton.style.display = 'flex';
+            }
         }
     });
+    }
 
+    function deleteComment(commentId) {
+        const csrfToken = document.querySelector('[name=csrfmiddlewaretoken]').value;
+        console.log(csrfToken);
+        $.ajax({
+            url: `/diskusi/delete/${commentId}`,
+            type: 'DELETE',
+            headers: {
+                'X-CSRFToken': csrfToken
+            },
+            success: function(response) {
+                if (response.status === 'success') {
+                    // Remove the comment from the DOM
+                    document.getElementById(`comment-${commentId}`).remove();
+                    refreshComments();  // Refresh comments if needed
+                    console.log(response.message);
+                } else {
+                    console.error('Failed to delete comment:', response.message);
+                }
+            },
+            error: function(error) {
+                console.error('Error:', error);
+            }
+        });
+    }
+    function deleteReplay(replyId) {
+        const csrfToken = document.querySelector('[name=csrfmiddlewaretoken]').value;
+        console.log(csrfToken);
+        $.ajax({
+            url: `/diskusi/delete_replay/${replyId}`,
+            type: 'DELETE',
+            headers: {
+                'X-CSRFToken': csrfToken
+            },
+            success: function(response) {
+                if (response.status === 'success') {
+                    // Remove the comment from the DOM
+                    document.getElementById(`reply-comment-${replyId}`).remove();
+                    refreshComments();  // Refresh comments if needed
+                    console.log(response.message);
+                } else {
+                    console.error('Failed to delete comment:', response.message);
+                }
+            },
+            error: function(error) {
+                console.error('Error:', error);
+            }
+        });
     }
     refreshComments();
     refreshRating();
