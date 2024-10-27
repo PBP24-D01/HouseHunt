@@ -57,6 +57,11 @@
                         <p class="text-gray-700 mb-2"><strong>Perusahaan:</strong> {{ house.seller.company_name }}</p>
                         <p class="text-gray-700 mb-2"><strong>Alamat:</strong> {{ house.seller.company_address }}</p>
                         <p class="text-gray-700 mb-2"><strong>Kontak:</strong> {{ house.seller.user.phone_number }}</p>
+                        {% if user != house.seller.user and user.buyer and house.is_available %}
+                            <a href="{% url 'houses:order_page' house.id %}" class="bg-green-500 text-white px-4 py-2 rounded shadow-lg hover:bg-green-600 transition duration-300 mt-4 block text-center">
+                                Order Here
+                            </a>
+                        {% endif %}
                     </div>
                 </div>
             </div>

@@ -5,7 +5,7 @@ from django.views.decorators.http import require_POST
 from django.contrib.auth.decorators import login_required
 from .models import House
 from .forms import HouseForm, HouseFilterForm
-from HouseHuntAuth.models import Seller
+from HouseHuntAuth.models import Seller, Buyer
 
 def landing_page(request):
     form = HouseFilterForm(request.GET or {'is_available': True})
@@ -104,3 +104,28 @@ def house_delete(request, house_id):
     
     house.delete()
     return redirect('houses:landing_page')
+
+
+@login_required
+def order_page(request, house_id):
+    house = get_object_or_404(House, id=house_id)
+    if not house.is_available:
+        return redirect('houses:house_detail', house_id=house.id)
+    if hasattr(request.user, 'buyer'):
+        buyer = request.user.buyer
+        return render(request, 'order_page.html', {'house': house, 'buyer': buyer})
+    else:
+        return redirect('houses:house_detail', house_id=house.id)
+
+@login_required
+def generate_invoice(request, house_id):
+    house = get_object_or_404(House, id=house_id)
+    if not house.is_available:
+        return redirect('houses:house_detail', house_id=house.id)
+    if hasattr(request.user, 'buyer'):
+        buyer = request.user.buyer
+        house.is_available = False
+        house.save()
+        return render(request, 'invoice.html', {'house': house, 'buyer': buyer})
+    else:
+        return redirect('houses:house_detail', house_id=house.id)

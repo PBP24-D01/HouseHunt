@@ -1,6 +1,6 @@
 from django.test import TestCase, Client
 from django.urls import reverse
-from HouseHuntAuth.models import CustomUser, Seller
+from HouseHuntAuth.models import CustomUser, Seller, Buyer
 from .models import House
 from .forms import HouseForm
 from django.core.files.uploadedfile import SimpleUploadedFile
@@ -136,7 +136,7 @@ class HouseViewTest(TestCase):
         form_data = {
             'judul': 'Updated House',
             'deskripsi': 'Updated Description',
-            'harga': 3000000,
+            'harga':3000000,
             'lokasi': 'Bekasi', 
             'gambar': image,
             'kamar_tidur': 5,
@@ -154,8 +154,53 @@ class HouseViewTest(TestCase):
         self.assertEqual(response.status_code, 302)  
         self.assertFalse(House.objects.filter(id=self.house.id).exists())
 
-    def test_8_settings_view(self):
-        self.client.login(username='seller', password='password')
-        response = self.client.get(reverse('houses:settings'))
+class HousePurchaseTest(TestCase):
+    def setUp(self):
+        self.client = Client()
+        self.seller_user = CustomUser.objects.create_user(username='seller', password='password')
+        self.seller = Seller.objects.create(
+            user=self.seller_user,
+            company_name='Test Company',
+            company_address='123 Test Street',
+        )
+        self.buyer_user = CustomUser.objects.create_user(username='buyer', password='password')
+        self.buyer = Buyer.objects.create(
+            user=self.buyer_user,
+        )
+        image_content = get_image_from_url(image_url)
+        self.image = SimpleUploadedFile(name='test_image.png', content=image_content, content_type='image/png')
+        self.house = House.objects.create(
+            judul='Test House',
+            deskripsi='Test Description',
+            harga=1000000,
+            lokasi='Bekasi',  
+            gambar=self.image,
+            kamar_tidur=3,
+            kamar_mandi=2,
+            is_available=True,
+            seller=self.seller
+        )
+
+    def test_8_order_house(self):
+        self.client.login(username='buyer', password='password')
+        response = self.client.get(reverse('houses:order_page', args=[self.house.id]))
         self.assertEqual(response.status_code, 200)
-        self.assertTemplateUsed(response, 'settings.html')
+        self.assertTemplateUsed(response, 'order_page.html')
+
+        response = self.client.get(reverse('houses:generate_invoice', args=[self.house.id]))
+        self.assertEqual(response.status_code, 200)
+        self.assertTemplateUsed(response, 'invoice.html')
+
+        self.house.refresh_from_db()
+        self.assertFalse(self.house.is_available)
+
+    def test_9_order_unavailable_house(self):
+        self.house.is_available = False
+        self.house.save()
+
+        self.client.login(username='buyer', password='password')
+        response = self.client.get(reverse('houses:order_page', args=[self.house.id]))
+        self.assertRedirects(response, reverse('houses:house_detail', args=[self.house.id]))  # Should redirect to house detail page
+
+        response = self.client.get(reverse('houses:generate_invoice', args=[self.house.id]))
+        self.assertRedirects(response, reverse('houses:house_detail', args=[self.house.id]))  # Should redirect to house detail page
