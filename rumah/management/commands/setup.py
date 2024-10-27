@@ -5,7 +5,7 @@ from HouseHuntAuth.models import Seller, CustomUser
 import random
 
 
-class Commandd(BaseCommand):
+class Command(BaseCommand):
     help = "Populate the database with dummy data"
 
     def handle(self, *args, **kwargs):
