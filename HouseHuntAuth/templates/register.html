@@ -2,7 +2,9 @@
   Register as {{ user_type|title }}</title
 >{% endblock meta %} {% block content %}
 
-<div class="bg-white rounded-lg shadow-md overflow-hidden mx-[8px] sm:mx-[10vw]">
+<div
+  class="bg-white rounded-lg shadow-md overflow-hidden mx-[8px] sm:mx-[10vw]"
+>
   <div class="sm:p-6 max-sm:px-2 max-sm:py-4">
     <h2 class="text-2xl font-bold text-gray-900 mb-6 text-center">
       Sign Up as {{ user_type|title }}
@@ -111,8 +113,7 @@
           >
           <input class="p-2 text-gray-900 bg-[#4625581a] hover:bg-[#3602010a]
           transition-all rounded-lg" name="company_address" type="text"
-          id="company_address" placeholder="Alamat Perusahaan anda" required 
-          {{ form.company_address.value|default_if_none:'' }}/> 
+          id="company_address" placeholder="Alamat Perusahaan anda" required {{ form.company_address.value|default_if_none:'' }}/> 
           {{ form.company_address.errors }}
         </div>
         {% else %}
@@ -128,7 +129,7 @@
             id="preferred_payment_method"
             required
           >
-            <option value="" disabled selected class='max-sm:hidden'>
+            <option value="" disabled selected class="max-sm:hidden">
               Select payment method
             </option>
             <option value="credit_card">Credit Card</option>
@@ -147,5 +148,6 @@
     </form>
   </div>
 </div>
+<div class="absolute bottom-0">{% include 'footer.html' %}</div>
 
 {% endblock %}
