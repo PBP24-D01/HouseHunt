@@ -4,6 +4,7 @@ from django.views.decorators.csrf import csrf_protect, csrf_exempt
 from django.views.decorators.http import require_POST
 from django.contrib.auth.decorators import login_required
 from .models import House
+from wishlist.models import Wishlist
 from .forms import HouseForm, HouseFilterForm
 from HouseHuntAuth.models import Seller, Buyer
 
@@ -11,6 +12,13 @@ def landing_page(request):
     form = HouseFilterForm(request.GET or {'is_available': True})
     houses = House.objects.all()
     
+    # Initialize user_wishlist to an empty list
+    user_wishlist = []
+
+    if request.user.is_authenticated:
+        # Query the Wishlist directly using the CustomUser instance
+        user_wishlist = Wishlist.objects.filter(user=request.user).values_list('rumah', flat=True)
+
     if form.is_valid():
         # harga
         price_range = form.cleaned_data.get('price_range')
@@ -43,10 +51,11 @@ def landing_page(request):
         is_available = form.cleaned_data.get('is_available')
         if is_available is not None:
             houses = houses.filter(is_available=is_available)
-    
+
     context = {
         'houses': houses,
         'form': form,
+        'user_wishlist': user_wishlist,  # List of house IDs
     }
     return render(request, 'landing_page.html', context)
 
