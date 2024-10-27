@@ -5,8 +5,8 @@ from django.contrib.auth import login
 from django.contrib.auth.decorators import login_required
 from django.contrib import messages
 from django.urls import reverse
-from django.views.generic import CreateView, UpdateView
-from .forms import BuyerSignUpForm, SellerSignUpForm, BuyerForm, SellerForm
+from django.views.generic import CreateView
+from .forms import BuyerSignUpForm, SellerSignUpForm
 from .models import CustomUser
 from django.contrib.auth.forms import AuthenticationForm
 
@@ -25,7 +25,7 @@ class RegisterBuyer(CreateView):
         user = form.save()
         login(self.request, user)
         messages.success(
-            self.request, "Welcome! Buyer account has been created successfully."
+            self.request, "Welcome to HouseHunt as Buyer!"
         )
         return redirect("/")
 
@@ -43,10 +43,9 @@ class RegisterSeller(CreateView):
         user = form.save()
         login(self.request, user)
         messages.success(
-            self.request, "Welcome! Seller account has been created successfully."
+            self.request, "Welcome to Househunt as Seller!"
         )
         return redirect("/")
-
 
 def login_user(request):
     if request.method == "POST":
@@ -54,9 +53,7 @@ def login_user(request):
         if form.is_valid():
             user = form.get_user()
             login(request, user)
-            #response = HttpResponseRedirect(reverse("main:show_main"))
-            #response.set_cookie("last_login", str(datetime.datetime.now()))
-            #return response
+            messages.success(request, f"Welcome, {user.username}.")
             return redirect("/")
     else:
         form = AuthenticationForm(request)

@@ -5,6 +5,7 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/tailwindcss/2.2.19/tailwind.min.js"></script>
     <link
       href="https://fonts.googleapis.com/css?family=Poppins"
       rel="stylesheet"
@@ -14,12 +15,111 @@
         font-family: "Poppins";
         font-size: 22px;
       }
+      @keyframes slideIn {
+        from {
+          transform: translateX(-100%);
+          opacity: 0;
+        }
+        to {
+          transform: translateX(0);
+          opacity: 1;
+        }
+      }
+
+      @keyframes fadeOut {
+        from {
+          opacity: 1;
+        }
+        to {
+          opacity: 0;
+        }
+      }
+
+      .message-container {
+        position: fixed;
+        bottom: 20px;
+        left: 20px;
+        z-index: 50;
+        min-width: 300px;
+        max-width: 400px;
+      }
+
+      .message-alert {
+        animation: slideIn 0.5s ease forwards;
+      }
+
+      .message-alert.fade-out {
+        animation: fadeOut 0.5s ease forwards;
+      }
     </style>
     {% block meta %} {% endblock meta %}
     <link rel="stylesheet" href="{% static 'css/global.css' %}" />
   </head>
 
-  <body class='pt-[10dvh] bg-[#f5f5f5]'>
-    {% block content %} {% endblock content %}
+  <body class="pt-[15dvh] overflow-x-hidden bg-[#f5f5f5] flex flex-col justify-between gap-20">
+    <main>
+    {% block content %} {% endblock content %} {% if messages %}
+    <div class="message-container" id="message-container">
+      {% for message in messages %}
+      <div
+        class="mb-4 p-4 rounded shadow-lg message-alert {% if message.tags == 'success' %} bg-green-100 text-green-700 {% elif message.tags == 'error' %} bg-red-100 text-red-700 {% elif message.tags == 'warning' %} bg-yellow-100 text-yellow-700 {% elif message.tags == 'info' %} bg-blue-100 text-blue-700 {% else %} bg-gray-100 text-gray-700 {% endif %}"
+        role="alert"
+      >
+        <div class="flex">
+          <div class="py-1">
+            {% if message.tags == 'success' %}
+            <svg
+              class="w-6 h-6 mr-4"
+              fill="none"
+              stroke="currentColor"
+              viewBox="0 0 24 24"
+            >
+              <path
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                stroke-width="2"
+                d="M5 13l4 4L19 7"
+              ></path>
+            </svg>
+            {% else %}
+            <svg
+              class="w-6 h-6 mr-4"
+              fill="none"
+              stroke="currentColor"
+              viewBox="0 0 24 24"
+            >
+              <path
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                stroke-width="2"
+                d="M6 18L18 6M6 6l12 12"
+              ></path>
+            </svg>
+            {% endif %}
+          </div>
+          <div>{{ message }}</div>
+        </div>
+      </div>
+      {% endfor %}
+    </div>
+    {% endif %}
+    <script>
+      document.addEventListener("DOMContentLoaded", function () {
+        const messages = document.querySelectorAll(".message-alert");
+
+        messages.forEach((message) => {
+          // Set timeout to add fade-out class after 4.5 seconds
+          setTimeout(() => {
+            message.classList.add("fade-out");
+          }, 4500);
+
+          // Remove the message element after fade-out animation (5 seconds total)
+          setTimeout(() => {
+            message.remove();
+          }, 5000);
+        });
+      });
+    </script>
+    </main>
   </body>
 </html>
