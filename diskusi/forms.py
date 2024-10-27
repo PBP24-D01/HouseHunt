@@ -1,7 +1,27 @@
 from django.forms import ModelForm
-from models import Review
+from django import forms
+from .models import *
 
-class ReviewEntryForm(ModelForm):
+        
+class CommentCreateForm(ModelForm):
     class Meta:
-        model = Review
-        fields = ['review', 'rating']
+        model = Comment
+        fields = ['body']
+        widgets = {
+            'body' : forms.TextInput(attrs={'placeholder': 'Add comment ...'})
+        }
+        labels = {
+            'body': ''
+        }
+        
+        
+class ReplyCreateForm(ModelForm):
+    class Meta:
+        model = Reply
+        fields = ['body']
+        widgets = {
+            'body' : forms.TextInput(attrs={'placeholder': 'Add reply ...', 'class': "!text-sm"})
+        }
+        labels = {
+            'body': ''
+        }
