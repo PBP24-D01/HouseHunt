@@ -42,9 +42,6 @@ class Bid(models.Model):
     def __str__(self):
         return f"{self.auction.title} - {self.buyer.user.username} - {self.price}"
     
-    def is_valid(self):
-        return self.price > self.auction.current_price
-    
     def save(self, *args, **kwargs):
         self.auction.current_price = self.price
         self.auction.highest_buyer = self.buyer
