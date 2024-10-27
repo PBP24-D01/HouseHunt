@@ -36,7 +36,7 @@ class Command(BaseCommand):
                 deskripsi=house["description"],
                 judul=house["title"],
                 lokasi=house["lokasi"],
-                gambar="static/logo.png",
+                gambar="static/img/logo.png",
                 kamar_tidur=house["kamar_tidur"],
                 kamar_mandi=house["kamar_mandi"],
                 is_available=True,
