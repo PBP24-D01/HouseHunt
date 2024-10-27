@@ -12,13 +12,29 @@
     <div class="container mx-auto p-6 pt-20">
         <h2 class="text-3xl font-bold mb-4" style="color: #365486;">Wishlist Rumah Saya</h2>
         <p class="text-gray-500 mb-8 text-sm">Rumah yang nyaman adalah rumah yang dapat memberi ketenangan. Rencanakan rumah terbaikmu bersama HouseHunt.</p>
+
+        <!-- Filter Dropdown -->
+        <div class="container mx-auto">
+            <div class="bg-[#F5FFFF] shadow-md rounded-md p-6 mb-4">
+                <form method="get" action="{% url 'wishlistpage' %}">  <!-- Updated to use the correct URL name -->
+                    <label for="prioritas-filter" class="block text-lg font-semibold mb-2">Filter berdasarkan Prioritas:</label>
+                    <select name="prioritas" id="prioritas-filter" class="border border-gray-300 rounded-md p-2 w-full focus:outline-none focus:ring-2 focus:ring-blue-400 transition duration-150 ease-in-out">
+                        <option value="all" {% if prioritas_filter == 'all' %}selected{% endif %}>Semua</option>
+                        <option value="high" {% if prioritas_filter == 'high' %}selected{% endif %}>Tinggi</option>
+                        <option value="medium" {% if prioritas_filter == 'medium' %}selected{% endif %}>Sedang</option>
+                        <option value="low" {% if prioritas_filter == 'low' %}selected{% endif %}>Rendah</option>
+                    </select>
+                    <button type="submit" class="mt-4 bg-blue-500 text-white rounded-md p-2 w-full hover:bg-blue-600 transition duration-150 ease-in-out">Cari Wishlist</button>
+                </form>
+            </div>
+        </div>
     
         <!-- Check if the user has any wishlist items -->
         {% if wishlists %}
         <div class="flex justify-between flex-wrap">
             {% for item in wishlists %}
             <div class="bg-[#F5FFFF] rounded-lg shadow-md w-full sm:w-1/2 md:w-1/3 mb-5 p-4">
-                <img src="{% static 'img/rumah_' %}{{ house.id }}.jpg" alt="{{ item.rumah.judul }}" class="rounded-t-lg w-full h-48" loading="lazy">
+                <img img src="{{ item.rumah.gambar.url }}" alt="{{ item.rumah.judul }}" class="w-full h-48 object-cover" loading="lazy">
                 <h3 class="font-bold text-gray-900 mt-2">Rp {{ item.rumah.harga|intcomma }}</h3>
                 <p class="text-gray-700" style="font-size: 18px;">{{ item.rumah.judul }}</p>
                 <p class="text-gray-600" style="font-size: 16px;">
@@ -33,24 +49,36 @@
                     {{ item.rumah.kamar_mandi }}<br>
                     
                     {{ item.rumah.deskripsi }}<br>
-                    Dijual oleh: {{ item.rumah.seller.username }}
+                    Dijual oleh: {{ item.rumah.seller.user.username }}
                 </p>
+                <hr class="my-2 border-gray-300">
                 <div class="flex justify-between items-center mt-4">
-                    <p class="text-xs text-gray-900">Notes: {{ item.notes }}</p>
-                    <div class="flex gap-2 items-center">
+                    <div>
+                        <p class="text-xs text-gray-900">Catatan: {{ item.notes }}</p>
                         <!-- Priority Display -->
                         {% if item.priority %}
                             {% if item.priority == 'high' %}
-                                <span class="text-red-600">Priority: ❗❗❗</span>
+                                <p class="text-xs text-gray-900">Prioritas:
+                                    <svg xmlns="http://www.w3.org/2000/svg" class="inline w-3 h-3" viewBox="0 0 128 512"><!--!Font Awesome Free 6.6.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free Copyright 2024 Fonticons, Inc.--><path d="M96 64c0-17.7-14.3-32-32-32S32 46.3 32 64l0 256c0 17.7 14.3 32 32 32s32-14.3 32-32L96 64zM64 480a40 40 0 1 0 0-80 40 40 0 1 0 0 80z"/></svg>
+                                    <svg xmlns="http://www.w3.org/2000/svg" class="inline w-3 h-3" viewBox="0 0 128 512"><!--!Font Awesome Free 6.6.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free Copyright 2024 Fonticons, Inc.--><path d="M96 64c0-17.7-14.3-32-32-32S32 46.3 32 64l0 256c0 17.7 14.3 32 32 32s32-14.3 32-32L96 64zM64 480a40 40 0 1 0 0-80 40 40 0 1 0 0 80z"/></svg>
+                                    <svg xmlns="http://www.w3.org/2000/svg" class="inline w-3 h-3" viewBox="0 0 128 512"><!--!Font Awesome Free 6.6.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free Copyright 2024 Fonticons, Inc.--><path d="M96 64c0-17.7-14.3-32-32-32S32 46.3 32 64l0 256c0 17.7 14.3 32 32 32s32-14.3 32-32L96 64zM64 480a40 40 0 1 0 0-80 40 40 0 1 0 0 80z"/></svg>
+                                </p>
                             {% elif item.priority == 'medium' %}
-                                <span class="text-yellow-600">Priority: ❗❗⚪</span>
+                                <p class="text-xs text-gray-900">Prioritas: 
+                                    <svg xmlns="http://www.w3.org/2000/svg" class="inline w-3 h-3" viewBox="0 0 128 512"><!--!Font Awesome Free 6.6.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free Copyright 2024 Fonticons, Inc.--><path d="M96 64c0-17.7-14.3-32-32-32S32 46.3 32 64l0 256c0 17.7 14.3 32 32 32s32-14.3 32-32L96 64zM64 480a40 40 0 1 0 0-80 40 40 0 1 0 0 80z"/></svg>
+                                    <svg xmlns="http://www.w3.org/2000/svg" class="inline w-3 h-3" viewBox="0 0 128 512"><!--!Font Awesome Free 6.6.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free Copyright 2024 Fonticons, Inc.--><path d="M96 64c0-17.7-14.3-32-32-32S32 46.3 32 64l0 256c0 17.7 14.3 32 32 32s32-14.3 32-32L96 64zM64 480a40 40 0 1 0 0-80 40 40 0 1 0 0 80z"/></svg>
+                                </p>
                             {% elif item.priority == 'low' %}
-                                <span class="text-green-600">Priority: ❗⚪⚪</span>
+                                <p class="text-xs text-gray-900">Prioritas: 
+                                    <svg xmlns="http://www.w3.org/2000/svg" class="inline w-3 h-3" viewBox="0 0 128 512"><!--!Font Awesome Free 6.6.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free Copyright 2024 Fonticons, Inc.--><path d="M96 64c0-17.7-14.3-32-32-32S32 46.3 32 64l0 256c0 17.7 14.3 32 32 32s32-14.3 32-32L96 64zM64 480a40 40 0 1 0 0-80 40 40 0 1 0 0 80z"/></svg>
+                                </p>
                             {% endif %}
                         {% else %}
-                            <span class="text-gray-400">Priority: ⚪⚪⚪</span> <!-- Three Empty Icons for Not Set -->
+                            <p class="text-gray-900">Prioritas: </p>
                         {% endif %}
-                        
+                    </div>
+                    
+                    <div class="flex gap-2 items-center">
                         <!-- Button to remove from wishlist -->
                         <form action="{% url 'delete_wishlist' item.rumah.id %}" method="post" onsubmit="return confirm('Apakah Anda yakin ingin menghapus item ini dari wishlist?');">
                             {% csrf_token %}
@@ -60,7 +88,7 @@
                                 </svg>
                             </button>
                         </form>
-
+                
                         <!-- Button to edit the wishlist item -->
                         <a href="{% url 'edit_wishlist' item.rumah.id %}" class="text-xl cursor-pointer hover:text-blue-600">
                             <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" class="inline w-6 h-6">
@@ -81,4 +109,21 @@
         </div>
         {% endif %}
     </div>
+    <script>
+        document.getElementById('filter-button').addEventListener('click', function() {
+            const selectedPriority = document.getElementById('prioritas-filter').value;
+            const items = document.querySelectorAll('[class*="priority-"]');
+
+            items.forEach(item => {
+                const itemPriority = item.className.match(/priority-(\w+)/)[1];
+
+                if (selectedPriority === 'all' || itemPriority === selectedPriority) {
+                    item.style.display = 'block'; // Show item
+                } else {
+                    item.style.display = 'none'; // Hide item
+                }
+            });
+        });
+    </script>
+{% include 'footer.html' %}
 {% endblock content %}
