@@ -49,7 +49,9 @@ INSTALLED_APPS = [
     'iklan',
     "django.contrib.humanize",
     'rumah',
+    'cekrumah',
     "auction",
+    'wishlist',
 ]
 
 MIDDLEWARE = [
@@ -68,7 +70,7 @@ ROOT_URLCONF = "HouseHunt.urls"
 TEMPLATES = [
     {
         "BACKEND": "django.template.backends.django.DjangoTemplates",
-        "DIRS": [BASE_DIR / 'templates'],
+        "DIRS": [BASE_DIR / "templates"],
         "APP_DIRS": True,
         "OPTIONS": {
             "context_processors": [

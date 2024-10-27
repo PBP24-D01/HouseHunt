@@ -17,10 +17,10 @@ from rumah.models import House
 
 @login_required
 def show_iklan(request):
-    if not request.user.is_seller:
+    if request.user.seller is None:
         return HttpResponseForbidden("Hanya penjual yang bisa mengakses")
     
-    iklan = IklanEntry.objects.filter(user=request.user)
+    iklan = IklanEntry.objects.filter(user=request.user.seller)
 
     context = {
         'iklan' : iklan,
