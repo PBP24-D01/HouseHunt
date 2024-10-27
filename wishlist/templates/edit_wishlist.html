@@ -9,7 +9,7 @@
 {% include 'navbar.html' %}
 
 <div class="flex flex-col min-h-screen">
-  <div class="container mx-auto px-4 py-8 mt-4 max-w-xl">
+  <div class="container mx-auto px-4 py-8 mt-4 max-w-5xl">
     <h1 class="text-3xl font-bold text-center mb-8 text-[#2D3A36]">Edit Wishlist</h1>
 
     <div class="flex justify-start mb-4">
@@ -18,34 +18,55 @@
         </a>
     </div>
 
-    <div class="bg-[#B4CFB0] shadow-md rounded-lg p-6 form-style">
-      <h2 class="text-2xl mb-4 text-[#2D3A36]">Rumah: {{ house.title }}</h2>  <!-- Display House Title -->
-      <p class="text-lg text-[#789395]">Deskripsi: {{ house.description }}</p>  <!-- Example field, adjust as necessary -->
+    <div class="flex flex-col lg:flex-row gap-8 bg-white shadow-md rounded-lg p-6 form-style">
+      
+      <!-- House Info Section (Left) -->
+      <div class="lg:w-1/2">
+        <img src="{{ house.image.url }}" alt="{{ house.judul }}" class="rounded-t-lg w-full mb-4">
+        <h3 class="text-lg font-bold text-gray-900">Rp {{ house.harga }}</h3>
+        <p class="text-gray-700">{{ house.judul }}</p>
+        <p class="text-gray-600">
+            {{ house.lokasi }}<br>
+            🛏️ {{ house.kamar_tidur }} &nbsp; 🛁 {{ house.kamar_mandi }}<br>
+            {{ house.deskripsi }}<br>
+            Dijual oleh: {{ house.seller.username }}
+        </p>
+      </div>
 
-      <form method="POST" class="space-y-6">
-        {% csrf_token %}
-        {% for field in form %}
-          <div class="flex flex-col">
-            <label for="{{ field.id_for_label }}" class="mb-2 font-semibold text-[#2D3A36]">
-              {{ field.label }}
-            </label>
-            <div class="w-full">
-              {{ field }}
-            </div>
-            {% if field.help_text %}
-              <p class="mt-1 text-sm text-[#789395]">{{ field.help_text }}</p>
+      <!-- edit_wishlist.html -->
+      <div class="lg:w-1/2">
+        <form method="POST" class="bg-white shadow-md rounded-lg p-6 space-y-6">
+          {% csrf_token %}
+          
+          <!-- Catatan Field (Textarea) -->
+          <div class="mb-4">
+            <label for="notes" class="block text-sm font-bold text-[#2D3A36] mb-2">Catatan</label>
+            <textarea id="notes" name="notes" rows="4" class="w-full px-3 py-2 border rounded-md focus:outline-none focus:border-blue-500">{{ form.notes.value }}</textarea>
+            {% if form.notes.errors %}
+              <p class="mt-1 text-sm text-red-600">{{ form.notes.errors }}</p>
             {% endif %}
-            {% for error in field.errors %}
-              <p class="mt-1 text-sm text-red-600">{{ error }}</p>
-            {% endfor %}
           </div>
-        {% endfor %}
-        <div class="flex justify-center mt-6">
-          <button type="submit" class="bg-[#789395] text-white font-semibold px-6 py-3 rounded-lg hover:bg-[#94B49F] transition duration-300 ease-in-out w-full">
-            Edit Wishlist
-          </button>
-        </div>
-      </form>
+
+          <!-- Priority Dropdown -->
+          <div class="mb-4">
+            <label for="priority" class="block text-sm font-bold text-[#2D3A36] mb-2">Priority</label>
+            <select id="priority" name="priority" class="w-full px-3 py-2 border rounded-md focus:outline-none focus:border-blue-500">
+              {% for key, value in form.fields.priority.choices %}
+                <option value="{{ key }}" {% if form.priority.value == key %}selected{% endif %}>{{ value }}</option>
+              {% endfor %}
+            </select>
+            {% if form.priority.errors %}
+              <p class="mt-1 text-sm text-red-600">{{ form.priority.errors }}</p>
+            {% endif %}
+          </div>
+
+          <!-- Submit Button -->
+          <div class="mt-6">
+            <button type="submit" class="w-full bg-[#789395] hover:bg-[#94B49F] text-white font-semibold py-2 px-4 rounded-lg transition duration-300 ease-in-out">Edit Wishlist</button>
+          </div>
+        </form>
+      </div>
+      
     </div>
   </div>
 </div>

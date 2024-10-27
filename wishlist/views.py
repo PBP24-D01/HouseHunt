@@ -23,7 +23,7 @@ def delete_wishlist(request, id_rumah):
     Wishlist.objects.filter(user=request.user, rumah=rumah).delete()
     return redirect('wishlistpage')
 
-@login_required
+@login_required(login_url='/login')
 def edit_wishlist(request, id_rumah):
     wishlist_item = get_object_or_404(Wishlist, user=request.user, rumah__id=id_rumah)
     
