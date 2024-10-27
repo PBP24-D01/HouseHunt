@@ -7,13 +7,16 @@ from .models import House
 from wishlist.models import Wishlist
 from .forms import HouseForm, HouseFilterForm
 from HouseHuntAuth.models import Seller, Buyer
+from iklan.models import IklanEntry
 
 def landing_page(request):
     form = HouseFilterForm(request.GET or {'is_available': True})
     houses = House.objects.all()
+    ads = IklanEntry.objects.all()
     
     # Initialize user_wishlist to an empty list
     user_wishlist = []
+
 
     if request.user.is_authenticated:
         # Query the Wishlist directly using the CustomUser instance
@@ -56,6 +59,7 @@ def landing_page(request):
         'houses': houses,
         'form': form,
         'user_wishlist': user_wishlist,  # List of house IDs
+        'ads' : ads
     }
     return render(request, 'landing_page.html', context)
 
