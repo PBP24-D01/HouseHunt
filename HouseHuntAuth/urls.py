@@ -12,4 +12,5 @@ urlpatterns = [
     path("register/buyer/flutter/", views.register_buyer, name="buyer_signup_flutter"),
     path("register/seller/flutter/", views.register_seller, name="seller_signup_flutter"),
     path("logout/flutter/", views.logout, name="logout_flutter"),
+    path("get-user/", views.get_user, name="get_user"),
 ]

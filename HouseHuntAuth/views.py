@@ -259,3 +259,38 @@ def logout(request):
         )
     except:
         return JsonResponse({"status": False, "message": "Logout gagal."}, status=401)
+
+def get_user(request):
+    user = request.user
+    if user.is_authenticated:
+        if user.is_buyer:
+            buyer = Buyer.objects.get(user=user)
+            return JsonResponse(
+                {
+                    "id": user.id,
+                    "username": user.username,
+                    "email": user.email,
+                    "phone_number": user.phone_number,
+                    "is_buyer": True,
+                    "preferred_payment_method": buyer.preferred_payment_method,
+                },
+                status=200,
+            )
+        else:
+            seller = Seller.objects.get(user=user)
+            return JsonResponse(
+                {
+                    "id": user.id,
+                    "username": user.username,
+                    "email": user.email,
+                    "phone_number": user.phone_number,
+                    "is_buyer": False,
+                    "company_name": seller.company_name,
+                    "company_address": seller.company_address,
+                },
+                status=200,
+            )
+    else:
+        return JsonResponse(
+            {"status": False, "message": "User is not authenticated."}, status=401
+        )
