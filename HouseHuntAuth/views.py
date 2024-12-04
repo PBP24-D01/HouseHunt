@@ -113,6 +113,12 @@ def register_seller(request):
         company_address = data["company_address"]
         password1 = data["password1"]
         password2 = data["password2"]
+        
+        # Check missing fields
+        if not username or not email or not phone_number or not company_name or not company_address or not password1 or not password2:
+            return JsonResponse(
+                {"status": False, "message": "All fields are required."}, status=400
+            )
 
         # Check if the passwords match
         if password1 != password2:
@@ -185,6 +191,12 @@ def register_buyer(request):
         preffered_payment_method = data["preffered_payment_method"]
         password1 = data["password1"]
         password2 = data["password2"]
+        
+        # Check missing fields
+        if not username or not email or not phone_number or not preffered_payment_method or not password1 or not password2:
+            return JsonResponse(
+                {"status": False, "message": "All fields are required."}, status=400
+            )
 
         # Check if the passwords match
         if password1 != password2:
