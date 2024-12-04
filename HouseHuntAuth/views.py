@@ -69,23 +69,45 @@ def login_user(request):
 
 @csrf_exempt
 def login_api(request):
-    username = request.POST['username']
-    password = request.POST['password']
+    username = request.POST["username"]
+    password = request.POST["password"]
     user = authenticate(username=username, password=password)
     if user is not None:
         if user.is_active:
+            customUser = CustomUser.objects.get(id=user.id)
             auth_login(request, user)
             # Status login sukses.
-            return JsonResponse(
-                {
-                    "id": user.id,
-                    "username": user.username,
-                    "status": True,
-                    "message": "Login sukses!",
-                    # Tambahkan data lainnya jika ingin mengirim data ke Flutter.
-                },
-                status=200,
-            )
+            if customUser.is_buyer:
+                buyer = Buyer.objects.get(user=customUser)
+                return JsonResponse(
+                    {
+                        "id": user.id,
+                        "username": user.username,
+                        "email": user.email,
+                        "phone_number": user.phone_number,
+                        "is_buyer": True,
+                        "preferred_payment_method": buyer.preferred_payment_method,
+                        "status": True,
+                        "message": "Login sukses!",
+                    },
+                    status=200,
+                )
+            else:
+                seller = Seller.objects.get(user=customUser)
+                return JsonResponse(
+                    {
+                        "id": user.id,
+                        "username": user.username,
+                        "email": user.email,
+                        "phone_number": user.phone_number,
+                        "is_buyer": False,
+                        "company_name": seller.company_name,
+                        "company_address": seller.company_address,
+                        "status": True,
+                        "message": "Login sukses!",
+                    },
+                    status=200,
+                )
         else:
             return JsonResponse(
                 {"status": False, "message": "Login gagal, akun dinonaktifkan."},
@@ -113,9 +135,17 @@ def register_seller(request):
         company_address = data["company_address"]
         password1 = data["password1"]
         password2 = data["password2"]
-        
+
         # Check missing fields
-        if not username or not email or not phone_number or not company_name or not company_address or not password1 or not password2:
+        if (
+            not username
+            or not email
+            or not phone_number
+            or not company_name
+            or not company_address
+            or not password1
+            or not password2
+        ):
             return JsonResponse(
                 {"status": False, "message": "All fields are required."}, status=400
             )
@@ -191,9 +221,16 @@ def register_buyer(request):
         preffered_payment_method = data["preffered_payment_method"]
         password1 = data["password1"]
         password2 = data["password2"]
-        
+
         # Check missing fields
-        if not username or not email or not phone_number or not preffered_payment_method or not password1 or not password2:
+        if (
+            not username
+            or not email
+            or not phone_number
+            or not preffered_payment_method
+            or not password1
+            or not password2
+        ):
             return JsonResponse(
                 {"status": False, "message": "All fields are required."}, status=400
             )
@@ -270,38 +307,3 @@ def logout(request):
         )
     except:
         return JsonResponse({"status": False, "message": "Logout gagal."}, status=401)
-
-def get_user(request):
-    user = request.user
-    if user.is_authenticated:
-        if user.is_buyer:
-            buyer = Buyer.objects.get(user=user)
-            return JsonResponse(
-                {
-                    "id": user.id,
-                    "username": user.username,
-                    "email": user.email,
-                    "phone_number": user.phone_number,
-                    "is_buyer": True,
-                    "preferred_payment_method": buyer.preferred_payment_method,
-                },
-                status=200,
-            )
-        else:
-            seller = Seller.objects.get(user=user)
-            return JsonResponse(
-                {
-                    "id": user.id,
-                    "username": user.username,
-                    "email": user.email,
-                    "phone_number": user.phone_number,
-                    "is_buyer": False,
-                    "company_name": seller.company_name,
-                    "company_address": seller.company_address,
-                },
-                status=200,
-            )
-    else:
-        return JsonResponse(
-            {"status": False, "message": "User is not authenticated."}, status=401
-        )
