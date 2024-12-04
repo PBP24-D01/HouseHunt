@@ -27,13 +27,19 @@ SECRET_KEY = "django-insecure-jnh^nzfxdfsr66x#-x$=3je0itijd#0ad@n0s&1zfh8jvvb++@
 PRODUCTION = os.getenv("PRODUCTION", False)
 DEBUG = not PRODUCTION
 
-ALLOWED_HOSTS = ["*", "http://tristan-agra-househunt.pbp.cs.ui.ac.id"]
+ALLOWED_HOSTS = [
+    "*",
+    "https://tristan-agra-househunt.pbp.cs.ui.ac.id",
+    "localhost",
+    "127.0.0.1",
+    "10.0.2.2",
+]
 
 CSRF_TRUSTED_ORIGINS = [
     "http://localhost",
     "http://127.0.0.1",
     "http://tristan-agra-househunt.pbp.cs.ui.ac.id",
-    "https://tristan-agra-househunt.pbp.cs.ui.ac.id"
+    "https://tristan-agra-househunt.pbp.cs.ui.ac.id",
 ]
 
 CORS_ALLOW_ALL_ORIGINS = True
@@ -45,7 +51,7 @@ SESSION_COOKIE_SAMESITE = "None"
 
 # Application definition
 
-AUTH_USER_MODEL = 'HouseHuntAuth.CustomUser'
+AUTH_USER_MODEL = "HouseHuntAuth.CustomUser"
 
 INSTALLED_APPS = [
     "HouseHuntAuth",
@@ -55,18 +61,18 @@ INSTALLED_APPS = [
     "django.contrib.sessions",
     "django.contrib.messages",
     "django.contrib.staticfiles",
-    'iklan',
+    "iklan",
     "django.contrib.humanize",
-    'rumah',
+    "rumah",
     "diskusi",
-    'cekrumah',
+    "cekrumah",
     "auction",
-    'wishlist',
+    "wishlist",
 ]
 
 MIDDLEWARE = [
     "django.middleware.security.SecurityMiddleware",
-    'whitenoise.middleware.WhiteNoiseMiddleware',
+    "whitenoise.middleware.WhiteNoiseMiddleware",
     "corsheaders.middleware.CorsMiddleware",
     "django.contrib.sessions.middleware.SessionMiddleware",
     "django.middleware.common.CommonMiddleware",
@@ -143,20 +149,20 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/5.1/howto/static-files/
 
 # URL to serve static files
-STATIC_URL = '/static/'
+STATIC_URL = "/static/"
 
 # Directory for collected static files during deployment
-STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
+STATIC_ROOT = os.path.join(BASE_DIR, "staticfiles")
 
-MEDIA_URL = '/media/'
-MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
+MEDIA_URL = "/media/"
+MEDIA_ROOT = os.path.join(BASE_DIR, "media")
 
 # Additional directories where Django will look for static files in development
-STATICFILES_DIRS = [os.path.join(BASE_DIR, 'static')]
+STATICFILES_DIRS = [os.path.join(BASE_DIR, "static")]
 # Default primary key field type
 # https://docs.djangoproject.com/en/5.1/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 
-MEDIA_URL = '/media/'
-MEDIA_ROOT = os.path.join(BASE_DIR, 'media/')
+MEDIA_URL = "/media/"
+MEDIA_ROOT = os.path.join(BASE_DIR, "media/")
