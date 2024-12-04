@@ -69,9 +69,8 @@ def login_user(request):
 
 @csrf_exempt
 def login_api(request):
-    data = json.loads(request.body)
-    username = data["username"]
-    password = data["password"]
+    username = request.POST['username']
+    password = request.POST['password']
     user = authenticate(username=username, password=password)
     if user is not None:
         if user.is_active:
