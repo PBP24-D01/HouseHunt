@@ -29,4 +29,5 @@ urlpatterns = [
     path("", include("rumah.urls")),
     path("", include("wishlist.urls")),
     re_path(r'^media/(?P<path>.*)$',serve,{'document_root':settings.MEDIA_ROOT}),
+    path("diskusi/", include("diskusi.urls")),
 ]
