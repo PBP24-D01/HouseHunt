@@ -13,6 +13,8 @@ urlpatterns = [
     path('house/delete/<int:house_id>/', views.house_delete, name='house_delete'),
     path('order/<int:house_id>/', views.order_page, name='order_page'),
     path('invoice/<int:house_id>/', views.generate_invoice, name='generate_invoice'),
+    path('api/filter-options/', views.get_filter_options, name = 'get_filter_options'),
+    path('api/houses/', views.get_houses, name = 'get_houses'),
 ]
 
 if settings.DEBUG:
