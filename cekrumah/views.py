@@ -8,6 +8,9 @@ from .models import Availability, Appointment
 from rumah.models import House
 from django.contrib.auth.decorators import login_required
 from django.contrib import messages
+from django.views.decorators.csrf import csrf_exempt
+from django.core.exceptions import ValidationError
+import json
 
 
 @login_required(login_url="/login")
@@ -182,3 +185,165 @@ def update_availability(request, availability_id):
         form = AvailabilityForm(instance=availability)
 
     return render(request, 'availability_form.html', {'form': form})
+
+
+
+@csrf_exempt
+def create_availability_api(request):
+    if not hasattr(request.user, 'seller'):
+        return JsonResponse({"error": "You are not a seller"}, status=403)
+
+    seller = request.user.seller
+    if request.method == 'POST':
+        try:
+            data = json.loads(request.body)
+            availability = Availability(
+                seller=seller,
+                house_id=data['house_id'],
+                available_date=data['available_date'],
+                start_time=data['start_time'],
+                end_time=data['end_time'],
+            )
+            availability.full_clean()  # Validate model constraints
+            availability.save()
+            return JsonResponse({"message": "Availability created successfully", "availability_id": availability.id}, status=201)
+        except ValidationError as e:
+            return JsonResponse({"error": e.message_dict}, status=400)
+        except KeyError as e:
+            return JsonResponse({"error": f"Missing field: {e}"}, status=400)
+
+    return JsonResponse({"error": "Invalid request method"}, status=405)
+
+@csrf_exempt
+def create_appointment_api(request):
+    if not hasattr(request.user, 'buyer'):
+        return JsonResponse({"error": "You are not a buyer"}, status=403)
+
+    if request.method == 'POST':
+        try:
+            data = json.loads(request.body)
+            appointment = Appointment(
+                buyer=request.user.buyer,
+                availability_id=data['availability_id'],
+                notes_to_seller=data.get('notes_to_seller', ''),
+            )
+            appointment.seller = appointment.availability.seller
+            appointment.full_clean()  # Validate model constraints
+            appointment.save()
+            return JsonResponse({"message": "Appointment created successfully", "appointment_id": appointment.id}, status=201)
+        except ValidationError as e:
+            return JsonResponse({"error": e.message_dict}, status=400)
+        except KeyError as e:
+            return JsonResponse({"error": f"Missing field: {e}"}, status=400)
+
+    return JsonResponse({"error": "Invalid request method"}, status=405)
+
+def get_availability_api(request):
+    house_id = request.GET.get('house_id')
+    if house_id:
+        availabilities = Availability.objects.filter(house_id=house_id, is_available=True)
+        data = [
+            {
+                'id': availability.id,
+                'date': availability.available_date,
+                'start_time': availability.start_time.strftime('%H:%M'),
+                'end_time': availability.end_time.strftime('%H:%M'),
+            }
+            for availability in availabilities
+        ]
+        return JsonResponse(data, safe=False)
+
+    return JsonResponse({"error": "House ID is required"}, status=400)
+
+@csrf_exempt
+def update_availability_api(request, availability_id):
+    if not hasattr(request.user, 'seller'):
+        return JsonResponse({"error": "You are not a seller"}, status=403)
+
+    availability = get_object_or_404(Availability, id=availability_id, seller=request.user.seller)
+
+    if request.method == 'PUT':
+        try:
+            data = json.loads(request.body)
+            for key, value in data.items():
+                setattr(availability, key, value)
+            availability.full_clean()  # Validate changes
+            availability.save()
+            return JsonResponse({"message": "Availability updated successfully"})
+        except ValidationError as e:
+            return JsonResponse({"error": e.message_dict}, status=400)
+    return JsonResponse({"error": "Invalid request method"}, status=405)
+
+@csrf_exempt
+def delete_appointment_api(request, appointment_id):
+    appointment = get_object_or_404(Appointment, id=appointment_id, buyer=request.user.buyer)
+
+    if request.method == 'DELETE':
+        appointment.delete()
+        return JsonResponse({"message": "Appointment deleted successfully"}, status=204)
+
+    return JsonResponse({"error": "Invalid request method"}, status=405)
+
+
+@login_required
+def fetch_appointments(request):
+    if request.method == 'GET':
+        user = request.user
+        print(user.seller)
+        try:
+            # Retrieve appointments for the logged-in user (as a buyer)
+            appointments = Appointment.objects.filter(seller= user.seller)
+            # Serialize appointment data
+            appointments_data = []
+            for appointment in appointments:
+                appointments_data.append({
+                    'id': appointment.id,
+                    'house': {
+                        'id': appointment.availability.house.id,
+                        'name': str(appointment.availability.house)
+                    },
+                    'buyer': {
+                        'username': appointment.buyer.user.username,
+                        'email': appointment.buyer.user.email
+                    },
+                    'date': appointment.availability.available_date.strftime('%Y-%m-%d'),
+                    'start_time': appointment.availability.start_time.strftime('%H:%M:%S'),
+                    'end_time': appointment.availability.end_time.strftime('%H:%M:%S'),
+                    'status': appointment.get_status_display(),
+                    'notes_to_seller': appointment.notes_to_seller,
+                })
+            print(appointments_data)
+            return JsonResponse({'success': True, 'appointments': appointments_data}, status=200)
+
+        except Exception as e:
+            return JsonResponse({'success': False, 'message': 'Error fetching appointments', 'error': str(e)}, status=500)
+    else:
+        return JsonResponse({'success': False, 'message': 'Invalid request method'}, status=400)
+
+def fetch_availabilities(request):
+    if request.method == 'GET':
+        user = request.user
+        try:
+            availabilities = Availability.objects.filter(
+                house__seller__user=user
+            ).select_related('house')
+
+            availabilities_data = [
+                {
+                    'id': availability.id,
+                    'house': {
+                        'id': availability.house.id,
+                        'name': str(availability.house),
+                    },
+                    'available_date': availability.available_date.strftime('%Y-%m-%d'),
+                    'start_time': availability.start_time.strftime('%H:%M:%S'),
+                    'end_time': availability.end_time.strftime('%H:%M:%S'),
+                    'is_available': availability.is_available,
+                }
+                for availability in availabilities
+            ]
+            return JsonResponse({'success': True, 'availabilities': availabilities_data}, status=200)
+        except Exception as e:
+            return JsonResponse({'success': False, 'message': str(e)}, status=500)
+    else:
+        return JsonResponse({'success': False, 'message': 'Invalid request method'}, status=400)
