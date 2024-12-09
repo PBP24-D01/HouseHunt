@@ -4,6 +4,7 @@ from wishlist.forms import WishlistForm
 from rumah.models import House
 from django.contrib.auth.decorators import login_required
 from django.http import JsonResponse, HttpResponseForbidden
+from django.core.serializers import serialize
 
 # Create your views here.
 
@@ -83,3 +84,43 @@ def show_wishlist(request):
     }
     
     return render(request, 'wishlistpage.html', context)
+
+from django.http import JsonResponse
+from django.contrib.auth.decorators import login_required
+from .models import Wishlist
+
+@login_required(login_url='/login')
+def wishlist_json(request):
+    # Restrict access to buyers only
+    if not request.user.is_buyer:
+        return JsonResponse({'error': 'Hanya pembeli yang bisa mengakses.'}, status=403)
+
+    # Fetch wishlist items for the authenticated user
+    wishlists = Wishlist.objects.filter(user=request.user)
+    
+    # Get the priority filter from query parameters (if provided)
+    prioritas_filter = request.GET.get('prioritas')
+    
+    # Filter based on priority if the value is valid
+    if prioritas_filter in ['high', 'medium', 'low']:
+        wishlists = wishlists.filter(priority=prioritas_filter)
+
+    # Prepare the data for JSON response
+    wishlist_data = [
+        {
+            'id': wishlist.id,
+            'rumah_id': wishlist.rumah.id,
+            'judul': wishlist.rumah.judul,
+            'deskripsi': wishlist.rumah.deskripsi,
+            'harga': wishlist.rumah.harga,
+            'lokasi': wishlist.rumah.lokasi,
+            'gambar': wishlist.rumah.gambar.url if wishlist.rumah.gambar else None,
+            'kamar_tidur': wishlist.rumah.kamar_tidur,
+            'kamar_mandi': wishlist.rumah.kamar_mandi,
+            'prioritas': wishlist.priority,
+        }
+        for wishlist in wishlists
+    ]
+
+    # Return the data in a JSON format
+    return JsonResponse({'wishlists': wishlist_data}, status=200)

@@ -3,6 +3,7 @@ from iklan.forms import IklanEntryForm
 from iklan.models import IklanEntry
 from django.http import HttpResponse, HttpResponseRedirect, JsonResponse
 from django.core import serializers
+from django.core.serializers import serialize
 from django.contrib.auth.forms import UserCreationForm, AuthenticationForm
 from django.contrib import messages
 from django.contrib.auth import authenticate, login, logout
@@ -96,3 +97,30 @@ def add_iklan_ajax(request):
     new_iklan.save()
 
     return JsonResponse({"success": True})
+
+@login_required(login_url='/login')
+def iklan_json(request):
+    if not request.user.is_seller:
+        return JsonResponse({'error': 'Hanya Penjual yang bisa mengakses.'}, status=403)
+    iklan = IklanEntry.objects.filter(user=request.user)
+    
+    iklan_data = [
+        {
+            'seller': i.seller,
+            'rumah_id': i.rumah.id,
+            'judul': i.rumah.judul,
+            'deskripsi': i.rumah.deskripsi,
+            'harga': i.rumah.harga,
+            'lokasi': i.rumah.lokasi,
+            'gambar': i.rumah.gambar.url if i.rumah.gambar else None,
+            'kamar_tidur': i.rumah.kamar_tidur,
+            'kamar_mandi': i.rumah.kamar_mandi,
+            'start_date': i.start_date,
+            'end_date': i.end_date,
+            'created_at': i.created_at,
+            'updated_at': i.updated_at,
+            'banner': i.banner,
+        }
+        for i in iklan
+    ]
+    return JsonResponse({'iklan': iklan_data}, status=200)

@@ -1,5 +1,5 @@
 from django.urls import path
-from iklan.views import show_iklan, create_iklan, edit_iklan, delete_iklan, show_xml, show_json, show_xml_by_id, show_json_by_id, add_iklan_ajax
+from iklan.views import show_iklan, create_iklan, edit_iklan, delete_iklan, show_xml, show_json, show_xml_by_id, show_json_by_id, add_iklan_ajax, iklan_json
 from django.conf import settings
 from django.conf.urls.static import static
 
@@ -15,6 +15,7 @@ urlpatterns = [
     path('xml/<str:id_rumah>/', show_xml_by_id, name='show_xml_by_id'),
     path('json/<str:id_rumah>/', show_json_by_id, name='show_json_by_id'),
     path('create_iklan_ajax', add_iklan_ajax, name='add_iklan_ajax'),
+    path('iklan_json/', iklan_json, name='iklan_json'),
 ]
 
 

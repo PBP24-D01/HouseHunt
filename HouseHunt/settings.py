@@ -68,6 +68,7 @@ INSTALLED_APPS = [
     "cekrumah",
     "auction",
     "wishlist",
+    'corsheaders'
 ]
 
 MIDDLEWARE = [
