@@ -265,8 +265,8 @@ def register_buyer(request):
                 username=username,
                 email=email,
                 phone_number=phone_number,
-                is_buyer=False,
-                is_seller=True,
+                is_buyer=True,
+                is_seller=False,
                 password=password1,
             )
             user.save()
