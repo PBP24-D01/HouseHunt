@@ -8,6 +8,7 @@ from wishlist.models import Wishlist
 from .forms import HouseForm, HouseFilterForm
 from HouseHuntAuth.models import Seller, Buyer
 from iklan.models import IklanEntry
+from django.conf import settings
 
 def landing_page(request):
     form = HouseFilterForm(request.GET or {'is_available': True})
@@ -142,3 +143,60 @@ def generate_invoice(request, house_id):
         return render(request, 'invoice.html', {'house': house, 'buyer': buyer})
     else:
         return redirect('houses:house_detail', house_id=house.id)
+
+
+def get_filter_options(request):
+    filter_options = {
+        'locations': [choice[0] for choice in HouseFilterForm.LOCATION_CHOICES if choice[0]],
+        'price_ranges': [choice[0] for choice in HouseFilterForm.PRICE_CHOICES if choice[0]],
+        'bedrooms': [choice[0] for choice in HouseFilterForm.BEDROOM_CHOICES if choice[0]],
+        'bathrooms': [choice[0] for choice in HouseFilterForm.BATHROOM_CHOICES if choice[0]],
+    }
+    return JsonResponse(filter_options)
+
+def get_houses(request):
+    houses = House.objects.all()
+    
+    # filters
+    lokasi = request.GET.get('lokasi')
+    if lokasi:
+        houses = houses.filter(lokasi=lokasi)
+    
+    price_range = request.GET.get('price_range')
+    if price_range:
+        min_price, max_price = map(int, price_range.split('-'))
+        houses = houses.filter(harga__gte=min_price, harga__lte=max_price)
+    
+    kamar_tidur = request.GET.get('kamar_tidur')
+    if kamar_tidur:
+        if kamar_tidur == '4+':
+            houses = houses.filter(kamar_tidur__gte=4)
+        else:
+            houses = houses.filter(kamar_tidur=int(kamar_tidur))
+    
+    kamar_mandi = request.GET.get('kamar_mandi')
+    if kamar_mandi:
+        if kamar_mandi == '3+':
+            houses = houses.filter(kamar_mandi__gte=3)
+        else:
+            houses = houses.filter(kamar_mandi=int(kamar_mandi))
+    
+    is_available = request.GET.get('is_available')
+    if is_available:
+        houses = houses.filter(is_available=True)
+    
+    house_list = []
+    for house in houses:
+        house_data = {
+            'judul': house.judul,
+            'deskripsi': house.deskripsi,
+            'lokasi': house.lokasi,
+            'harga': house.harga,
+            'kamar_tidur': house.kamar_tidur,
+            'kamar_mandi': house.kamar_mandi,
+            'is_available': house.is_available,
+            'gambar': request.build_absolute_uri(house.gambar.url) if house.gambar else None,
+        }
+        house_list.append(house_data)
+    
+    return JsonResponse(house_list, safe=False)
