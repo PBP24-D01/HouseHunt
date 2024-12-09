@@ -85,6 +85,10 @@ def show_wishlist(request):
     
     return render(request, 'wishlistpage.html', context)
 
+from django.http import JsonResponse
+from django.contrib.auth.decorators import login_required
+from .models import Wishlist
+
 @login_required(login_url='/login')
 def wishlist_json(request):
     # Restrict access to buyers only
@@ -94,10 +98,10 @@ def wishlist_json(request):
     # Fetch wishlist items for the authenticated user
     wishlists = Wishlist.objects.filter(user=request.user)
     
-    # Get the priority filter from query parameters
+    # Get the priority filter from query parameters (if provided)
     prioritas_filter = request.GET.get('prioritas')
     
-    # Filter based on priority if provided
+    # Filter based on priority if the value is valid
     if prioritas_filter in ['high', 'medium', 'low']:
         wishlists = wishlists.filter(priority=prioritas_filter)
 
@@ -118,4 +122,5 @@ def wishlist_json(request):
         for wishlist in wishlists
     ]
 
+    # Return the data in a JSON format
     return JsonResponse({'wishlists': wishlist_data}, status=200)
