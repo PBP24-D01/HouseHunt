@@ -161,6 +161,7 @@ def get_all_auctions(request):
                     else None
                 ),
                 "seller": auction.seller.user.username,
+                "seller_id": auction.seller.user.id,
                 "created_at": auction.created_at,
                 "updated_at": auction.updated_at,
                 "is_active": auction.is_active(),
@@ -193,6 +194,7 @@ def get_auction_by_id(request, auction_id, json=True):
             else None
         ),
         "seller": auction.seller.user.username,
+        "seller_id": auction.seller.user.id,
         "created_at": auction.created_at,
         "updated_at": auction.updated_at,
         "is_active": auction.is_active(),
@@ -323,7 +325,7 @@ def create_auction_api(request):
 
 @csrf_exempt
 def edit_auction_api(request, auction_id):
-    if request.method == "PUT":
+    if request.method == "POST":
         data = json.loads(request.body)
         user_id = request.user.id
         is_buyer = request.user.is_buyer
@@ -386,12 +388,10 @@ def edit_auction_api(request, auction_id):
 
 
 @csrf_exempt
-def delete_auction_api(request):
-    if request.method == "DELETE":
-        data = json.loads(request.body)
+def delete_auction_api(request, auction_id):
+    if request.method == "POST":
         user_id = request.user.id
         is_buyer = request.user.is_buyer
-        auction_id = data["auction_id"]
 
         if is_buyer:
             return JsonResponse(
