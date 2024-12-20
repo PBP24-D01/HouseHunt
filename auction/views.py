@@ -286,7 +286,7 @@ def create_auction_api(request):
 
         house = House.objects.get(id=house_id)
         seller = Seller.objects.get(user_id=user_id)
-        
+
         if house.seller != seller:
             return JsonResponse(
                 {"status": False, "message": "You are not the seller of this house."},
@@ -298,7 +298,6 @@ def create_auction_api(request):
                 {"status": False, "message": "End date must be later than start date."},
                 status=400,
             )
-
 
         auction = Auction(
             title=title,
@@ -352,7 +351,7 @@ def edit_auction_api(request, auction_id):
 
         house = House.objects.get(id=house_id)
         seller = Seller.objects.get(user_id=user_id)
-        
+
         if house.seller != seller:
             return JsonResponse(
                 {"status": False, "message": "You are not the seller of this house."},
@@ -401,7 +400,7 @@ def delete_auction_api(request):
 
         auction = Auction.objects.get(id=auction_id)
         seller = Seller.objects.get(user_id=user_id)
-        
+
         if auction.seller != seller:
             return JsonResponse(
                 {"status": False, "message": "You are not the seller of this auction."},
@@ -423,3 +422,19 @@ def delete_auction_api(request):
         return JsonResponse(
             {"status": False, "message": "Invalid request method."}, status=400
         )
+
+
+def get_available_houses(request):
+    user_id = request.user.id
+    seller = Seller.objects.get(user_id=user_id)
+    houses = House.objects.filter(seller=seller).exclude(
+        id__in=Auction.objects.values_list("house_id", flat=True)
+    )
+    houses_json = [
+        {
+            "id": house.id,
+            "title": house.judul,
+        }
+        for house in houses
+    ]
+    return JsonResponse(houses_json, safe=False, status=200)

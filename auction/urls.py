@@ -16,4 +16,5 @@ urlpatterns = [
     path("create/api/", views.create_auction_api, name="create_auction_api"),
     path("edit/api/<str:auction_id>/", views.edit_auction_api, name="edit_auction_api"),
     path("delete/api/<str:auction_id>/", views.delete_auction_api, name="delete_auction_api"),
+    path("available-houses/", views.get_available_houses, name="available_houses"),
 ]
