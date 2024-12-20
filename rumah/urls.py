@@ -15,6 +15,8 @@ urlpatterns = [
     path('invoice/<int:house_id>/', views.generate_invoice, name='generate_invoice'),
     path('api/filter-options/', views.get_filter_options, name = 'get_filter_options'),
     path('api/houses/', views.get_houses, name = 'get_houses'),
+    path('api/houses/create/', views.house_create, name='house-create'),
+    path('api/form-options/', views.get_filter_options, name='form-options'),
 ]
 
 if settings.DEBUG:
