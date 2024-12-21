@@ -1,3 +1,4 @@
+import json
 from django.shortcuts import render, redirect, get_object_or_404
 from wishlist.models import Wishlist
 from wishlist.forms import WishlistForm
@@ -5,6 +6,7 @@ from rumah.models import House
 from django.contrib.auth.decorators import login_required
 from django.http import JsonResponse, HttpResponseForbidden
 from django.core.serializers import serialize
+from django.views.decorators.csrf import csrf_exempt
 
 # Create your views here.
 
@@ -85,10 +87,6 @@ def show_wishlist(request):
     
     return render(request, 'wishlistpage.html', context)
 
-from django.http import JsonResponse
-from django.contrib.auth.decorators import login_required
-from .models import Wishlist
-
 @login_required(login_url='/login')
 def wishlist_json(request):
     # Restrict access to buyers only
@@ -126,3 +124,28 @@ def wishlist_json(request):
 
     # Return the data in a JSON format
     return JsonResponse({'wishlists': wishlist_data}, status=200)
+
+@csrf_exempt
+@login_required(login_url='/login')
+def delete_wishlist_flutter(request, id_rumah):
+    if request.method == 'POST':
+        action = request.POST.get('action')
+        if action == 'delete':
+            try:
+                wishlist = Wishlist.objects.get(rumah__id=id_rumah, user=request.user)
+            except Wishlist.DoesNotExist:
+                return JsonResponse(
+                    {"status": "error", "message": "Wishlist item not found"},
+                    status=404
+                )
+
+            wishlist.delete()
+            return JsonResponse(
+                {"status": "success", "message": "Wishlist item deleted successfully"},
+                status=200
+            )
+        else:
+            return JsonResponse({"status": "error", "message": "Invalid action"}, status=400)
+    else:
+        return JsonResponse({"status": "error", "message": "Invalid request method"}, status=405)
+    
