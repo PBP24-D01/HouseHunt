@@ -149,3 +149,26 @@ def delete_wishlist_flutter(request, id_rumah):
     else:
         return JsonResponse({"status": "error", "message": "Invalid request method"}, status=405)
     
+@csrf_exempt
+@login_required(login_url='/login')
+def edit_wishlist_flutter(request, id_rumah):
+    if request.method == 'POST':
+        priority = request.POST.get('priority')
+        notes = request.POST.get('notes')
+        
+        if not priority or not notes:
+            return JsonResponse({"status": "error", "message": "Missing fields"}, status=400)
+
+        try:
+            wishlist = Wishlist.objects.get(rumah__id=id_rumah, user=request.user)
+        except Wishlist.DoesNotExist:
+            return JsonResponse({"status": "error", "message": "Wishlist item not found"}, status=404)
+
+        wishlist.priority = priority
+        wishlist.notes = notes
+        wishlist.save()
+
+        return JsonResponse({"status": "success", "message": "Wishlist updated successfully"}, status=200)
+
+    return JsonResponse({"status": "error", "message": "Invalid request method"}, status=405)
+    
