@@ -115,6 +115,7 @@ def wishlist_json(request):
             'harga': wishlist.rumah.harga,
             'lokasi': wishlist.rumah.lokasi,
             'gambar': wishlist.rumah.gambar.url if wishlist.rumah.gambar else None,
+            'penjual': wishlist.rumah.seller.user.username,
             'kamar_tidur': wishlist.rumah.kamar_tidur,
             'kamar_mandi': wishlist.rumah.kamar_mandi,
             'prioritas': wishlist.priority,
