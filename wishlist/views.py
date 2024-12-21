@@ -118,6 +118,7 @@ def wishlist_json(request):
             'kamar_tidur': wishlist.rumah.kamar_tidur,
             'kamar_mandi': wishlist.rumah.kamar_mandi,
             'prioritas': wishlist.priority,
+            'catatan': wishlist.notes,
         }
         for wishlist in wishlists
     ]
