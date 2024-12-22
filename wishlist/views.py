@@ -171,4 +171,43 @@ def edit_wishlist_flutter(request, id_rumah):
         return JsonResponse({"status": "success", "message": "Wishlist updated successfully"}, status=200)
 
     return JsonResponse({"status": "error", "message": "Invalid request method"}, status=405)
-    
+
+@csrf_exempt
+@login_required(login_url='/login')
+def add_wishlist_flutter(request):
+    if request.method == 'POST':
+        try:
+            data = json.loads(request.body)  # Parse JSON data from the request body
+            id_rumah = data.get('id_rumah')
+            
+            if not id_rumah:
+                return JsonResponse(
+                    {"status": "error", "message": "Missing 'id_rumah' field"},
+                    status=400
+                )
+
+            rumah = get_object_or_404(House, id=id_rumah)
+
+            # Add or toggle wishlist
+            wishlist, created = Wishlist.objects.get_or_create(user=request.user, rumah=rumah)
+            if created:
+                return JsonResponse(
+                    {"status": "success", "message": "Wishlist added successfully"},
+                    status=200
+                )
+            else:
+                wishlist.delete()
+                return JsonResponse(
+                    {"status": "success", "message": "Wishlist removed successfully"},
+                    status=200
+                )
+        except json.JSONDecodeError:
+            return JsonResponse(
+                {"status": "error", "message": "Invalid JSON data"},
+                status=400
+            )
+    else:
+        return JsonResponse(
+            {"status": "error", "message": "Invalid request method"},
+            status=405
+        )
