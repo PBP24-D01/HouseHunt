@@ -286,7 +286,7 @@ def fetch_appointments_buyer(request):
         try:
             # Retrieve appointments for the logged-in user (as a buyer)
             appointments = Appointment.objects.filter(buyer = user.buyer)
-            print(appointments)
+            # print(appointments)
             # Serialize appointment data
             appointments_data = []
             for appointment in appointments:
@@ -294,7 +294,14 @@ def fetch_appointments_buyer(request):
                     'id': appointment.id,
                     'house': {
                         'id': appointment.availability.house.id,
-                        'name': str(appointment.availability.house)
+                        'judul': appointment.availability.house.judul,
+                        'deskripsi': appointment.availability.house.deskripsi,
+                        'harga' : appointment.availability.house.harga,
+                        'lokasi' : appointment.availability.house.lokasi,
+                        'gambar' : appointment.availability.house.gambar.url if appointment.availability.house.gambar else None,
+                        'kamar_tidur': appointment.availability.house.kamar_tidur,
+                        'kamar_mandi' : appointment.availability.house.kamar_mandi,
+                        'is_available': appointment.availability.house.is_available,
                     },
                     'availability': {
                         'id': appointment.availability.id
@@ -308,10 +315,11 @@ def fetch_appointments_buyer(request):
                     'status': appointment.get_status_display(),
                     'notes_to_seller': appointment.notes_to_seller,
                 })
-            print(appointments_data)
+            # print(appointments_data)
             return JsonResponse({'success': True, 'appointments': appointments_data}, status=200)
 
         except Exception as e:
+            # print(e)
             return JsonResponse({'success': False, 'message': 'Error fetching appointments', 'error': str(e)}, status=500)
     else:
         return JsonResponse({'success': False, 'message': 'Invalid request method'}, status=400)
