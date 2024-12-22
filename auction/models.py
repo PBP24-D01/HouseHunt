@@ -24,12 +24,14 @@ class Auction(models.Model):
         return self.title
     
     def is_active(self):
-        utc = pytz.UTC
-        return self.start_date < utc.localize(datetime.datetime.now()) < self.end_date
+        utc_plus_7 = pytz.timezone('Asia/Jakarta')
+        now = datetime.datetime.now(utc_plus_7)
+        return self.start_date < now < self.end_date
     
     def is_expired(self):
-        utc = pytz.UTC
-        return self.end_date < utc.localize(datetime.datetime.now())
+        utc_plus_7 = pytz.timezone('Asia/Jakarta')
+        now = datetime.datetime.now(utc_plus_7)
+        return self.end_date < now
 
 class Bid(models.Model):
     id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
