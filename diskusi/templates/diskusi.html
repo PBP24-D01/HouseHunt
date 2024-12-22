@@ -138,8 +138,8 @@
                             <br>
                             <span class='text-sm text-white'>${reply.fields.body}</span>
                         </p>
-                        <button id="reply-edit-${reply.pk}" onclick="window.location.href='/diskusi/edit_replay/${reply.pk}'">Edit</button>
-                        <button id="reply-delete-${reply.pk}" onclick="deleteReplay('${reply.pk}','${pk}')">Delete</button>
+                        <button id="reply-edit-${reply.pk}" onclick="window.location.href='/diskusi/edit_reply/${reply.pk}'">Edit</button>
+                        <button id="reply-delete-${reply.pk}" onclick="deleteReply('${reply.pk}','${pk}')">Delete</button>
                     </div>
                 `;
             }
