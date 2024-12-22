@@ -188,6 +188,7 @@ def get_houses(request):
     house_list = []
     for house in houses:
         house_data = {
+            'id': house.id,
             'judul': house.judul,
             'deskripsi': house.deskripsi,
             'lokasi': house.lokasi,
@@ -200,3 +201,74 @@ def get_houses(request):
         house_list.append(house_data)
     
     return JsonResponse(house_list, safe=False)
+
+@csrf_exempt
+def api_house_create(request):
+    if request.method == 'POST':
+        form = HouseForm(request.POST, request.FILES)
+
+        if form.is_valid():
+            house = form.save(commit=False)
+            house.save()
+            return JsonResponse({'message': 'House created successfully!', 'id': house.id}, status=201)
+        else:
+            return JsonResponse({'errors': form.errors}, status=400)
+    else:
+        return JsonResponse({'error': 'Invalid request method.'}, status=405)
+    
+@csrf_exempt
+def api_order_page(request, house_id):
+    house = get_object_or_404(House, id=house_id)
+    if not house.is_available:
+        return JsonResponse({'error': 'House is not available'}, status=400)
+    if request.user.is_authenticated:
+        if hasattr(request.user, 'buyer'):
+            buyer = request.user.buyer
+            house_data = {
+                'judul': house.judul,
+                'harga': house.harga,
+                'lokasi': house.lokasi,
+                'deskripsi': house.deskripsi,
+                'kamar_tidur': house.kamar_tidur,
+                'kamar_mandi': house.kamar_mandi,
+                'penjual': house.seller.user.username,
+                'kontak_penjual': house.seller.user.email,
+            }
+            return JsonResponse({'house': house_data})
+        else:
+            return JsonResponse({'error': 'User is not a buyer'}, status=400)
+    else:
+        return JsonResponse({'error': 'User is not authenticated'}, status=401)
+    
+@csrf_exempt
+def api_generate_invoice(request, house_id):
+    house = get_object_or_404(House, id=house_id)
+    if not house.is_available:
+        return JsonResponse({'error': 'House is not available'}, status=400)
+    if request.user.is_authenticated:
+        if hasattr(request.user, 'buyer'):
+            buyer = request.user.buyer
+            house.is_available = False
+            house.save()
+            house_data = {
+                'id': house.id,
+                'judul': house.judul,
+                'harga': house.harga,
+                'lokasi': house.lokasi,
+                'deskripsi': house.deskripsi,
+                'kamar_tidur': house.kamar_mandi,
+                'kamar_mandi': house.kamar_tidur,
+                'seller': {
+                    'username': house.seller.user.username,
+                    'email': house.seller.user.email,
+                }
+            }
+            buyer_data = {
+                'username': buyer.user.username,
+                'email': buyer.user.email,
+            }
+            return JsonResponse({'house': house_data, 'buyer': buyer_data, 'total_price': house.harga}) 
+        else:
+            return JsonResponse({'error': 'User is not a buyer'}, status=400)
+    else:
+        return JsonResponse({'error': 'User is not authenticated'}, status=401)

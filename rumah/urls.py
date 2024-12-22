@@ -17,6 +17,8 @@ urlpatterns = [
     path('api/houses/', views.get_houses, name = 'get_houses'),
     path('api/houses/create/', views.house_create, name='house-create'),
     path('api/form-options/', views.get_filter_options, name='form-options'),
+    path('api/order/<int:house_id>/', views.api_order_page, name='api_order_page'),  # New API endpoint
+    path('api/invoice/<int:house_id>/', views.api_generate_invoice, name='api_generate_invoice'),  # New API endpoint
 ]
 
 if settings.DEBUG:
