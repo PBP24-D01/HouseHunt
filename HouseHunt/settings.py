@@ -36,12 +36,14 @@ ALLOWED_HOSTS = [
 ]
 
 CSRF_TRUSTED_ORIGINS = [
+    "*"
     "http://localhost",
     "http://127.0.0.1",
     "http://tristan-agra-househunt.pbp.cs.ui.ac.id",
     "https://tristan-agra-househunt.pbp.cs.ui.ac.id",
     'http://localhost:54469',
     'http://127.0.0.1:54469',
+    'http://localhost:59335/',
 ]
 
 CORS_ALLOW_ALL_ORIGINS = True
