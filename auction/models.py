@@ -27,12 +27,17 @@ class Auction(models.Model):
     def is_active(self):
         utc_plus_7 = timezone(timedelta(hours=7))
         now = datetime.now(utc_plus_7)
-        return self.start_date < now < self.end_date
-    
+        start_diff = int((self.start_date - now).total_seconds())
+        end_diff = int((self.end_date - now).total_seconds())
+
+        return start_diff <= 0 < end_diff
+
     def is_expired(self):
         utc_plus_7 = timezone(timedelta(hours=7))
         now = datetime.now(utc_plus_7)
-        return self.end_date < now
+        end_diff = int((self.end_date - now).total_seconds())
+
+        return end_diff < 0 
 
 class Bid(models.Model):
     id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
