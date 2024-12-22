@@ -129,7 +129,7 @@ def wishlist_json(request):
 @login_required(login_url='/login')
 def delete_wishlist_flutter(request, id_rumah):
     if not request.user.is_authenticated or not request.user.is_buyer:
-        return JsonResponse({'error': 'Unauthorized: Only buyers can access this feature.'}, status=401)
+        return JsonResponse({'status': 'unauthorized', 'error': 'Unauthorized: Only buyers can access this feature.'}, status=401)
 
     if request.method == 'POST':
         action = request.POST.get('action')
@@ -182,7 +182,7 @@ def edit_wishlist_flutter(request, id_rumah):
 @login_required(login_url='/login')
 def add_wishlist_flutter(request, id_rumah):
     if not request.user.is_authenticated or not request.user.is_buyer:
-        return JsonResponse({'error': 'Unauthorized: Only buyers can access this feature.'}, status=401)
+        return JsonResponse({'status': 'unauthorized', 'error': 'Unauthorized: Only buyers can access this feature.'}, status=401)
 
     if request.method == 'POST':
         try:
