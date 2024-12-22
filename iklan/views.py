@@ -124,6 +124,13 @@ def iklan_json(request):
 
 @login_required
 def create_iklan_flutter(request):
+    if request.method == "GET":
+        houses = House.objects.filter(seller=request.user.seller)
+        names = []
+        for house in houses:
+            names.append(house.judul)
+        return JsonResponse({'houses': names}, status=200)
+    
     if request.method == "POST":
         form = IklanEntryForm(request.POST or None, request.FILES)
         
@@ -181,7 +188,7 @@ def edit_iklan_flutter(request, id_rumah):
 def delete_iklan_flutter(request, id_rumah):
     try:
         iklan = IklanEntry.objects.get(rumah__id=id_rumah, seller=request.user.seller)
-        iklan.delete()
+        iklan.delete()  
         return JsonResponse(
             {"status": "success", "message": "Iklan item deleted successfully"},
             status=200
