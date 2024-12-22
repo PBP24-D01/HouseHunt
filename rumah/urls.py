@@ -18,7 +18,9 @@ urlpatterns = [
     path('api/houses/create/', views.api_house_create, name='api_house_create'),
     path('api/form-options/', views.get_filter_options, name='form-options'),
     path('api/order/<int:house_id>/', views.api_order_page, name='api_order_page'), 
-    path('api/invoice/<int:house_id>/', views.api_generate_invoice, name='api_generate_invoice'), 
+    path('api/invoice/<int:house_id>/', views.api_generate_invoice, name='api_generate_invoice'),
+    path('api/house_edit/<int:house_id>/', views.api_house_edit, name='api_house_edit'),
+    path('api/house_delete/<int:house_id>/', views.api_house_delete, name='api_house_delete'),
 ]
 
 if settings.DEBUG:
