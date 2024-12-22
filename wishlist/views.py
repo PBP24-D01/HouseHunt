@@ -180,21 +180,12 @@ def edit_wishlist_flutter(request, id_rumah):
 
 @csrf_exempt
 @login_required(login_url='/login')
-def add_wishlist_flutter(request):
+def add_wishlist_flutter(request, id_rumah):
     if not request.user.is_authenticated or not request.user.is_buyer:
         return JsonResponse({'error': 'Unauthorized: Only buyers can access this feature.'}, status=401)
 
     if request.method == 'POST':
         try:
-            data = json.loads(request.body)  # Parse JSON data from the request body
-            id_rumah = data.get('id_rumah')
-
-            if not id_rumah:
-                return JsonResponse(
-                    {"status": "error", "message": "Missing 'id_rumah' field"},
-                    status=400
-                )
-
             rumah = get_object_or_404(House, id=id_rumah)
 
             # Add or toggle wishlist
@@ -210,9 +201,9 @@ def add_wishlist_flutter(request):
                     {"status": "success", "message": "Wishlist removed successfully"},
                     status=200
                 )
-        except json.JSONDecodeError:
+        except Exception as e:
             return JsonResponse(
-                {"status": "error", "message": "Invalid JSON data"},
+                {"status": "error", "message": f"Error: {str(e)}"},
                 status=400
             )
     else:
