@@ -25,17 +25,17 @@ class Auction(models.Model):
         return self.title
     
     def is_active(self):
-        now = datetime.now().replace(tzinfo=pytz.utc)
+        now = datetime.now(pytz.utc) + timedelta(hours=7)
 
         return self.start_date.replace(tzinfo=pytz.utc) <= now < self.end_date.replace(tzinfo=pytz.utc)
 
     def is_expired(self):
-        now = datetime.now().replace(tzinfo=pytz.utc)
+        now = datetime.now(pytz.utc) + timedelta(hours=7)
 
         return self.end_date.replace(tzinfo=pytz.utc) < now 
     
     def time_remaining(self):
-        now = datetime.now().replace(tzinfo=pytz.utc)
+        now = datetime.now(pytz.utc) + timedelta(hours=7)
 
         return now, self.end_date.replace(tzinfo=pytz.utc), self.start_date.replace(tzinfo=pytz.utc)
 
