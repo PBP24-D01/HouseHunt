@@ -272,3 +272,24 @@ def api_generate_invoice(request, house_id):
             return JsonResponse({'error': 'User is not a buyer'}, status=400)
     else:
         return JsonResponse({'error': 'User is not authenticated'}, status=401)
+    
+@csrf_exempt
+def api_house_create(request):
+    if request.method == 'POST':
+        form = HouseForm(request.POST, request.FILES)
+
+        try:
+            seller = Seller.objects.get(user=request.user)
+        except Seller.DoesNotExist:
+            return JsonResponse({'error': 'You must be a seller to create a house.'}, status=400)
+
+        if form.is_valid():
+            house = form.save(commit=False)
+            house.seller = seller
+            house.save()
+            return JsonResponse({'message': 'House created successfully!', 'id': house.id}, status=201)
+        else:
+            return JsonResponse({'errors': form.errors}, status=400)
+    else:
+        return JsonResponse({'error': 'Invalid request method.'}, status=405)
+
