@@ -4,6 +4,7 @@ from django.db import models
 from HouseHuntAuth.models import Buyer, Seller
 from rumah.models import House
 import uuid
+from datetime import datetime, timedelta, timezone
 # Create your models here.
 
 
@@ -24,13 +25,13 @@ class Auction(models.Model):
         return self.title
     
     def is_active(self):
-        utc_plus_7 = pytz.timezone('Asia/Jakarta')
-        now = datetime.datetime.now(utc_plus_7)
+        utc_plus_7 = timezone(timedelta(hours=7))
+        now = datetime.now(utc_plus_7)
         return self.start_date < now < self.end_date
     
     def is_expired(self):
-        utc_plus_7 = pytz.timezone('Asia/Jakarta')
-        now = datetime.datetime.now(utc_plus_7)
+        utc_plus_7 = timezone(timedelta(hours=7))
+        now = datetime.now(utc_plus_7)
         return self.end_date < now
 
 class Bid(models.Model):
