@@ -165,6 +165,7 @@ def get_all_auctions(request):
                 "seller_id": auction.seller.user.id,
                 "created_at": auction.created_at,
                 "updated_at": auction.updated_at,
+                "times": auction.time_remaining(),
                 "is_active": auction.is_active(),
                 "is_expired": auction.is_expired(),
             }

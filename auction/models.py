@@ -38,6 +38,12 @@ class Auction(models.Model):
         end_diff = int((self.end_date - now).total_seconds())
 
         return end_diff < 0 
+    
+    def time_remaining(self):
+        utc_plus_7 = timezone(timedelta(hours=7))
+        now = datetime.now(utc_plus_7)
+
+        return now, self.end_date, self.start_date
 
 class Bid(models.Model):
     id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
