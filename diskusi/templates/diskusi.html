@@ -138,8 +138,8 @@
                             <br>
                             <span class='text-sm text-white'>${reply.fields.body}</span>
                         </p>
-                        <button id="reply-edit-${reply.pk}" onclick="window.location.href='/diskusi/edit_replay/${reply.pk}'">Edit</button>
-                        <button id="reply-delete-${reply.pk}" onclick="deleteReplay('${reply.pk}')">Delete</button>
+                        <button id="reply-edit-${reply.pk}" onclick="window.location.href='/diskusi/edit_reply/${reply.pk}'">Edit</button>
+                        <button id="reply-delete-${reply.pk}" onclick="deleteReply('${reply.pk}','${pk}')">Delete</button>
                     </div>
                 `;
             }
@@ -240,11 +240,11 @@
             }
         });
     }
-    function deleteReplay(replyId) {
+    function deleteReplay(replyId,pk) {
         const csrfToken = document.querySelector('[name=csrfmiddlewaretoken]').value;
         console.log(csrfToken);
         $.ajax({
-            url: `/diskusi/delete_replay/${replyId}`,
+            url: `/diskusi/delete_reply/${replyId}`,
             type: 'DELETE',
             headers: {
                 'X-CSRFToken': csrfToken
@@ -252,8 +252,8 @@
             success: function(response) {
                 if (response.status === 'success') {
                     // Remove the comment from the DOM
-                    document.getElementById(`reply-comment-${replyId}`).remove();
-                    refreshComments();  // Refresh comments if needed
+                    document.getElementById(`reply-section-${pk}`).remove();
+                    refreshComments();
                     console.log(response.message);
                 } else {
                     console.error('Failed to delete comment:', response.message);

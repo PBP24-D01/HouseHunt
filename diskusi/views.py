@@ -14,6 +14,7 @@ import json
 from django.http import JsonResponse
 from django.urls import reverse
 from django.http import HttpResponseRedirect
+from django.views.decorators.csrf import csrf_exempt
 # Create your views here.
 
 @login_required(login_url='/login')
@@ -44,10 +45,12 @@ def show_sellers_by_id(request, id):
     }
     return HttpResponse(json.dumps(data_dict), content_type="application/json")
 
-
 def update_rating(seller):
     comments = Comment.objects.filter(seller=seller)
-    rating = comments.aggregate(Avg('star'))['star__avg']
+    if comments.exists():
+        rating = comments.aggregate(Avg('star'))['star__avg']
+    else:
+        rating = 0
     print(rating)
     seller.stars = round(rating,2)
     seller.save()
@@ -57,7 +60,6 @@ def update_rating(seller):
 def review(request, id):
     seller = get_object_or_404(Seller, id=id)
     comments = Comment.objects.filter(seller_id=id)
-    
     if request.method == 'POST':
         form = CommentCreateForm(request.POST)
         if form.is_valid():
@@ -83,6 +85,31 @@ def review(request, id):
         'form': form,
     }
     return render(request, 'diskusi.html', context)
+
+@csrf_exempt
+def add_comment_api(request,id):
+    seller = get_object_or_404(Seller, id=id)
+    author = seller.user
+    form = CommentCreateForm(request.POST)
+    print(request.POST)
+    if request.method == 'POST':
+            if form.is_valid():
+                comment = form.save(commit=False)
+                comment.author = author
+                comment.seller = seller
+                if request.user.is_buyer:
+                    comment.name = request.user.username
+                else:
+                    comment.name = request.user.seller.company_name
+                comment.star = request.POST.get('star')
+                comment.save()
+                # Update seller's average rating
+                update_rating(comment.seller)
+                return JsonResponse({'status': 'success', 'message': 'Comment added successfully.'})
+            else:
+                return JsonResponse({'status': 'error', 'message': 'Invalid form data.'})
+    else:
+        return JsonResponse({'status': 'error', 'message': 'Invalid request method.'})
 
 @csrf_protect
 @login_required(login_url='/login')
@@ -175,4 +202,87 @@ def edit_reply(request, id):
         'form': form,
     }
     return render(request, 'reply.html', context)
+
+#flutter
+@csrf_exempt
+def reply_api(request, id):
+    comment = get_object_or_404(Comment, id=id)
+    seller = comment.seller
+    if request.method == 'POST':
+        form = ReplyCreateForm(request.POST)
+        if form.is_valid():
+            reply = form.save(commit=False)
+            reply.parent_comment = comment
+            reply.name = seller.company_name
+            reply.save()
+            return JsonResponse({'status': 'success', 'message': 'Reply added successfully.'})
+        else:
+            return JsonResponse({'status': 'error', 'message': 'Invalid form data.'})
+    else:
+        return JsonResponse({'status': 'error', 'message': 'Invalid request method.'})
+
+@csrf_exempt
+def delete_comment_api(request, id):
+    if request.method == 'POST':
+        try:
+            comment = get_object_or_404(Comment, pk=id)
+            seller = comment.seller
+            comment.delete()
+            update_rating(seller)
+            return JsonResponse({'status': 'success', 'message': 'Comment deleted successfully.'})
+        except Exception as e:
+            return JsonResponse({'status': 'error', 'message': str(e)})
+    else:
+        return JsonResponse({'status': 'error', 'message': 'Invalid request method.'})
+
+@csrf_exempt
+def delete_reply_api(request, id):
+    if request.method == 'POST':
+        try:
+            reply = get_object_or_404(Reply, id=id)
+            reply.delete()
+
+            return JsonResponse({'status': 'success', 'message': 'Reply deleted successfully.'})
+        except Exception as e:
+            return JsonResponse({'status': 'error', 'message': str(e)})
+    else:
+        return JsonResponse({'status': 'error', 'message': 'Invalid request method.'})
+
+@csrf_exempt
+def edit_comment_api(request, id):
+    comment = get_object_or_404(Comment, pk=id)
+    if request.method == 'POST':
+        form = CommentCreateForm(request.POST, instance=comment)
+        if form.is_valid():
+            comment = form.save(commit=False)
+            comment.author = request.user
+            comment.seller = comment.seller
+            if request.user.is_buyer:
+                comment.name = request.user.username
+            else:
+                comment.name = request.user.seller.company_name
+            comment.star = request.POST.get('star')
+            comment.save()
+            update_rating(comment.seller)
+            return JsonResponse({'status': 'success', 'message': 'Comment edited successfully.'})
+        else:
+            return JsonResponse({'status': 'error', 'message': 'Invalid form data.'})
+    else:
+        return JsonResponse({'status': 'error', 'message': 'Invalid request method.'})
+
+@csrf_exempt
+def edit_reply_api(request, id):
+    reply = get_object_or_404(Reply, id=id)
+    seller = reply.parent_comment.seller
+    if request.method == 'POST':
+        form = ReplyCreateForm(request.POST, instance=reply)
+        if form.is_valid():
+            reply = form.save(commit=False)
+            reply.name = seller.company_name
+            reply.save()
+            return JsonResponse({'status': 'success', 'message': 'Reply edited successfully.'})
+        else:
+            return JsonResponse({'status': 'error', 'message': 'Invalid form data.'})
+    else:
+        return JsonResponse({'status': 'error', 'message': 'Invalid request method.'})
 
