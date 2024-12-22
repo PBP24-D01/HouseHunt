@@ -146,6 +146,7 @@ def get_all_auctions(request):
             {
                 "id": auction.id,
                 "title": auction.title,
+                "house_id": house.id,
                 "house_url": f"/house/{house.pk}",
                 "house_title": house.judul,
                 "house_address": house.lokasi,
@@ -161,6 +162,7 @@ def get_all_auctions(request):
                     else None
                 ),
                 "seller": auction.seller.user.username,
+                "seller_id": auction.seller.user.id,
                 "created_at": auction.created_at,
                 "updated_at": auction.updated_at,
                 "is_active": auction.is_active(),
@@ -177,6 +179,7 @@ def get_auction_by_id(request, auction_id, json=True):
     auction_json = {
         "id": auction.id,
         "title": auction.title,
+        "house_id": house.id,
         "house_url": f"/house/{house.pk}",
         "house_title": house.judul,
         "house_address": house.lokasi,
@@ -193,6 +196,7 @@ def get_auction_by_id(request, auction_id, json=True):
             else None
         ),
         "seller": auction.seller.user.username,
+        "seller_id": auction.seller.user.id,
         "created_at": auction.created_at,
         "updated_at": auction.updated_at,
         "is_active": auction.is_active(),
@@ -286,7 +290,7 @@ def create_auction_api(request):
 
         house = House.objects.get(id=house_id)
         seller = Seller.objects.get(user_id=user_id)
-        
+
         if house.seller != seller:
             return JsonResponse(
                 {"status": False, "message": "You are not the seller of this house."},
@@ -298,7 +302,6 @@ def create_auction_api(request):
                 {"status": False, "message": "End date must be later than start date."},
                 status=400,
             )
-
 
         auction = Auction(
             title=title,
@@ -324,7 +327,7 @@ def create_auction_api(request):
 
 @csrf_exempt
 def edit_auction_api(request, auction_id):
-    if request.method == "PUT":
+    if request.method == "POST":
         data = json.loads(request.body)
         user_id = request.user.id
         is_buyer = request.user.is_buyer
@@ -352,7 +355,7 @@ def edit_auction_api(request, auction_id):
 
         house = House.objects.get(id=house_id)
         seller = Seller.objects.get(user_id=user_id)
-        
+
         if house.seller != seller:
             return JsonResponse(
                 {"status": False, "message": "You are not the seller of this house."},
@@ -387,39 +390,47 @@ def edit_auction_api(request, auction_id):
 
 
 @csrf_exempt
-def delete_auction_api(request):
-    if request.method == "DELETE":
-        data = json.loads(request.body)
-        user_id = request.user.id
-        is_buyer = request.user.is_buyer
-        auction_id = data["auction_id"]
+def delete_auction_api(request, auction_id):
+    user_id = request.user.id
+    is_buyer = request.user.is_buyer
 
-        if is_buyer:
-            return JsonResponse(
-                {"status": False, "message": "You are not a seller."}, status=403
-            )
-
-        auction = Auction.objects.get(id=auction_id)
-        seller = Seller.objects.get(user_id=user_id)
-        
-        if auction.seller != seller:
-            return JsonResponse(
-                {"status": False, "message": "You are not the seller of this auction."},
-                status=403,
-            )
-
-        if auction.is_active():
-            return JsonResponse(
-                {"status": False, "message": "Auction is still active."}, status=400
-            )
-
-        auction.delete()
-
+    if is_buyer:
         return JsonResponse(
-            {"status": True, "message": "Auction successfully deleted."}, status=200
+            {"status": False, "message": "You are not a seller."}, status=403
         )
 
-    else:
+    auction = Auction.objects.get(id=auction_id)
+    seller = Seller.objects.get(user_id=user_id)
+
+    if auction.seller != seller:
         return JsonResponse(
-            {"status": False, "message": "Invalid request method."}, status=400
+            {"status": False, "message": "You are not the seller of this auction."},
+            status=403,
         )
+
+    if auction.is_active():
+        return JsonResponse(
+            {"status": False, "message": "Auction is still active."}, status=400
+        )
+
+    auction.delete()
+
+    return JsonResponse(
+        {"status": True, "message": "Auction successfully deleted."}, status=200
+    )
+
+
+def get_available_houses(request):
+    user_id = request.user.id
+    seller = Seller.objects.get(user_id=user_id)
+    houses = House.objects.filter(seller=seller).exclude(
+        id__in=Auction.objects.values_list("house_id", flat=True)
+    )
+    houses_json = [
+        {
+            "id": house.id,
+            "title": house.judul,
+        }
+        for house in houses
+    ]
+    return JsonResponse(houses_json, safe=False, status=200)
