@@ -9,6 +9,8 @@ from .forms import HouseForm, HouseFilterForm
 from HouseHuntAuth.models import Seller, Buyer
 from iklan.models import IklanEntry
 from django.conf import settings
+from HouseHuntAuth.models import CustomUser as User
+from django.views.decorators.http import require_http_methods
 
 def landing_page(request):
     form = HouseFilterForm(request.GET or {'is_available': True})
@@ -215,7 +217,7 @@ def api_house_create(request):
             return JsonResponse({'errors': form.errors}, status=400)
     else:
         return JsonResponse({'error': 'Invalid request method.'}, status=405)
-    
+
 @csrf_exempt
 def api_order_page(request, house_id):
     house = get_object_or_404(House, id=house_id)
@@ -277,9 +279,11 @@ def api_generate_invoice(request, house_id):
 def api_house_create(request):
     if request.method == 'POST':
         form = HouseForm(request.POST, request.FILES)
+        username = request.POST.get('username')
 
         try:
-            seller = Seller.objects.get(user=request.user)
+            user = get_object_or_404(User, username=username)
+            seller = Seller.objects.get(user=user)
         except Seller.DoesNotExist:
             return JsonResponse({'error': 'You must be a seller to create a house.'}, status=400)
 
@@ -292,4 +296,28 @@ def api_house_create(request):
             return JsonResponse({'errors': form.errors}, status=400)
     else:
         return JsonResponse({'error': 'Invalid request method.'}, status=405)
+    
+@csrf_exempt
+def api_house_edit(request, house_id):
+    house = get_object_or_404(House, id=house_id)
+    if request.method == 'POST':
+        form = HouseForm(request.POST, request.FILES, instance=house)
+        if form.is_valid():
+            form.save()
+            return JsonResponse({'message': 'House updated successfully!'})
+        else:
+            print("error: ", form.errors)
+            return JsonResponse({'errors': form.errors}, status=400)
+    else:
+        return JsonResponse({'error': 'Invalid request method.'}, status=405)
+    
+@csrf_exempt
+def api_house_delete(request, house_id):
+    house = get_object_or_404(House, id=house_id)
+    if request.method == 'POST':
+        house.is_available = False
+        house.save()
+        return JsonResponse({'status': 'success'}, status=200)
+    else:
+        return JsonResponse({'status': 'error'}, status=405)
 

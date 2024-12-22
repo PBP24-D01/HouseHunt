@@ -42,6 +42,7 @@ CSRF_TRUSTED_ORIGINS = [
     "https://tristan-agra-househunt.pbp.cs.ui.ac.id",
     'http://localhost:54469',
     'http://127.0.0.1:54469',
+    'http://localhost:60606',
 ]
 
 CORS_ALLOW_ALL_ORIGINS = True
