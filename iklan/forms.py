@@ -5,4 +5,4 @@ from iklan.models import IklanEntry
 class IklanEntryForm(ModelForm):
     class Meta:
         model = IklanEntry
-        fields = ["rumah", "start_date", "end_date", "banner"   ]
+        fields = ["rumah", "start_date", "end_date", "banner"]
